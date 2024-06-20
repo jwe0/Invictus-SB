@@ -30,6 +30,13 @@ class Init:
             c.execute("CREATE TABLE messages (userid TEXT, username TEXT, message TEXT, time TEXT)")
             conn.commit()
             conn.close()
+        
+        if not os.path.exists("Databases/deleted.db"):
+            conn = sqlite3.connect("Databases/deleted.db")
+            c = conn.cursor()
+            c.execute("CREATE TABLE messages (userid TEXT, username TEXT, message TEXT, time TEXT)")
+            conn.commit()
+            conn.close()
 
 
 

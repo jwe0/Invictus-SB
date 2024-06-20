@@ -62,5 +62,9 @@ class General:
             message += f"{options[i].ljust(options_padding)} | {arguments[i].ljust(arguments_padding)} | {descriptions[i]}\n"
         
         
+
         return message
+    
+    def removespecial(self, message):
+        return message.replace("'", "").replace('"', "").replace("ansii", "").replace("`", "")
     

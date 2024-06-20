@@ -17,3 +17,17 @@ class Database:
         values = c.execute("SELECT * FROM messages WHERE userid= ?", (username,)).fetchall()
         conn.close()
         return values
+    
+    def deletedloggeradd(self, id, username, message, time):
+        conn = sqlite3.connect("Databases/deleted.db")
+        c = conn.cursor()
+        c.execute("INSERT INTO messages VALUES (?, ?, ?, ?)", (id, username, message, time))
+        conn.commit()
+        conn.close()
+
+    def deletedloggerget(self, username):
+        conn = sqlite3.connect("Databases/deleted.db")
+        c = conn.cursor()
+        values = c.execute("SELECT * FROM messages WHERE userid= ?", (username,)).fetchall()
+        conn.close()
+        return values

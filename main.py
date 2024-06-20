@@ -51,12 +51,18 @@ class Bot:
         @self.bot.event
         async def on_message(message):
             await self.bot.process_commands(message)
+            if self.messagel:
+                self.database.messageloggeradd(message.author.id, message.author.name, self.general.removespecial(message.content), message.created_at.strftime("%Y-%m-%d - %H:%M:%S"))
             if message.author != self.bot.user:
                 if self.nitro:
                     if "discord.gift/" in message.content:
                         self.logging.Info(f"Found nitro code: {message.content}")
-                if self.messagel:
-                    self.database.messageloggeradd(message.author.id, message.author.name, message.content, message.created_at.strftime("%Y-%m-%d - %H:%M:%S"))
+
+
+        @self.bot.event
+        async def on_message_delete(message):
+            if self.messagel:
+                self.database.deletedloggeradd(message.author.id, message.author.name,self.general.removespecial(message.content), message.created_at.strftime("%Y-%m-%d - %H:%M:%S"))
                 
 
 
@@ -367,23 +373,27 @@ class Bot:
 
 
         @self.bot.command()
-        async def searchmsg(ctx, user: discord.User = None):
-            username = user.id
-            messages = self.database.messageloggerget(username)
+        async def searchmsg(ctx, id, mode="messages"):
+            username = id
+            if mode == "messages":
+                messages = self.database.messageloggerget(username)
+            elif mode == "deleted":
+                messages = self.database.deletedloggerget(username)
             message = ""
             for msg in messages:
                 message += "[{}] [{}] {}\n".format(msg[1], msg[3], msg[2])
 
             def split(message):
                 msgs = []
-                while len(message) > 2000:
-                    msgs.append(message[:1500])
-                    message = message[1500:]
+                while len(message) > 1000:
+                    msgs.append(message[:1000])
+                    message = message[1000:]
                 msgs.append(message)
 
                 return msgs
+            
 
-            if len(message) > 2000:
+            if len(list(message)) > 2000:
                 msgs = split(message)
 
                 for msg in msgs:
