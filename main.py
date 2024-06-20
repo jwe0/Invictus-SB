@@ -373,6 +373,22 @@ class Bot:
             message = ""
             for msg in messages:
                 message += "[{}] [{}] {}\n".format(msg[1], msg[3], msg[2])
+
+            def split(message):
+                msgs = []
+                while len(message) > 2000:
+                    msgs.append(message[:1500])
+                    message = message[1500:]
+                msgs.append(message)
+
+                return msgs
+
+            if len(message) > 2000:
+                msgs = split(message)
+
+                for msg in msgs:
+                    await ctx.send(self.output("Search Message", self.output2.funny_line(msg)))
+                return
             await ctx.send(self.output("Search Message", self.output2.funny_line(message)))
 
 
