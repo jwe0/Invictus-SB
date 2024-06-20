@@ -111,7 +111,8 @@ class Bot:
                     ("phonenumber", "[PHONE NUMBER]", "Phone Number lookup"),
                     ("lastcommand", "", "Last Command you ran"),
                     ("reset", "", "Resets the bot"),
-                    ("selfdestruct", "[MESSAGE COUNT] [DELAY]", "Deletes messages")
+                    ("selfdestruct", "[MESSAGE COUNT] [DELAY]", "Deletes messages"),
+                    ("searchmsg", "[USERID]", "Searches messages")
                 ]
 
             await ctx.send(self.output("Utilities", self.general.help_format(commands)))
