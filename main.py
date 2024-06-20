@@ -1,4 +1,4 @@
-import discord, requests, socket, threading, phonenumbers, time, subprocess
+import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json
 from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
@@ -55,46 +55,58 @@ class Bot:
 
         @self.bot.command()
         async def help(ctx):
-            options = [("raid", "-> Commands for raiding"), 
-                       ("troll", "-> Commands for troling"), 
-                       ("fun", "-> Commands for fun"), 
-                       ("utilities", "-> Commands for utility")]
+            options = [
+                ("raid", "", "Commands for raiding"),
+                ("troll", "", "Commands for trolling"),
+                ("fun", "", "Commands for fun"),
+                ("utilities", "", "Commands for utility")
+            ]
+
             message = self.general.help_format(options)
             await ctx.send(self.output("Help", message))
 
         @self.bot.command()
         async def raid(ctx, page=1):
             if page == 1:
-                commands = [("messagespam [MESSAGE] [COUNT] [DELAY] [THREAD]", "-> Spam messages"),
-                            ("pinspam [MESSAGE] [COUNT] [DELAY] [THREAD]", "-> Spam pins"),
-                            ("threadspam [MESSAGE] [COUNT] [DELAY] [THREAD]", "-> Spam threads"),
-                            ("createchannels [NAME] [COUNT] [DELAY] [THREAD]", "-> Create channels"),
-                            ("deletechannels [DELAY] [THREAD]", "-> Delete channels"),
-                            ("createroles [NAME] [COUNT] [DELAY] [THREAD]", "-> Create roles"),
-                            ("deleteroles [DELAY] [THREAD]", "-> Delete roles")]
+                commands = [
+                    ("messagespam", "[MESSAGE] [COUNT] [DELAY] [THREAD]", "Spam messages"),
+                    ("pinspam", "[MESSAGE] [COUNT] [DELAY] [THREAD]", "Spam pins"),
+                    ("threadspam", "[MESSAGE] [COUNT] [DELAY] [THREAD]", "Spam threads"),
+                    ("createchannels", "[NAME] [COUNT] [DELAY] [THREAD]", "Create channels"),
+                    ("deletechannels", "[DELAY] [THREAD]", "Delete channels"),
+                    ("createroles", "[NAME] [COUNT] [DELAY] [THREAD]", "Create roles"),
+                    ("deleteroles", "[DELAY] [THREAD]", "Delete roles")
+                ]
+
             await ctx.send(self.output("Raid", self.general.help_format(commands)))
 
         @self.bot.command()
         async def troll(ctx, page=1):
             if page == 1:
-                commands = []
+                commands = [
+                    ("vcspam", "[CHANNEL] [COUNT] [DELAY]", "Spam voice channels")
+                ]
+
             await ctx.send(self.output("Troll", self.general.help_format(commands)))
 
         @self.bot.command()
         async def fun(ctx, page=1):
             if page == 1:
-                commands = []
+                commands = [("", "", "")]
             await ctx.send(self.output("Fun", self.general.help_format(commands)))
 
         @self.bot.command()
         async def utilities(ctx, page=1):
-            if page == 1:
-                commands = [("iplookup [IP]", "-> IP Lookup"), 
-                            ("ping", "-> Tests response"), 
-                            ("portscan [IP]", "-> Port Scan a target ip"), 
-                            ("phonenumber [PHONE NUMBER]", "-> Phone Number lookup"),
-                            ("lastcommand", "-> Last Command you ran"),
-                            ("reset", "-> Resets the bot")]
+            if page == 1:[
+                    ("iplookup", "[IP]", "IP Lookup"), 
+                    ("ping", "", "Tests response"), 
+                    ("portscan", "[IP]", "Port Scan a target IP"), 
+                    ("phonenumber", "[PHONE NUMBER]", "Phone Number lookup"),
+                    ("lastcommand", "", "Last Command you ran"),
+                    ("reset", "", "Resets the bot"),
+                    ("selfdestruct", "[MESSAGE COUNT] [DELAY]", "Deletes messages")
+                ]
+
             await ctx.send(self.output("Utilities", self.general.help_format(commands)))
 
 
@@ -261,6 +273,19 @@ class Bot:
             
 
         # Troll commands
+
+        @self.bot.command()
+        async def vcspam(ctx, channel, count=10, delay=2):
+            def join():
+                ws = websocket.WebSocket()
+                ws.connect("wss://gateway.discord.gg/?v=9&encoding=json")
+                ws.send(json.dumps({"op": 2, "d": {"token": self.token, "properties": {"$os": "windows", "$browser": "Discord", "$device": "desktop"}}}))
+                ws.send(json.dumps({"op": 4, "d": {"guild_id": ctx.guild.id, "channel_id": channel, "self_mute": False, "self_deaf": False}}))
+                ws.close()
+
+            for i in range(int(count)):
+                join()
+                time.sleep(int(delay))
 
         # Fun commands  
 

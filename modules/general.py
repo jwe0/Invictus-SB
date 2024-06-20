@@ -40,13 +40,25 @@ class General:
         return max(len(name) for _, name in array)
     
     def help_format(self, array):
-        max_option_length = max(len(option) for option, description in array)
-        
         message = ""
-        for option, description in array:
-            padding = max_option_length - len(option)
-            message += f"{option}{' ' * padding} {description}\n"
+        options      = []
+        arguments    = []
+        descriptions = []
+
+        for option, argument, description in array:
+            options.append(option)
+            arguments.append(argument if argument else "[None]")
+            descriptions.append(description)
+
+
+        options_padding   = max(len(option) for option in options) + 2
+        arguments_padding = max(len(argument) for argument in arguments) + 2
+
+
+        message += f"{'Command'.ljust(options_padding)} | {'Arguments'.ljust(arguments_padding)} | Description\n"
+        for i in range(len(options)):
+            message += f"{options[i].ljust(options_padding)} | {arguments[i].ljust(arguments_padding)} | {descriptions[i]}\n"
+        
         
         return message
-    
     

@@ -1,4 +1,5 @@
 import json, urllib.parse
+from modules.logging import Logging
 
 class Output:
     def __init__(self):
@@ -11,15 +12,19 @@ class Output:
             mode = config.get("Output", "Text")
             if mode == "codeblock":
                 return self.code_block(title, message)
+            elif mode == "none":
+                return Logging().Info(message)
             return mode
 
     
     def code_block(self, title, message):
          msg = """
-```
-{title}
------------------
+```ansi
+[[2;31m>[0m]  {title}   [[2;31m<[0m]
+
 {message}
+
+[[2;45m[0m[2;34m~[0m] Invictus [[2;34m~[0m]
 ```
 """.format(title=title, message=message)
          return msg
