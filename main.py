@@ -1,4 +1,4 @@
-import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json
+import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random
 from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
@@ -8,6 +8,7 @@ from modules.general import General
 from modules.logging import Logging
 from modules.init import Init
 from modules.output import Output
+from modules.database import Database
 
 class Bot:
     def __init__(self):
@@ -15,6 +16,8 @@ class Bot:
         self.general = General()
         self.logging = Logging()
         self.output  = Output().output
+        self.output2 = Output()
+        self.database = Database()
 
         # Discord.py things
         self.bot = None
@@ -23,6 +26,7 @@ class Bot:
 
         # Modules
         self.nitro = False
+        self.messagel = False
 
         # Storing values
         self.lastcommand = ""
@@ -51,6 +55,9 @@ class Bot:
                 if self.nitro:
                     if "discord.gift/" in message.content:
                         self.logging.Info(f"Found nitro code: {message.content}")
+                if self.messagel:
+                    self.database.messageloggeradd(message.author.id, message.author.name, message.content, message.created_at.strftime("%Y-%m-%d - %H:%M:%S"))
+                
 
 
         @self.bot.command()
@@ -92,7 +99,7 @@ class Bot:
         @self.bot.command()
         async def fun(ctx, page=1):
             if page == 1:
-                commands = [("", "", "")]
+                commands = [("gayrate", "[@USER]", "rates a user")]
             await ctx.send(self.output("Fun", self.general.help_format(commands)))
 
         @self.bot.command()
@@ -289,6 +296,14 @@ class Bot:
 
         # Fun commands  
 
+        @self.bot.command()
+        async def gayrate(ctx, user: discord.User = None):
+            percent = random.randint(0, 100)
+            message = self.output("Gayrate", f"{user.name} is {str(percent)}% gay\n")
+
+            await ctx.send(message)
+
+
         # Utility commands
 
         @self.bot.command()
@@ -298,7 +313,7 @@ class Bot:
             message = ""
             for key, value in r.json().items():
                 message += "{}: {}\n".format(key.title(), value)
-            await ctx.send(self.output("IP Lookup", message))
+            await ctx.send(self.output("IP Lookup", self.output2.funny_line(message)))
 
         @self.bot.command()
         async def portscan(ctx, ip):
@@ -313,7 +328,7 @@ class Bot:
                     while len(name) < padding:
                         name += " "
                     message += "{}: {}\n".format(name, port)
-            await ctx.send(self.output("Port Scan", message))
+            await ctx.send(self.output("Port Scan", self.output2.funny_line(message)))
 
         @self.bot.command()
         async def phonenumber(ctx, number):
@@ -350,9 +365,19 @@ class Bot:
             exit()
 
 
+        @self.bot.command()
+        async def searchmsg(ctx, user: discord.User = None):
+            username = user.id
+            messages = self.database.messageloggerget(username)
+            message = ""
+            for msg in messages:
+                message += "[{}] [{}] {}\n".format(msg[1], msg[3], msg[2])
+            await ctx.send(self.output("Search Message", self.output2.funny_line(message)))
+
+
     def run(self):
         Colors.white
-        self.token, self.prefix, self.nitro = self.general.load_config()
+        self.token, self.prefix, self.nitro, self.messagel = self.general.load_config()
         self.bot = commands.Bot(command_prefix=self.prefix, self_bot=True)
         self.bot.remove_command("help")
         self.initalize()

@@ -23,9 +23,15 @@ class Output:
 [[2;31m>[0m]  {title}   [[2;31m<[0m]
 
 {message}
-
 [[2;45m[0m[2;34m~[0m] Invictus [[2;34m~[0m]
 ```
 """.format(title=title, message=message)
          return msg
+    
+    def funny_line(self, message):
+        linestart = "[[2;33m![0m]"
+        newmessage = ""
+        for line in message.splitlines():
+            newmessage += f"{linestart} {line}\n"
+        return newmessage
     

@@ -12,8 +12,10 @@ class General:
             token  = config.get("Token", "")
             prefix = config.get("Prefix", "")
 
+
             nitro  = config.get("Modules", {}).get("nitro", False)
-        return token, prefix, nitro
+            msgl   = config.get("Modules", {}).get("msglog", False)
+        return token, prefix, nitro, msgl
     
     def art(self):
         ascii_art = """

@@ -1,4 +1,4 @@
-import os, json
+import os, json,sqlite3
 
 class Init:
     def __init__(self):
@@ -15,11 +15,26 @@ class Init:
                 prefix = input("[>] Command prefix : ")
                 output = input("[>] Output mode    : ")
                 nitro  = input("[>] Nitro sniper?  : ")
+                msglog = input("[>] Log messages?  : ")
                 while output not in output_modes:
                     output = input("[!] Invalid output mode. Try again: ")
-                json.dump({"Token": token, "Prefix": prefix, "Output": output, "Modules": {"nitro": True if nitro.lower() == "y" else False}}, f, indent=4)
+                json.dump({"Token": token, "Prefix": prefix, "Output": output, "Modules": {"nitro": True if nitro.lower() == "y" else False, "msglog": True if msglog.lower() == "y" else False}}, f, indent=4)
+
+    def initalizesql(self):
+        if not os.path.exists("Databases"):
+            os.mkdir("Databases")
+        
+        if not os.path.exists("Databases/messages.db"):
+            conn = sqlite3.connect("Databases/messages.db")
+            c = conn.cursor()
+            c.execute("CREATE TABLE messages (userid TEXT, username TEXT, message TEXT, time TEXT)")
+            conn.commit()
+            conn.close()
+
+
 
 
     def init(self):
         self.assets()
         self.config()
+        self.initalizesql()
