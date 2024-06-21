@@ -1,0 +1,88 @@
+{
+    "messagespam": {
+        "name" : "messagespam",
+        "description": "Spams messages in the channel",
+        "params": [
+            ["MESSAGE", "(Message to spam)"],
+            ["COUNT", "(Number of messages to spam)"],
+            ["DELAY", "(Delay between messages)"],
+            ["THREAD", "(y/n)"]
+        ],
+        "example": "messagespam INVICTUS ON TOP 50 2 n",
+        "section" : "raid",
+        "page" : 1
+    },
+    "pinspam": {
+        "name" : "pinspam",
+        "description": "Spams pins in the channel",
+        "params": [
+            ["COUNT", "(Number of pins to create)"],
+            ["DELAY", "(Delay between pins)"],
+            ["THREAD", "(y/n)"]
+        ],
+        "example": "pinspam 50 2 n",
+        "section" : "raid",
+        "page" : 1
+    },
+    "threadspam": {
+        "name" : "threadspam",
+        "description": "Spams threads in the channel",
+        "params": [
+            ["NAME", "(Name of the thread)"],
+            ["COUNT", "(Number of threads to create)"],
+            ["DELAY", "(Delay between messages)"],
+            ["THREAD", "(y/n)"]
+        ],
+        "example": "threadspam INVICTUS ON TOP 50 2 n",
+        "section" : "raid",
+        "page" : 1
+    },
+    "createchannels": {
+        "name" : "createchannels",
+        "description": "Creates channels",
+        "params": [
+            ["NAME", "(Name of the channel)"],
+            ["COUNT", "(Number of channels to create)"],
+            ["DELAY", "(Delay between channels)"],
+            ["THREAD", "(y/n)"]
+        ],
+        "example": "createchannels INVICTUS 50 1 n",
+        "section" : "raid",
+        "page" : 1
+    },
+    "deletechannels": {
+        "name" : "deletechannels",
+        "description": "Deletes channels",
+        "params": [
+            ["DELAY", "(Delay between channels)"],
+            ["THREAD", "(y/n)"]
+        ],
+        "example": "deletechannels 1 n",
+        "section" : "raid",
+        "page" : 1
+    },
+    "createroles": {
+        "name" : "createroles",
+        "description": "Creates roles",
+        "params": [
+            ["NAME", "(Name of the role)"],
+            ["COUNT", "(Number of roles to create)"],
+            ["DELAY", "(Delay between roles)"],
+            ["THREAD", "(y/n)"]
+        ],
+        "example": "createroles INVICTUS 50 1 n",
+        "section" : "raid",
+        "page" : 1
+    },
+    "deleteroles": {
+        "name" : "deleteroles",
+        "description": "Deletes roles",
+        "params": [
+            ["DELAY", "(Delay between roles)"],
+            ["THREAD", "(y/n)"]
+        ],
+        "example": "deleteroles 1 n",
+        "section" : "raid",
+        "page" : 1
+    }
+}

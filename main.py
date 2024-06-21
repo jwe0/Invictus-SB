@@ -9,6 +9,7 @@ from modules.logging import Logging
 from modules.init import Init
 from modules.output import Output
 from modules.database import Database
+from modules.searchcmd import Search
 
 class Bot:
     def __init__(self):
@@ -18,6 +19,7 @@ class Bot:
         self.output  = Output().output
         self.output2 = Output()
         self.database = Database()
+        self.search = Search()
 
         # Discord.py things
         self.bot = None
@@ -30,6 +32,7 @@ class Bot:
 
         # Storing values
         self.lastcommand = ""
+        self.cmds = json.loads(open("modules/cmds.json").read())
 
 
     def initalize(self):
@@ -81,17 +84,8 @@ class Bot:
         @self.bot.command()
         async def raid(ctx, page=1):
             if page == 1:
-                commands = [
-                    ("messagespam", "[MESSAGE] [COUNT] [DELAY] [THREAD]", "Spam messages"),
-                    ("pinspam", "[MESSAGE] [COUNT] [DELAY] [THREAD]", "Spam pins"),
-                    ("threadspam", "[MESSAGE] [COUNT] [DELAY] [THREAD]", "Spam threads"),
-                    ("createchannels", "[NAME] [COUNT] [DELAY] [THREAD]", "Create channels"),
-                    ("deletechannels", "[DELAY] [THREAD]", "Delete channels"),
-                    ("createroles", "[NAME] [COUNT] [DELAY] [THREAD]", "Create roles"),
-                    ("deleteroles", "[DELAY] [THREAD]", "Delete roles")
-                ]
-
-            await ctx.send(self.output("Raid", self.general.help_format(commands)))
+                cmds = self.search.getraid(1)
+            await ctx.send(self.output("Raid", self.general.help_format(cmds)))
 
         @self.bot.command()
         async def troll(ctx, page=1):
@@ -105,7 +99,7 @@ class Bot:
         @self.bot.command()
         async def fun(ctx, page=1):
             if page == 1:
-                commands = [("gayrate", "[@USER]", "rates a user")]
+                commands = [("gayrate", "[@USER]", "rates a user"), ("ghostspam", "[@USER] [COUNT] [DELAY]", "Spam ghost ping")]
             await ctx.send(self.output("Fun", self.general.help_format(commands)))
 
         @self.bot.command()
@@ -311,6 +305,14 @@ class Bot:
 
             await ctx.send(message)
 
+        @self.bot.command()
+        async def ghostspam(ctx, user: discord.User = None, count=10, delay=2):
+            mention = user.mention
+
+            for i in range(int(count)):
+                message = await ctx.send(mention)
+                await message.delete()
+                time.sleep(int(delay))
 
         # Utility commands
 
@@ -401,6 +403,14 @@ class Bot:
                     await ctx.send(self.output("Search Message", self.output2.funny_line(msg)))
                 return
             await ctx.send(self.output("Search Message", self.output2.funny_line(message)))
+
+        @self.bot.command()
+        async def cmdinfo(ctx, cmd):
+            description, params, example = self.search.get(cmd)
+            message = ""
+            for param in params:
+                message += "{}: {}\n".format(param[0], param[1])
+            await ctx.send(self.output("Command Info", f"Description: {description}\n\n{message}\nExample: {example}\n"))
 
 
     def run(self):
