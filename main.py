@@ -428,6 +428,35 @@ class Bot:
                 message += "{}: {}\n".format(param[0], param[1])
             await ctx.send(self.output("Command Info", f"Description: {description}\n\n{message}\nExample: {example}\n"))
 
+        @self.bot.command()
+        async def whois(ctx, id):
+            api = "https://discord.com/api/v9/users/{}/profile".format(id)
+            headers = {"authorization": self.token}
+
+            response = requests.get(api, headers=headers)
+
+            if response.status_code == 200:
+                msg = "Basic Information:\n\n"
+                basic = ""
+                for key, value in response.json().get("user").items():
+                    if key != "bio":
+                        basic += "{}: {}\n".format(key.title(), value) 
+
+                msg += basic
+
+                connected = ""
+                for account in response.json().get("connected_accounts"):
+                    connected += "{}: {}\n".format(account["type"].title(), account["name"])
+                if connected:
+                    msg += "\nConnected Accounts:\n\n"
+                    msg += connected
+
+                await ctx.send(self.output("Whois", self.output2.funny_line(msg)))
+
+
+            else:
+                return
+
 
 
     def run(self):
