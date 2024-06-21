@@ -42,7 +42,6 @@ class General:
         return max(len(name) for _, name in array)
     
     def help_format(self, dic):
-
         array = []
 
         for command in dic:
@@ -51,10 +50,8 @@ class General:
             description = command.get("description")
             params = command.get("params")
             for param in params:
-                print(param)
                 param2 += "[{}] ".format(param[0])
             array.append((name, param2, description))
-
 
 
         message = ""

@@ -72,10 +72,10 @@ class Bot:
         @self.bot.command()
         async def help(ctx):
             options = [
-                ("raid", "", "Commands for raiding"),
-                ("troll", "", "Commands for trolling"),
-                ("fun", "", "Commands for fun"),
-                ("utilities", "", "Commands for utility")
+                {"name": "raid", "description": "Commands for raiding", "params": [], "section": "raid", "page": 1},
+                {"name": "troll", "description": "Commands for trolling", "params": [], "section": "troll", "page": 1},
+                {"name": "fun", "description": "Commands for fun", "params": [], "section": "fun", "page": 1},
+                {"name": "utilities", "description": "Commands for utility", "params": [], "section": "utilities", "page": 1}
             ]
 
             message = self.general.help_format(options)
@@ -83,40 +83,23 @@ class Bot:
 
         @self.bot.command()
         async def raid(ctx, page=1):
-            if page == 1:
-                cmds = self.search.getraid(1)
+            cmds = self.search.getraid(page)
             await ctx.send(self.output("Raid", self.general.help_format(cmds)))
 
         @self.bot.command()
         async def troll(ctx, page=1):
-            if page == 1:
-                commands = [
-                    ("vcspam", "[CHANNEL] [COUNT] [DELAY]", "Spam voice channels")
-                ]
-
-            await ctx.send(self.output("Troll", self.general.help_format(commands)))
+            cmds = self.search.gettroll(page)
+            await ctx.send(self.output("Troll", self.general.help_format(cmds)))
 
         @self.bot.command()
         async def fun(ctx, page=1):
-            if page == 1:
-                commands = [("gayrate", "[@USER]", "rates a user"), ("ghostspam", "[@USER] [COUNT] [DELAY]", "Spam ghost ping")]
-            await ctx.send(self.output("Fun", self.general.help_format(commands)))
+            cmds = self.search.getfun(page)
+            await ctx.send(self.output("Fun", self.general.help_format(cmds)))
 
         @self.bot.command()
         async def utilities(ctx, page=1):
-            if page == 1:
-                commands = [
-                    ("iplookup", "[IP]", "IP Lookup"), 
-                    ("ping", "", "Tests response"), 
-                    ("portscan", "[IP]", "Port Scan a target IP"), 
-                    ("phonenumber", "[PHONE NUMBER]", "Phone Number lookup"),
-                    ("lastcommand", "", "Last Command you ran"),
-                    ("reset", "", "Resets the bot"),
-                    ("selfdestruct", "[MESSAGE COUNT] [DELAY]", "Deletes messages"),
-                    ("searchmsg", "[USERID]", "Searches messages")
-                ]
-
-            await ctx.send(self.output("Utilities", self.general.help_format(commands)))
+            cmds = self.search.getutilities(page)
+            await ctx.send(self.output("Utilities", self.general.help_format(cmds)))
 
 
         # Raid commands

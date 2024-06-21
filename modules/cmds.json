@@ -84,5 +84,115 @@
         "example": "deleteroles 1 n",
         "section" : "raid",
         "page" : 1
+    },
+    "iplookup" : {
+        "name" : "iplookup",
+        "description": "Looks up an IP address",
+        "params": [
+            ["IP", "(IPv4 address)"]
+        ],
+        "example": "iplookup 8.8.8.8",
+        "section" : "utility",
+        "page" : 1
+    },
+    "ping" : {
+        "name" : "ping",
+        "description": "Pings the bot",
+        "params": [],
+        "example": "ping",
+        "section" : "utility",
+        "page" : 1
+    },
+    "portscan" : {
+        "name" : "portscan",
+        "description": "Scans common ports",
+        "params": [
+            ["IP", "(IPv4 address)"]
+        ],
+        "example": "portscan 8.8.8.8",
+        "section" : "utility",
+        "page" : 1
+    },
+    "phonenumber" : {
+        "name" : "phonenumber",
+        "description": "Looks up a phone number",
+        "params": [
+            ["PHONE NUMBER", "(Phone number)"]
+        ],
+        "example": "phonenumber 555-555-5555",
+        "section" : "utility",
+        "page" : 1
+    },
+    "lastcommand" : {
+        "name" : "lastcommand",
+        "description": "Shows the last command you ran",
+        "params": [],
+        "example": "lastcommand",
+        "section" : "utility",
+        "page" : 1
+    },
+    "reset" : {
+        "name" : "reset",
+        "description": "Resets the bot",
+        "params": [],
+        "example": "reset",
+        "section" : "utility",
+        "page" : 1
+    },
+    "selfdestruct" : {
+        "name" : "selfdestruct",
+        "description": "Deletes messages",
+        "params": [
+            ["MESSAGE COUNT", "(Number of messages to delete)"],
+            ["DELAY", "(Delay between messages)"]
+        ],
+        "example": "selfdestruct 100 2",
+        "section" : "utility",
+        "page" : 1
+    },
+    "searchmsg" : {
+        "name" : "searchmsg",
+        "description": "Searches messages",
+        "params": [
+            ["USERID", "(User ID)"],
+            ["MODE", "(messages/deleted)"]
+        ],
+        "example": "searchmsg 123456789",
+        "section" : "utility",
+        "page" : 1
+    },
+    "vcspam" : {
+        "name" : "vcspam",
+        "description": "Spams voice channels",
+        "params": [
+            ["CHANNEL", "(Channel ID)"],
+            ["COUNT", "(Number of channels to spam)"],
+            ["DELAY", "(Delay between channels)"]
+        ],
+        "example": "vcspam 123456789 50 1 n",
+        "section" : "troll",
+        "page" : 1
+    },
+    "gayrate" : {
+        "name" : "gayrate",
+        "description": "Rates a user",
+        "params": [
+            ["@USER", "(User ID)"]
+        ],
+        "example": "gayrate 123456789",
+        "section" : "fun",
+        "page" : 1
+    },
+    "ghostspam" : {
+        "name" : "ghostspam",
+        "description": "Spams ghost ping",
+        "params": [
+            ["@USER", "(User ID)"],
+            ["COUNT", "(Number of messages to spam)"],
+            ["DELAY", "(Delay between messages)"]
+        ],
+        "example": "ghostspam 123456789 50 1 n",
+        "section" : "fun",
+        "page" : 1
     }
 }
