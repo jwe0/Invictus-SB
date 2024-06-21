@@ -384,6 +384,7 @@ class Bot:
 
                 for msg in msgs:
                     await ctx.send(self.output("Search Message", self.output2.funny_line(msg)))
+                    time.sleep(2)
                 return
             await ctx.send(self.output("Search Message", self.output2.funny_line(message)))
 
