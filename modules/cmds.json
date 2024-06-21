@@ -183,6 +183,16 @@
         "section" : "utility",
         "page" : 1
     },
+    "whois" : {
+        "name" : "whois",
+        "description": "Shows information about a user",
+        "params": [
+            ["USERID", "(User ID)"]
+        ],
+        "example": "whois 123456789",
+        "section" : "utility",
+        "page" : 1
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
@@ -215,6 +225,14 @@
         ],
         "example": "ghostspam 123456789 50 1 n",
         "section" : "fun",
+        "page" : 1
+    },
+    "credits" : {
+        "name" : "credits",
+        "description": "Shows credits",
+        "params": [],
+        "example": "credits",
+        "section" : "other",
         "page" : 1
     }
 }

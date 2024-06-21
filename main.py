@@ -456,6 +456,18 @@ class Bot:
 
             else:
                 return
+            
+
+        # Other
+        @self.bot.command()
+        async def credits(ctx):
+            message = """Developed primarily by /jwe0   - https://github.com/jwe0
+Aided by my goo friend neebooo - https://github.com/neebooo
+
+I made this to test my skill as a developer when tasked with a large project.
+""" 
+            await ctx.send(self.output("Credits", message))
+    
 
 
 
