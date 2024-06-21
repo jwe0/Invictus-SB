@@ -110,7 +110,8 @@ class Bot:
 
         @self.bot.command()
         async def utilities(ctx, page=1):
-            if page == 1:[
+            if page == 1:
+                commands = [
                     ("iplookup", "[IP]", "IP Lookup"), 
                     ("ping", "", "Tests response"), 
                     ("portscan", "[IP]", "Port Scan a target IP"), 
