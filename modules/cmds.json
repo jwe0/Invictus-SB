@@ -132,10 +132,10 @@
         "page" : 1
     },
     "reset" : {
-        "name" : "reset",
-        "description": "Resets the bot",
+        "name" : "restart",
+        "description": "Restarts the bot",
         "params": [],
-        "example": "reset",
+        "example": "restart",
         "section" : "utility",
         "page" : 1
     },
@@ -155,9 +155,20 @@
         "description": "Searches messages",
         "params": [
             ["USERID", "(User ID)"],
-            ["MODE", "(messages/deleted)"]
+            ["MODE", "(messages/deleted)"],
+            ["FILE", "(Upload as file y/n)"]
         ],
         "example": "searchmsg 123456789",
+        "section" : "utility",
+        "page" : 1
+    },
+    "cmdinfo" : {
+        "name" : "cmdinfo",
+        "description": "Shows information about a command",
+        "params": [
+            ["COMMAND", "(Command name)"]
+        ],
+        "example": "cmdinfo ping",
         "section" : "utility",
         "page" : 1
     },

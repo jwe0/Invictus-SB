@@ -7,6 +7,10 @@ class Init:
         if not os.path.exists("Assets"):
             os.mkdir("Assets")
 
+    def msglogs(self):
+        if not os.path.exists("Assets/Logs"):
+            os.mkdir("Assets/Logs")
+
     def config(self):
         if not os.path.exists("Assets/Config.json"):
             with open("Assets/Config.json", "w") as f:
@@ -44,4 +48,5 @@ class Init:
     def init(self):
         self.assets()
         self.config()
+        self.msglogs()
         self.initalizesql()

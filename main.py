@@ -359,7 +359,7 @@ class Bot:
 
 
         @self.bot.command()
-        async def searchmsg(ctx, id, mode="messages"):
+        async def searchmsg(ctx, id, mode="messages", upload="n"):
             username = id
             if mode == "messages":
                 messages = self.database.messageloggerget(username)
@@ -368,6 +368,13 @@ class Bot:
             message = ""
             for msg in messages:
                 message += "[{}] [{}] {}\n".format(msg[1], msg[3], msg[2])
+
+            with open("Assets/Logs/{}.txt".format(username), "w") as f:
+                f.write(message)
+            
+            if upload == "y":
+                await ctx.send(file=discord.File("Assets/Logs/{}.txt".format(username)))
+                return
 
             def split(message):
                 msgs = []
@@ -395,6 +402,10 @@ class Bot:
             for param in params:
                 message += "{}: {}\n".format(param[0], param[1])
             await ctx.send(self.output("Command Info", f"Description: {description}\n\n{message}\nExample: {example}\n"))
+
+        # @self.bot.command()
+        # async def uploadfile(ctx, path):
+        #     await ctx.send(file=discord.File(path))
 
 
     def run(self):
