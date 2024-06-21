@@ -263,7 +263,32 @@ class Bot:
                 time.sleep(int(delay))
 
             
+        @self.bot.command()
+        async def massping(ctx, loops=5, delay=1):
+            def Get_Members(id):
+                headers = {"Authorization": self.token}
+                api     = "https://discord.com/api/v9/channels/{}/messages?limit=100".format(id)
 
+                response = requests.get(api, headers=headers).json()
+                members  = []
+
+                for member in response:
+                    if member["author"]["id"] not in members:
+                        members.append(member["author"]["id"])
+
+                return members
+            members = Get_Members(ctx.channel.id)
+            for _ in range(loops):
+                message = []
+                for member in members:
+                    message.append(f"<@{member}>")
+                    if len(message) == 3:
+                        await ctx.send(" ".join(message))
+                        message = []
+                if message:
+                    await ctx.send(" ".join(message))
+                    message = []
+                time.sleep(delay)
         # Troll commands
 
         @self.bot.command()
@@ -403,9 +428,6 @@ class Bot:
                 message += "{}: {}\n".format(param[0], param[1])
             await ctx.send(self.output("Command Info", f"Description: {description}\n\n{message}\nExample: {example}\n"))
 
-        # @self.bot.command()
-        # async def uploadfile(ctx, path):
-        #     await ctx.send(file=discord.File(path))
 
 
     def run(self):

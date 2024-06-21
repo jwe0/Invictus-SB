@@ -85,6 +85,17 @@
         "section" : "raid",
         "page" : 1
     },
+    "massping" : {
+        "name" : "massping",
+        "description": "Mass pings users",
+        "params": [
+            ["LOOPS", "(Number of times to ping)"],
+            ["DELAY", "(Delay between pings)"]
+        ],
+        "example": "massping 5",
+        "section" : "raid",
+        "page" : 1
+    },
     "iplookup" : {
         "name" : "iplookup",
         "description": "Looks up an IP address",
