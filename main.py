@@ -296,7 +296,7 @@ class Bot:
                 time.sleep(delay)
 
         @self.bot.command()
-        async def webraid(ctx, channelname="raided-by-invictus", message="@everyone RAIDED BY INVICTUS", channelamount=15, messageamount=15):
+        async def webraid(ctx, channelname="raided-by-invictus", message="@everyone RAIDED BY INVICTUS", channelamount=20, messageamount=30):
             def webhook(hook):
                 for i in range(int(messageamount)):
                     data = {"content" : message}
@@ -315,12 +315,12 @@ class Bot:
                 channelapi = "https://discord.com/api/v9/guilds/{}/channels".format(ctx.guild.id)
                 data = {"name": channelname, "type": 0}
                 r = requests.post(channelapi, headers=headers, json=data)
-                chanid = r.json()["id"]
                 while r.status_code != 201:
                     r = requests.post(channelapi, headers=headers, json=data)
                     if r.status_code == 429:
                         self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
                         time.sleep(r.json()["retry_after"] + 1)
+                chanid = r.json()["id"]
 
                 webhookapi = "https://discord.com/api/v9/channels/{}/webhooks".format(chanid)
                 data = {"name": ctx.author.name}
