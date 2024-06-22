@@ -303,7 +303,7 @@ class Bot:
 
             def removechannel(id):
                 headers = {"authorization": self.token}
-                api = "https://discord.com/api/v9/channels/{}".format(channel.id)
+                api = "https://discord.com/api/v9/channels/{}".format(id)
                 requests.delete(api, headers=headers)
             def createchannel():
                 headers = {"authorization": self.token}
