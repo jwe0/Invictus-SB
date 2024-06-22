@@ -10,29 +10,33 @@ from modules.init import Init
 from modules.output import Output
 from modules.database import Database
 from modules.searchcmd import Search
+from modules.spoof import Spoof
 
 class Bot:
     def __init__(self):
         # Loading other classes into this class
-        self.general = General()
-        self.logging = Logging()
-        self.output  = Output().output
-        self.output2 = Output()
+        self.general  = General()
+        self.logging  = Logging()
+        self.output   = Output().output
+        self.output2  = Output()
         self.database = Database()
-        self.search = Search()
+        self.search   = Search()
+        self.spoof    = Spoof()
+
 
         # Discord.py things
-        self.bot = None
+        self.bot    = None
         self.prefix = ""
-        self.token = ""
+        self.token  = ""
 
         # Modules
-        self.nitro = False
+        self.nitro    = False
         self.messagel = False
 
         # Storing values
         self.lastcommand = ""
-        self.cmds = json.loads(open("modules/cmds.json").read())
+        self.cmds        = json.loads(open("modules/cmds.json").read())
+        self.sessionheaders = ""
 
 
     def initalize(self):
@@ -532,6 +536,7 @@ I made this to test my skill as a developer when tasked with a large project.
         self.bot = commands.Bot(command_prefix=self.prefix, self_bot=True)
         self.bot.remove_command("help")
         self.initalize()
+        self.sessionheaders = self.spoof.headers(self.token)
         self.bot.run(self.token, bot=False)
 
 
