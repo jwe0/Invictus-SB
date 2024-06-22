@@ -297,10 +297,11 @@ class Bot:
                 for i in range(int(messageamount)):
                     data = {"content" : message}
                     r = requests.post(hook, json=data)
-                    if r.status_code == 429:
-                        self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
-                        time.sleep(r.json()["retry_after"] + 1)
-
+                    if r.status_code != 204:
+                        r = requests.post(hook, json=data)
+                        if r.status_code == 429:
+                            self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
+                            time.sleep(r.json()["retry_after"] + 1)
             def removechannel(id):
                 headers = {"authorization": self.token}
                 api = "https://discord.com/api/v9/channels/{}".format(id)
