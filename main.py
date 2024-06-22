@@ -106,23 +106,24 @@ class Bot:
         @self.bot.command()
         async def messagespam(ctx, message="INVICTUS ON TOP", count=50, delay=2, thread="n"):
             WAIT = [False, 0]
-            for i in range(int(count)):
-                if thread == "n":
-                    await ctx.send(message)
-                else:
-                    api = "https://discord.com/api/v9/channels/{}/messages".format(ctx.channel.id)
-                    data = {"content": message}
-                    headers = {"authorization": self.token}
-                    def send():
-                        r = requests.post(api, json=data, headers=headers)
-                        if r.status_code == 429:
-                            self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
-                            WAIT[0] = True
-                            WAIT[1] = r.json()["retry_after"]
+            api = "https://discord.com/api/v9/channels/{}/messages".format(ctx.channel.id)
+            data = {"content": message}
+            headers = {"authorization": self.token}
 
-                    if WAIT[0]:
-                        time.sleep(WAIT[1])
-                        WAIT[0] = False
+            def send():
+                r = requests.post(api, json=data, headers=headers)
+                if r.status_code == 429:
+                    self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
+                    WAIT[0] = True
+                    WAIT[1] = r.json()["retry_after"]
+
+            for i in range(int(count)):
+                if WAIT[0]:
+                    time.sleep(WAIT[1])
+                    WAIT[0] = False
+                if thread == "n":
+                    send()
+                else:
                     threading.Thread(target=send).start()
                 time.sleep(delay)
 
@@ -266,7 +267,6 @@ class Bot:
             def Get_Members(id):
                 headers = {"Authorization": self.token}
                 api     = "https://discord.com/api/v9/channels/{}/messages?limit=100".format(id)
-
                 response = requests.get(api, headers=headers).json()
                 members  = []
 
