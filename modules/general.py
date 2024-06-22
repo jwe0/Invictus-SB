@@ -1,5 +1,7 @@
-import json, os
+import json, os, base64
 from pystyle import Colors, Colorate, Center
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
 
 class General:
     def __init__(self):
@@ -12,9 +14,14 @@ class General:
             token  = config.get("Token", "")
             prefix = config.get("Prefix", "")
 
-
             nitro  = config.get("Modules", {}).get("nitro", False)
             msgl   = config.get("Modules", {}).get("msglog", False)
+            tcrypt = config.get("TCrypt", False)
+            if tcrypt:
+                self.clear()
+                self.art()
+                tpass = input("[>] Enter encryption password: ")
+                token = self.tdecrypt(token, tpass)
         return token, prefix, nitro, msgl
     
     def art(self):
@@ -79,4 +86,39 @@ class General:
     
     def removespecial(self, message):
         return message.replace("'", "").replace('"', "").replace("ansii", "").replace("`", "")
+    
+    def tcrypt(self, token, key):
+        data = token.encode()
+
+        while len(key) < 16:
+            key += "*"
+
+        key = key.encode()
+
+        cipher = AES.new(key, AES.MODE_CBC)
+        dbytes = cipher.encrypt(pad(data, AES.block_size))
+
+        iv = base64.b64encode(cipher.iv).decode()
+        ct = base64.b64encode(dbytes).decode()
+
+        result = json.dumps({"iv": iv, "ciphertext": ct})
+
+        return base64.b64encode(result.encode()).decode()
+    
+    def tdecrypt(self, token, key):
+        token = json.loads(base64.b64decode(token).decode())
+
+        iv = base64.b64decode(token["iv"])
+        ct = base64.b64decode(token["ciphertext"])
+
+        while len(key) < 16:
+            key += "*"
+
+        key = key.encode()
+
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+        data = unpad(cipher.decrypt(ct), AES.block_size)
+
+        return data.decode()
+
     

@@ -1,8 +1,10 @@
 import os, json,sqlite3
+from modules.general import General
 
 class Init:
     def __init__(self):
-        pass
+        self.general = General()
+
     def assets(self):
         if not os.path.exists("Assets"):
             os.mkdir("Assets")
@@ -13,6 +15,8 @@ class Init:
 
     def config(self):
         if not os.path.exists("Assets/Config.json"):
+            General.clear()
+            General.art()
             with open("Assets/Config.json", "w") as f:
                 output_modes = ["codeblock", "embed"]
                 token  = input("[>] User token     : ")
@@ -20,9 +24,13 @@ class Init:
                 output = input("[>] Output mode    : ")
                 nitro  = input("[>] Nitro sniper?  : ")
                 msglog = input("[>] Log messages?  : ")
+                tcrypt = input("[>] Encrypt token? : ")
+                if tcrypt.lower() == "y":
+                    tpass = input("[>] Enter encryption password: ")
+                    token = self.general.tcrypt(token, tpass)
                 while output not in output_modes:
                     output = input("[!] Invalid output mode. Try again: ")
-                json.dump({"Token": token, "Prefix": prefix, "Output": output, "Modules": {"nitro": True if nitro.lower() == "y" else False, "msglog": True if msglog.lower() == "y" else False}}, f, indent=4)
+                json.dump({"Token": token, "Prefix": prefix, "Output": output, "Modules": {"nitro": True if nitro.lower() == "y" else False, "msglog": True if msglog.lower() == "y" else False}, "TCrypt": True if tcrypt.lower() == "y" else False}, f, indent=4)
 
     def initalizesql(self):
         if not os.path.exists("Databases"):
