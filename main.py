@@ -120,11 +120,10 @@ class Bot:
                             WAIT[0] = True
                             WAIT[1] = r.json()["retry_after"]
 
-                    for i in range(count):
-                        if WAIT[0]:
-                            time.sleep(WAIT[1])
-                            WAIT[0] = False
-                        threading.Thread(target=send).start()
+                    if WAIT[0]:
+                        time.sleep(WAIT[1])
+                        WAIT[0] = False
+                    threading.Thread(target=send).start()
                 time.sleep(delay)
 
         @self.bot.command()
