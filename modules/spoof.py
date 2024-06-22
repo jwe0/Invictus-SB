@@ -58,7 +58,6 @@ class Spoof:
             "DNT": "1",
             "Alt-Used": "discord.com",
             "Connection": "keep-alive",
-            "Referer": "https://discord.com/channels/1134536127928352859/1134536440173310006",
             "Cookie": f"__dcfduid={dcfduid}; __sdcfduid={sdcfduid}; __cfruid={cfruid}; locale=en-US",
             "Sec-Fetch-Dest": "empty",
             "Sec-Fetch-Mode": "cors",
