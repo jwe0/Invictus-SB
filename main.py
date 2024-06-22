@@ -108,8 +108,7 @@ class Bot:
             WAIT = [False, 0]
             for i in range(int(count)):
                 if thread == "n":
-                    for i in range(count):
-                        await ctx.send(message)
+                    await ctx.send(message)
                 else:
                     api = "https://discord.com/api/v9/channels/{}/messages".format(ctx.channel.id)
                     data = {"content": message}
