@@ -15,6 +15,7 @@ phonenumbers==8.13.39
 pycryptodome==3.20.0
 pystyle==2.9
 requests==2.32.3
+tls-client==1.0.1
 typing_extensions==4.12.2
 urllib3==2.2.2
 websocket-client==1.8.0
