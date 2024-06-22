@@ -96,6 +96,19 @@
         "section" : "raid",
         "page" : 1
     },
+    "webraid" : {
+        "name" : "webraid",
+        "description" : "Raid a server with webhooks",
+        "params" : [
+            ["CHANNELNAME", "(Name of the channel)"],
+            ["MESSAGE", "(Message to send)"],
+            ["CHANNELAMOUNT", "(Number of channels to create)"],
+            ["MESSAGEAMOUNT", "(Number of messages to send)"]
+        ],
+        "example" : "webraid INVICTUS ON TOP @everyone 30 30",
+        "section" : "raid",
+        "page" : 1
+    },
     "iplookup" : {
         "name" : "iplookup",
         "description": "Looks up an IP address",
@@ -190,6 +203,14 @@
             ["USERID", "(User ID)"]
         ],
         "example": "whois 123456789",
+        "section" : "utility",
+        "page" : 1
+    },
+    "cmdcount" : {
+        "name" : "cmdcount",
+        "description": "Shows the number of commands",
+        "params": [],
+        "example": "cmdcount",
         "section" : "utility",
         "page" : 1
     },
