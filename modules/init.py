@@ -15,7 +15,7 @@ class Init:
 
     def ipcache(self):
         if not os.path.exists("Assets/IPcache.json"):
-            open("Assets/IPcache.json", "w").close()
+            open("Assets/IPcache.json", "w").write("{}")
 
     def config(self):
         if not os.path.exists("Assets/Config.json"):

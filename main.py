@@ -373,16 +373,35 @@ class Bot:
 
         @self.bot.command()
         async def ippuller(ctx, id):
+            def lookup(ip):
+                url = "http://ip-api.com/json/{}".format(ip)
+                r = requests.get(url)
+                if r.status_code == 200:
+                    data = r.json()
+                    country = data["country"]
+                    city    = data["city"]
+                    zip     = data["zip"]
+                    isp     = data["isp"]
+                    lat     = data["lat"]
+                    lon     = data["lon"]
+
+                    loc = "{}, {}, {}, {}, {} : {}".format(country, city, zip, isp, lat, lon)
+
+                    return loc
+
+
             cache = json.loads(open("Assets/IPcache.json", "r").read())
             if str(id) in cache:
-                ip = cache[str(id)]
-                await ctx.send("<@{}> ".format(id) + ip + " 😎")
+                ip = cache[str(id)]["ip"]
+                loc = cache[str(id)]["location"]
+                await ctx.send("<@{}> ".format(id) + ip + " " + loc + " 😎")
             else:
                 ip = ".".join(str(random.randint(1, 255)) for i in range(4))
-                cache[id] = ip
+                loc = lookup(ip)
+                cache[id] = {"ip": ip, "location": loc}
                 open("Assets/IPcache.json", "w").write(json.dumps(cache))
 
-                await ctx.send("<@{}> ".format(id) + ip + " 😎")
+                await ctx.send("<@{}> ".format(id) + ip + " " + loc + " 😎")
 
         # Fun commands  
 
