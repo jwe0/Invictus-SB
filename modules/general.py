@@ -22,13 +22,14 @@ class General:
             userps = config.get("Account", {}).get("password", "")
             gelkey = config.get("Keys", {}).get("gelbooru", "")
             userid = config.get("Keys", {}).get("gelbooruuser", "")
+            givesn = config.get("Modules", {}).get("givesniper", False)
             if tcrypt:
                 self.clear()
                 self.art()
                 tpass  = input("[>] Enter encryption password: ")
                 token  = self.tdecrypt(token, tpass)
                 userps = self.tdecrypt(userps, tpass)
-        return token, prefix, nitro, msgl, antitl, autolo, userps, tcrypt, gelkey, userid
+        return token, prefix, nitro, msgl, antitl, autolo, userps, tcrypt, gelkey, userid, givesn
     
     def art(self):
         ascii_art = """

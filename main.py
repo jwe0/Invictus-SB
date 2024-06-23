@@ -13,6 +13,7 @@ from modules.database import Database
 from modules.searchcmd import Search
 from modules.spoof import Spoof
 from modules.antitokenlog import AntiTokenLog
+from modules.givesniper import GiveSniper
 
 class Bot:
     def __init__(self):
@@ -25,6 +26,7 @@ class Bot:
         self.search   = Search()
         self.spoof    = Spoof()
         self.anti     = None
+        self.givesn   = None
 
 
         # Discord.py things
@@ -35,6 +37,7 @@ class Bot:
         # Modules
         self.nitro    = False
         self.messagel = False
+        self.give     = False
         self.session  = tls_client.Session()
 
         # Storing values
@@ -51,6 +54,10 @@ class Bot:
     def initalize(self):
         @self.bot.event
         async def on_ready():
+            if self.give:
+                self.logging.Info("[>] Setting up give sniper...")
+                self.givesn = GiveSniper(self.token, self.bot.http.token)
+                self.givesn.init()
             self.general.clear()
             self.general.art()
             print(Center.XCenter(f"Logged in as {self.bot.user} (ID: {self.bot.user.id})\n"))
@@ -75,7 +82,12 @@ class Bot:
             if message.author != self.bot.user:
                 if self.nitro:
                     if "discord.gift/" in message.content:
-                        self.logging.Info(f"Found nitro code: {message.content}")
+                        giftid = message.content.split("/")[-1]
+                        if len(giftid) >= 16:
+                            self.logging.Info(f"Found nitro code: {giftid}")
+                if self.give:
+                    self.givesn.detect(message)
+                    
 
 
         @self.bot.event
@@ -631,7 +643,7 @@ I made this to test my skill as a developer when tasked with a large project.
     def run(self):
         Colors.white
         self.logging.Info("[>] Loading config...")
-        self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt, self.gelkey, self.userid = self.general.load_config()
+        self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt, self.gelkey, self.userid, self.give = self.general.load_config()
         if self.general.checktoken(self.token) == False:
             self.logging.Error("Invalid token!")
         self.logging.Info("[>] Setting up the bot...")
