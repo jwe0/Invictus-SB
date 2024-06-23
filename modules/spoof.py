@@ -5,7 +5,7 @@ class Spoof:
     def __init__(self):
         self.session = tls_client.Session()
     def useragent(self):
-        return random.choice(open("modules/agents.txt").read().splitlines())
+        return random.choice(open("modules/Dependencies/agents.txt").read().splitlines())
     def cookies(self):
         api = "https://canary.discord.com/api/v9/experiments"
         r = self.session.get(api)

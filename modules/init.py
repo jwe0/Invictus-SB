@@ -15,22 +15,28 @@ class Init:
 
     def config(self):
         if not os.path.exists("Assets/Config.json"):
-            General.clear()
-            General.art()
+            self.general.clear()
+            self.general.art()
             with open("Assets/Config.json", "w") as f:
-                output_modes = ["codeblock", "embed"]
+                output_modes = ["codeblock"]
                 token  = input("[>] User token     : ")
                 prefix = input("[>] Command prefix : ")
                 output = input("[>] Output mode    : ")
+                while output not in output_modes:
+                    output = input("[!] Invalid output mode. Try again: ")
                 nitro  = input("[>] Nitro sniper?  : ")
                 msglog = input("[>] Log messages?  : ")
                 tcrypt = input("[>] Encrypt token? : ")
                 if tcrypt.lower() == "y":
                     tpass = input("[>] Enter encryption password: ")
                     token = self.general.tcrypt(token, tpass)
-                while output not in output_modes:
-                    output = input("[!] Invalid output mode. Try again: ")
-                json.dump({"Token": token, "Prefix": prefix, "Output": output, "Modules": {"nitro": True if nitro.lower() == "y" else False, "msglog": True if msglog.lower() == "y" else False}, "TCrypt": True if tcrypt.lower() == "y" else False}, f, indent=4)
+                antitl = input("[>] Anti tokenlog? : ")
+                autolo = input("[>] Auto logout?   : ")
+                if autolo.lower() == "y":
+                    userpass = input("[>] Enter account password: ") 
+                    if tcrypt.lower() == "y":
+                        userpass = self.general.tcrypt(userpass, tpass)
+                json.dump({"Token": token, "Prefix": prefix, "Output": output, "Modules": {"nitro": True if nitro.lower() == "y" else False, "msglog": True if msglog.lower() == "y" else False, "antitokenlog": True if antitl.lower() == "y" else False, "autologout": True if autolo.lower() == "y" else False}, "TCrypt": True if tcrypt.lower() == "y" else False, "Account": {"password": userpass} if autolo.lower() == "y" else {}}, f, indent=4)
 
     def initalizesql(self):
         if not os.path.exists("Databases"):

@@ -17,12 +17,16 @@ class General:
             nitro  = config.get("Modules", {}).get("nitro", False)
             msgl   = config.get("Modules", {}).get("msglog", False)
             tcrypt = config.get("TCrypt", False)
+            antitl = config.get("Modules", {}).get("antitokenlog", False)
+            autolo = config.get("Modules", {}).get("autologout", False)
+            userps = config.get("Account", {}).get("password", "")
             if tcrypt:
                 self.clear()
                 self.art()
-                tpass = input("[>] Enter encryption password: ")
-                token = self.tdecrypt(token, tpass)
-        return token, prefix, nitro, msgl
+                tpass  = input("[>] Enter encryption password: ")
+                token  = self.tdecrypt(token, tpass)
+                userps = self.tdecrypt(userps, tpass)
+        return token, prefix, nitro, msgl, antitl, autolo, userps
     
     def art(self):
         ascii_art = """

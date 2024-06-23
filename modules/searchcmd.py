@@ -1,6 +1,6 @@
 import json
 
-cmds = json.loads(open("modules/cmds.json").read())
+cmds = json.loads(open("modules/Dependencies/cmds.json").read())
 
 class Search:
     def __init__(self):
