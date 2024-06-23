@@ -637,6 +637,39 @@ class Bot:
 
                 await ctx.send(file)
 
+        @self.bot.command()
+        async def scrape(ctx, channelid=""):
+            x = 0
+            if not channelid:
+                channelid = ctx.channel.id
+
+            headers = {"authorization": self.token}
+            api = "https://discord.com/api/v9/channels/{}/messages?limit=100".format(channelid)
+            
+            messages = []
+            params = {}
+
+            while True:
+                def dump(data):
+                    file_path = "Scrapes/{}.txt".format(channelid)
+                    with open(file_path, "a", encoding="utf-8") as f:
+                        for message in data:
+                            msg = "[{}]\t[{}]: {}\n".format(message["timestamp"], message["author"]["username"], message["content"])
+                            f.write(msg)
+                r = requests.get(api, headers=headers, params=params)
+
+                if r.status_code == 429:
+                    time.sleep(r.json()["retry_after"] + 5)
+                elif r.status_code != 200:
+                    return
+
+                data = r.json()
+                if not data:
+                    break
+
+                dump(data)
+                params['before'] = data[-1]['id']
+
 
         # Other
         @self.bot.command()
@@ -683,7 +716,6 @@ I made this to test my skill as a developer when tasked with a large project.
         self.logging.Info("Loading scripts...")
         for file in os.listdir("Scripts"):
             if file.endswith(".py"):
-                print(file.split(".")[-1])
                 exec(open("Scripts/{}".format(file), "r").read())
         self.logging.Info("Running bot...")
         self.bot.run(self.token, bot=False)

@@ -21,6 +21,10 @@ class Init:
         if not os.path.exists("Scripts"):
             os.mkdir("Scripts")
 
+    def scrapes(self):
+        if not os.path.exists("Scrapes"):
+            os.mkdir("Scrapes")
+
     def settings(self):
         if not os.path.exists("Assets/Settings"):
             os.mkdir("Assets/Settings")
@@ -107,4 +111,5 @@ class Init:
         self.msglogs()
         self.settings()
         self.scripts()
+        self.scrapes()
         self.initalizesql()

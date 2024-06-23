@@ -3,6 +3,7 @@ Databases/
 Logs/
 env/
 Scripts/
+Scrapes/
 __pycache__
 notes.txt
 test.html

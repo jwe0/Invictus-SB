@@ -215,6 +215,16 @@
         "section" : "utility",
         "page" : 1
     },
+    "scrape" : {
+        "name" : "scrape",
+        "description" : "Scrape a channel",
+        "params": [
+            ["CHANNEL", "(Channel ID (Current by default))"]
+        ],
+        "example": "scrape 123456789",
+        "section" : "utility",
+        "page" : 1
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
