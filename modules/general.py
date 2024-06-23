@@ -20,13 +20,15 @@ class General:
             antitl = config.get("Modules", {}).get("antitokenlog", False)
             autolo = config.get("Modules", {}).get("autologout", False)
             userps = config.get("Account", {}).get("password", "")
+            gelkey = config.get("Keys", {}).get("gelbooru", "")
+            userid = config.get("Keys", {}).get("gelbooruuser", "")
             if tcrypt:
                 self.clear()
                 self.art()
                 tpass  = input("[>] Enter encryption password: ")
                 token  = self.tdecrypt(token, tpass)
                 userps = self.tdecrypt(userps, tpass)
-        return token, prefix, nitro, msgl, antitl, autolo, userps, tcrypt
+        return token, prefix, nitro, msgl, antitl, autolo, userps, tcrypt, gelkey, userid
     
     def art(self):
         ascii_art = """

@@ -1,7 +1,8 @@
-import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random
+import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client
 from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
+from bs4 import BeautifulSoup
 from discord.ext import commands
 from modules.colors import Colors
 from modules.general import General
@@ -34,11 +35,17 @@ class Bot:
         # Modules
         self.nitro    = False
         self.messagel = False
+        self.session  = tls_client.Session()
 
         # Storing values
         self.lastcommand = ""
         self.cmds        = json.loads(open("modules/Dependencies/cmds.json").read())
         self.sessionheaders = ""
+
+        # Api keys
+        self.gelkey = ""
+        self.userid = ""
+        
 
 
     def initalize(self):
@@ -84,7 +91,8 @@ class Bot:
                 {"name": "raid", "description": "Commands for raiding", "params": [], "section": "raid", "page": 1},
                 {"name": "troll", "description": "Commands for trolling", "params": [], "section": "troll", "page": 1},
                 {"name": "fun", "description": "Commands for fun", "params": [], "section": "fun", "page": 1},
-                {"name": "utilities", "description": "Commands for utility", "params": [], "section": "utilities", "page": 1}
+                {"name": "utilities", "description": "Commands for utility", "params": [], "section": "utilities", "page": 1},
+                {"name": "nsfw", "description": "Commands for NSFW", "params": [], "section": "nsfw", "page": 1},
             ]
 
             message = self.general.help_format(options)
@@ -92,23 +100,29 @@ class Bot:
 
         @self.bot.command()
         async def raid(ctx, page=1):
-            cmds = self.search.getraid(page)
-            await ctx.send(self.output("Raid", self.general.help_format(cmds)))
+            cmds = self.search.cmd(page, "raid")
+            await ctx.send(self.output("Raid - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
 
         @self.bot.command()
         async def troll(ctx, page=1):
-            cmds = self.search.gettroll(page)
-            await ctx.send(self.output("Troll", self.general.help_format(cmds)))
+            cmds = self.search.cmd(page, "troll")
+            await ctx.send(self.output("Troll - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
 
         @self.bot.command()
         async def fun(ctx, page=1):
-            cmds = self.search.getfun(page)
-            await ctx.send(self.output("Fun", self.general.help_format(cmds)))
+            cmds = self.search.cmd(page, "fun")
+            await ctx.send(self.output("Fun - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
 
         @self.bot.command()
         async def utilities(ctx, page=1):
-            cmds = self.search.getutilities(page)
-            await ctx.send(self.output("Utilities", self.general.help_format(cmds)))
+            cmds = self.search.cmd(page, "utility")
+            await ctx.send(self.output("Utilities - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
+
+        @self.bot.command()
+        async def nsfw(ctx, page=1):
+            cmds = self.search.cmd(page, "nsfw")
+            await ctx.send(self.output("NSFW - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
+
 
 
         # Raid commands
@@ -377,6 +391,8 @@ class Bot:
                 await message.delete()
                 time.sleep(int(delay))
 
+        
+
         # Utility commands
 
         @self.bot.command()
@@ -517,7 +533,52 @@ class Bot:
 
         @self.bot.command()
         async def cmdcount(ctx):
-            await ctx.send(self.output("Command Count", str(len(self.bot.commands))))
+            await ctx.send(self.output("Command Count", str(len(self.bot.commands)) + "\n"))
+
+        # NSFW
+        @self.bot.command()
+        async def r34(ctx, search):
+            api = "https://api.r34.app/booru/rule34.xxx/posts?baseEndpoint=rule34.xxx&tags={}".format(search)
+
+            r = self.session.get(api)
+
+            if r.status_code == 200:
+                data = r.json()
+                files = data["data"]
+                section = random.choice(files)
+                link = section.get("high_res_file", "").get("url", "")
+
+                await ctx.send(link)
+        @self.bot.command()
+        async def pornhub(ctx, search):
+            urls = []
+            searchurl = "https://www.pornhub.com/video/search?search={}".format(search)
+
+            page = self.session.get(searchurl)
+            soup = BeautifulSoup(page.text, 'html.parser')
+
+            a = soup.find_all("a", href=True)
+            for i in a:
+                if "/view_video.php?viewkey=" in i["href"]:
+                    urls.append("https://www.pornhub.com{}".format(i["href"]))
+
+            await ctx.send(random.choice(urls))
+
+        @self.bot.command()
+        async def gelbooru(ctx, search):
+            api = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={}".format(search)
+            params = {"api_key" : self.gelkey, "user_id" : self.userid, "tags" : search, "json" : 1}
+            
+            r = self.session.get(api, params=params)
+
+            if r.status_code == 200:
+                data = r.json()
+
+                post = random.choice(data.get("post", ""))
+                file = post.get("file_url", "").replace("\\", "")
+
+                await ctx.send(file)
+
 
         # Other
         @self.bot.command()
@@ -536,7 +597,7 @@ I made this to test my skill as a developer when tasked with a large project.
     def run(self):
         Colors.white
         self.logging.Info("[>] Loading config...")
-        self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt = self.general.load_config()
+        self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt, self.gelkey, self.userid = self.general.load_config()
         if self.general.checktoken(self.token) == False:
             self.logging.Error("Invalid token!")
         self.logging.Info("[>] Setting up the bot...")

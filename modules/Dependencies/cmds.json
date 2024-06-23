@@ -255,5 +255,35 @@
         "example": "credits",
         "section" : "other",
         "page" : 1
+    },
+    "r34" : {
+        "name" : "r34",
+        "description": "Searches r34",
+        "params": [
+            ["SEARCH", "(Search term)"]
+        ],
+        "example": "r34 femboy",
+        "section" : "nsfw",
+        "page" : 1
+    },
+    "pornhub" : {
+        "name" : "pornhub",
+        "description": "Searches pornhub",
+        "params": [
+            ["SEARCH", "(Search term)"]
+        ],
+        "example": "pornhub femboy",
+        "section" : "nsfw",
+        "page" : 1
+    },
+    "gelbooru" : {
+        "name" : "gelbooru",
+        "description": "Searches gelbooru (requires API key)",
+        "params": [
+            ["SEARCH", "(Search term)"]
+        ],
+        "example": "gelbooru femboy",
+        "section" : "nsfw",
+        "page" : 1
     }
 }
