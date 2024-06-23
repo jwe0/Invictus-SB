@@ -12,3 +12,5 @@ Discord selfbot project.
 - Log messages + deleted messages to an sqlite3 database.
 - Search messages from the database.
 - Dynamic help command for easier help
+- Advanced giveaway joiner
+- Nitro sniper and auto redeemer
