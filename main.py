@@ -536,7 +536,9 @@ I made this to test my skill as a developer when tasked with a large project.
     def run(self):
         Colors.white
         self.logging.Info("[>] Loading config...")
-        self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass = self.general.load_config()
+        self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt = self.general.load_config()
+        if self.general.checktoken(self.token) == False:
+            self.logging.Error("Invalid token!")
         self.logging.Info("[>] Setting up the bot...")
         self.bot = commands.Bot(command_prefix=self.prefix, self_bot=True)
         self.bot.remove_command("help")
@@ -544,7 +546,7 @@ I made this to test my skill as a developer when tasked with a large project.
         self.initalize()
         if antitokenlog:
             self.logging.Info("[>] Setting up anti token logger...")
-            self.anti = AntiTokenLog(self.token, autologout, userpass)
+            self.anti = AntiTokenLog(self.token, autologout, userpass, tcrypt)
             self.anti.getclients()
             threading.Thread(target=self.anti.getrecent).start()
         self.logging.Info("[>] Loading session headers...")

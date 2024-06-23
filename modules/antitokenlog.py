@@ -3,7 +3,7 @@ from modules.spoof import Spoof
 from modules.logging import Logging
 
 class AntiTokenLog:
-    def __init__(self, token, autologout, userpass):
+    def __init__(self, token, autologout, userpass, tcrypt):
         self.token    = token
         self.headers  = Spoof().headers(token)
         self.session  = tls_client.Session()

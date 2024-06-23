@@ -1,4 +1,4 @@
-import json, os, base64
+import json, os, base64, requests
 from pystyle import Colors, Colorate, Center
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
@@ -26,7 +26,7 @@ class General:
                 tpass  = input("[>] Enter encryption password: ")
                 token  = self.tdecrypt(token, tpass)
                 userps = self.tdecrypt(userps, tpass)
-        return token, prefix, nitro, msgl, antitl, autolo, userps
+        return token, prefix, nitro, msgl, antitl, autolo, userps, tcrypt
     
     def art(self):
         ascii_art = """
@@ -125,4 +125,16 @@ class General:
 
         return data.decode()
 
-    
+    def checktoken(self, token):
+        api = "https://discord.com/api/v9/users/@me"
+
+        headers = {
+            "authorization": token
+        }
+
+        response = requests.get(api, headers=headers)
+
+        if response.status_code == 200:
+            return True
+        else:
+            return False
