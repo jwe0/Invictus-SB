@@ -11,7 +11,7 @@ class AntiTokenLog:
         self.userpass = userpass
         self.autolo   = autologout
         self.current  = None
-        self.currhash = None
+        self.currhash = []
         self.used     = []
     
 
@@ -26,10 +26,10 @@ class AntiTokenLog:
 
         return hashes
     
-    def getclient(self):
+    def getclients(self):
         hashes = self.getsessions()
-        self.current = max(hashes, key=lambda x: x["approx_last_used_time"])
-        self.currhash = self.current["id_hash"]
+        for hash in hashes:
+            self.currhash.append(hash["id_hash"])
 
     def logout(self, hash):
         outapi = "https://discord.com/api/v9/auth/sessions/logout"
@@ -53,7 +53,7 @@ class AntiTokenLog:
 
         final = self.session.post(outapi, headers=nheaders, json=data)
 
-        if final.status_code == 200:
+        if final.status_code == 204:
             self.logging.Success("[>] Logged out successfully!")
 
 
@@ -65,11 +65,14 @@ class AntiTokenLog:
             
         while True:
             r = get()
-            if self.currhash != r["id_hash"] and r["id_hash"] not in self.used:
+            if r["id_hash"] not in self.currhash and r["id_hash"] not in self.used:
                 self.logging.Info("[>] New location logged in: {} : {}".format(r["client_info"]["location"], r["client_info"]["os"] + " " + r["client_info"]["platform"]))
                 if self.autolo:
                     self.logging.Info("[>] Logging out!")
-                    self.logout(r["id_hash"])
+                    try:
+                        self.logout(r["id_hash"])
+                    except:
+                        self.logging.Error("[-] Error logging out!")
                 self.used.append(r["id_hash"]) 
             time.sleep(30)
 

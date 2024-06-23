@@ -545,7 +545,7 @@ I made this to test my skill as a developer when tasked with a large project.
         if antitokenlog:
             self.logging.Info("[>] Setting up anti token logger...")
             self.anti = AntiTokenLog(self.token, autologout, userpass)
-            self.anti.getclient()
+            self.anti.getclients()
             threading.Thread(target=self.anti.getrecent).start()
         self.logging.Info("[>] Loading session headers...")
         self.sessionheaders = self.spoof.headers(self.token)
