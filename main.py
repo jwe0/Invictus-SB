@@ -75,7 +75,7 @@ class Bot:
                 await ctx.message.delete()
             except:
                 pass
-            self.lastcommand = ctx.message.content
+            self.lastcommand = ctx.message.content + "\n"
 
         @self.bot.event
         async def on_command_error(ctx, error):
@@ -300,7 +300,7 @@ class Bot:
 
             
         @self.bot.command()
-        async def massping(ctx, loops=5, delay=1, mode=1):
+        async def massping(ctx, loops=5, delay=1, perline=3, mode=1):
             def Get_Members(id):
                 headers = {"Authorization": self.token}
                 api     = "https://discord.com/api/v9/channels/{}/messages?limit=100".format(id)
@@ -327,11 +327,11 @@ class Bot:
                 message = []
                 for member in members:
                     message.append(f"<@{member}>")
-                    if len(message) == 3:
-                        await ctx.send("😘 " + " ".join(message) + " - " + self.general.randomnstring(16))
+                    if len(message) == perline:
+                        await ctx.send("😘 " + " ".join(message) + " - [" + self.general.randomnstring(16) + "]")
                         message = []
                 if message:
-                    await ctx.send("😘 " + " ".join(message) + " - " + self.general.randomnstring(16))
+                    await ctx.send("😘 " + " ".join(message) + " - [" + self.general.randomnstring(16) + "]")
                     message = []
                 time.sleep(delay)
 
@@ -378,7 +378,6 @@ class Bot:
 
             for i in range(int(channelamount)):
                 createchannel()
-
 
 
 
@@ -449,6 +448,10 @@ class Bot:
         @self.bot.command()
         async def massreact(ctx, messageid, channelid, delay=2):
             self.massr.react(messageid, channelid, delay)
+
+        @self.bot.command()
+        async def callspam(ctx):
+            ""
         
 
         # Utility commands
@@ -555,8 +558,9 @@ class Bot:
         async def cmdinfo(ctx, cmd):
             description, params, example = self.search.get(cmd)
             message = ""
+            maxparam = max([len(param[0]) for param in params])
             for param in params:
-                message += "{}: {}\n".format(param[0], param[1])
+                message += "{} : {}\n".format(param[0].ljust(maxparam), param[1])
             await ctx.send(self.output("Command Info", f"Description: {description}\n\n{message}\nExample: {example}\n"))
 
         @self.bot.command()
@@ -610,7 +614,7 @@ class Bot:
         @self.bot.command()
         async def pornhub(ctx, search):
             urls = []
-            searchurl = "https://www.pornhub.com/video/search?search={}".format(search)
+            searchurl = "https://www.pornhub.com/video/search?search={}".format(search.replace(" ", "+"))
 
             page = self.session.get(searchurl)
             soup = BeautifulSoup(page.text, 'html.parser')
@@ -619,6 +623,50 @@ class Bot:
             for i in a:
                 if "/view_video.php?viewkey=" in i["href"]:
                     urls.append("https://www.pornhub.com{}".format(i["href"]))
+
+            
+            lastpage = int(soup.find_all("li", class_="page_number")[-1].text)
+
+            if lastpage >= 10:
+                lastpage = 10
+
+            for i in range(1, lastpage):
+                page = self.session.get("https://www.pornhub.com/video/search?search={}&page={}".format(search.replace(" ", "+"), i))
+                soup = BeautifulSoup(page.text, 'html.parser')
+
+                a = soup.find_all("a", href=True)
+                for i in a:
+                    if "/view_video.php?viewkey=" in i["href"]:
+                        urls.append("https://www.pornhub.com{}".format(i["href"]))
+
+            await ctx.send(random.choice(urls))
+
+        @self.bot.command()
+        async def xvideos(ctx, search):
+            urls = []
+            searchurl = "https://www.xvideos.com/?k={}".format(search.replace(" ", "+"))
+
+            page = self.session.get(searchurl)
+            soup = BeautifulSoup(page.text, 'html.parser')
+
+            a = soup.find_all("a", href=True)
+            for i in a:
+                if "/video." in i["href"]:
+                    urls.append("https://www.xvideos.com{}".format(i["href"]))
+
+            lastpage = int(soup.find("a", class_="last-page").text)
+            if lastpage >= 10:
+                lastpage = 10
+            
+            for i in range(1, lastpage):
+                page = self.session.get("https://www.xvideos.com/?k={}&page={}".format(search.replace(" ", "+"), i))
+                soup = BeautifulSoup(page.text, 'html.parser')
+
+
+                a = soup.find_all("a", href=True)
+                for i in a:
+                    if "/video." in i["href"]:
+                        urls.append("https://www.xvideos.com{}".format(i["href"]))
 
             await ctx.send(random.choice(urls))
 
@@ -690,6 +738,8 @@ I made this to test my skill as a developer when tasked with a large project.
         self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt, self.gelkey, self.userid, self.give = self.general.load_config()
         if self.general.checktoken(self.token) == False:
             self.logging.Error("Invalid token!")
+            input("[>] Press enter to exit.")
+            exit()
         self.logging.Info("Setting up the bot...")
         self.bot = commands.Bot(command_prefix=self.prefix, self_bot=True)
         self.bot.remove_command("help")

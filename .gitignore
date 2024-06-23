@@ -4,6 +4,7 @@ Logs/
 env/
 Scripts/
 Scrapes/
+tests/
 __pycache__
 notes.txt
 test.html

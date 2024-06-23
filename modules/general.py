@@ -2,10 +2,11 @@ import json, os, base64, requests, random, string
 from pystyle import Colors, Colorate, Center
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
+from modules.logging import Logging
 
 class General:
     def __init__(self):
-        pass
+        self.logging = Logging()
 
     def load_config(self):
         with open("Assets/Config.json", "r") as f:
@@ -27,8 +28,13 @@ class General:
                 self.clear()
                 self.art()
                 tpass  = input("[>] Enter encryption password: ")
-                token  = self.tdecrypt(token, tpass)
-                userps = self.tdecrypt(userps, tpass)
+                try:
+                    token  = self.tdecrypt(token, tpass)
+                    userps = self.tdecrypt(userps, tpass)
+                except:
+                    self.logging.Error("Invalid encryption password.")
+                    input("[>] Press enter to exit.")
+                    exit()
         return token, prefix, nitro, msgl, antitl, autolo, userps, tcrypt, gelkey, userid, givesn
     
     def art(self):
