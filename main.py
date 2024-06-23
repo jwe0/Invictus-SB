@@ -644,7 +644,7 @@ class Bot:
                 section = random.choice(files)
                 link = section.get("high_res_file", "").get("url", "")
 
-                await ctx.send(link)
+                await ctx.send("**[**Rule34 - {}**]** {}".format(search, link))
         @self.bot.command()
         async def pornhub(ctx, search):
             urls = []
@@ -673,7 +673,7 @@ class Bot:
                     if "/view_video.php?viewkey=" in i["href"]:
                         urls.append("https://www.pornhub.com{}".format(i["href"]))
 
-            await ctx.send(random.choice(urls))
+            await ctx.send("**[**PornHub - {}**]** {}".format(search, random.choice(urls)))
 
         @self.bot.command()
         async def xvideos(ctx, search):
@@ -702,7 +702,7 @@ class Bot:
                     if "/video." in i["href"]:
                         urls.append("https://www.xvideos.com{}".format(i["href"]))
 
-            await ctx.send(random.choice(urls))
+            await ctx.send("**[**Xvideos - {}**]** {}".format(search, random.choice(urls)))
 
         @self.bot.command()
         async def gelbooru(ctx, search):
@@ -717,7 +717,7 @@ class Bot:
                 post = random.choice(data.get("post", ""))
                 file = post.get("file_url", "").replace("\\", "")
 
-                await ctx.send(file)
+                await ctx.send("**[**Gelbooru - {}**]** {}".format(search, file))
 
 
 
