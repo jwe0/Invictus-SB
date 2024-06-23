@@ -59,7 +59,7 @@ class Bot:
         @self.bot.event
         async def on_ready():
             if self.give:
-                self.logging.Info("[>] Setting up give sniper...")
+                self.logging.Info("Setting up give sniper...")
                 self.givesn = GiveSniper(self.token, self.bot.http.token)
                 self.givesn.init()
             self.general.clear()
@@ -643,30 +643,30 @@ I made this to test my skill as a developer when tasked with a large project.
 
     def run(self):
         Colors.white
-        self.logging.Info("[>] Loading config...")
+        self.logging.Info("Loading config...")
         self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt, self.gelkey, self.userid, self.give = self.general.load_config()
         if self.general.checktoken(self.token) == False:
             self.logging.Error("Invalid token!")
-        self.logging.Info("[>] Setting up the bot...")
+        self.logging.Info("Setting up the bot...")
         self.bot = commands.Bot(command_prefix=self.prefix, self_bot=True)
         self.bot.remove_command("help")
-        self.logging.Info("[>] Initializing...")
+        self.logging.Info("Initializing...")
         self.initalize()
         if antitokenlog:
-            self.logging.Info("[>] Setting up anti token logger...")
+            self.logging.Info("Setting up anti token logger...")
             self.anti = AntiTokenLog(self.token, autologout, userpass, tcrypt)
             self.anti.getclients()
             threading.Thread(target=self.anti.getrecent).start()
-        self.logging.Info("[>] Loading other configs...")
+        self.logging.Info("Loading other configs...")
         self.givesettings  = self.general.load_givesniper_settings()
         self.nitrosettings = self.general.load_nitrosniper_settings()
         if self.nitro:
-            self.logging.Info("[>] Setting up nitro sniper...")
+            self.logging.Info("Setting up nitro sniper...")
             self.nitrosn = NitroSniper(self.token)
             self.nitrosn.init()
-        self.logging.Info("[>] Loading session headers...")
+        self.logging.Info("Loading session headers...")
         self.sessionheaders = self.spoof.headers(self.token)
-        self.logging.Info("[>] Running bot...")
+        self.logging.Info("Running bot...")
         self.bot.run(self.token, bot=False)
 
 
