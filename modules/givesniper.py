@@ -1,6 +1,7 @@
-import json, tls_client
+import json, tls_client, time
 from modules.spoof import Spoof
 from modules.logging import Logging
+from modules.general import General
 
 class GiveSniper:
     def __init__(self, token, httptoken) -> None:
@@ -9,10 +10,13 @@ class GiveSniper:
         self.httpt   = httptoken
         self.spoof   = Spoof()
         self.logging = Logging()
+        self.general = General()
+        self.setting = {}
         self.botjs   = {}
         self.bots    = []
 
-    def join(self, guildid, channelid, messageid, bot):
+    def join(self, guildid, channelid, messageid, bot, channelname, servername):
+        time.sleep(self.setting["delay"])
         if self.botjs[bot]["React-Mode"]["Type"] == 1:
             emoji = self.botjs[bot]["React-Mode"]["emoji_data"]["emoji"]
 
@@ -24,9 +28,6 @@ class GiveSniper:
 
         elif self.botjs[bot]["React-Mode"]["Type"] == 2:
             api = "https://discord.com/api/v9/interactions"
-            print(self.botjs[bot]["React-Mode"]["button_data"]["component_type"])
-            print(self.botjs[bot]["React-Mode"]["button_data"]["custom_id"])
-            print(self.botjs[bot]["Application_ID"])
             data = {
                 "type" : 3,
                 "guild_id" : guildid,
@@ -39,12 +40,12 @@ class GiveSniper:
                     "custom_id" : self.botjs[bot]["React-Mode"]["button_data"]["custom_id"]
                 },
             }
-            print(json.dumps(data, indent=4))
 
             headers = self.spoof.headers(self.token)
             r = self.session.post(api, json=data, headers=headers)
             if r.status_code == 204:
-                self.logging.Info(f"Joined giveaway for {bot}")
+                self.logging.Info(f"Joined giveaway for {bot} in {channelname} : {servername}")
+                
 
 
     def detect(self, message):
@@ -52,10 +53,11 @@ class GiveSniper:
             if self.botjs[message.author.name]["Win-Data"] in message.content:
                 self.logging.Info(f"Won giveaway for {message.author.name}")
             else:
-                self.join(message.guild.id, message.channel.id, message.id, message.author.name)
+                self.join(message.guild.id, message.channel.id, message.id, message.author.name, message.channel.name, message.guild.name)
 
     def init(self):
         with open("modules/Dependencies/givebots.json", "r") as f:
             bots = json.load(f)
             self.botjs = bots
             self.bots = [bot for bot in bots]
+        self.setting = self.general.load_givesniper_settings()

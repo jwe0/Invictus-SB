@@ -141,3 +141,11 @@ class General:
             return True
         else:
             return False
+        
+    def load_givesniper_settings(self):
+        with open("Assets/Settings/givesniper.json", "r") as f:
+            return json.load(f)
+        
+    def load_nitrosniper_settings(self):
+        with open("Assets/Settings/nitrosniper.json", "r") as f:
+            return json.load(f)

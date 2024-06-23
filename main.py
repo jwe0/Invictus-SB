@@ -14,6 +14,7 @@ from modules.searchcmd import Search
 from modules.spoof import Spoof
 from modules.antitokenlog import AntiTokenLog
 from modules.givesniper import GiveSniper
+from modules.nitrosn import NitroSniper
 
 class Bot:
     def __init__(self):
@@ -27,6 +28,7 @@ class Bot:
         self.spoof    = Spoof()
         self.anti     = None
         self.givesn   = None
+        self.nitrosn  = None
 
 
         # Discord.py things
@@ -44,6 +46,8 @@ class Bot:
         self.lastcommand = ""
         self.cmds        = json.loads(open("modules/Dependencies/cmds.json").read())
         self.sessionheaders = ""
+        self.nitrosettings  = {}
+        self.givesettings   = {}
 
         # Api keys
         self.gelkey = ""
@@ -79,14 +83,11 @@ class Bot:
             await self.bot.process_commands(message)
             if self.messagel:
                 self.database.messageloggeradd(message.author.id, message.author.name, self.general.removespecial(message.content), message.created_at.strftime("%Y-%m-%d - %H:%M:%S"))
-            if message.author != self.bot.user:
-                if self.nitro:
-                    if "discord.gift/" in message.content:
-                        giftid = message.content.split("/")[-1]
-                        if len(giftid) >= 16:
-                            self.logging.Info(f"Found nitro code: {giftid}")
-                if self.give:
-                    self.givesn.detect(message)
+            # if message.author != self.bot.user:
+            if self.nitro:
+                self.nitrosn.detect(message)
+            if self.give:
+                self.givesn.detect(message)
                     
 
 
@@ -656,6 +657,13 @@ I made this to test my skill as a developer when tasked with a large project.
             self.anti = AntiTokenLog(self.token, autologout, userpass, tcrypt)
             self.anti.getclients()
             threading.Thread(target=self.anti.getrecent).start()
+        self.logging.Info("[>] Loading other configs...")
+        self.givesettings  = self.general.load_givesniper_settings()
+        self.nitrosettings = self.general.load_nitrosniper_settings()
+        if self.nitro:
+            self.logging.Info("[>] Setting up nitro sniper...")
+            self.nitrosn = NitroSniper(self.token)
+            self.nitrosn.init()
         self.logging.Info("[>] Loading session headers...")
         self.sessionheaders = self.spoof.headers(self.token)
         self.logging.Info("[>] Running bot...")

@@ -17,6 +17,27 @@ class Init:
         if not os.path.exists("Assets/IPcache.json"):
             open("Assets/IPcache.json", "w").write("{}")
 
+    def settings(self):
+        if not os.path.exists("Assets/Settings"):
+            os.mkdir("Assets/Settings")
+
+        if not os.path.exists("Assets/Settings/givesniper.json"):
+            config = {
+                "delay" : 1
+            }
+
+            with open("Assets/Settings/givesniper.json", "w") as f:
+                json.dump(config, f, indent=4)
+
+        if not os.path.exists("Assets/Settings/nitrosniper.json"):
+            config = {
+                "delay" : 1,
+                "autoredeem" : True
+            }
+
+            with open("Assets/Settings/nitrosniper.json", "w") as f:
+                json.dump(config, f, indent=4)
+
     def config(self):
         if not os.path.exists("Assets/Config.json"):
             self.general.clear()
@@ -72,4 +93,5 @@ class Init:
         self.config()
         self.ipcache()
         self.msglogs()
+        self.settings()
         self.initalizesql()
