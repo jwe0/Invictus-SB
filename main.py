@@ -597,6 +597,40 @@ class Bot:
         async def cmdcount(ctx):
             await ctx.send(self.output("Command Count", str(len(self.bot.commands)) + "\n"))
 
+        @self.bot.command()
+        async def scrape(ctx, channelid=""):
+            x = 0
+            if not channelid:
+                channelid = ctx.channel.id
+
+            headers = {"authorization": self.token}
+            api = "https://discord.com/api/v9/channels/{}/messages?limit=100".format(channelid)
+            
+            params = {}
+
+            while True:
+                def dump(data):
+                    file_path = "Scrapes/{}.txt".format(channelid)
+                    with open(file_path, "a", encoding="utf-8") as f:
+                        for message in data:
+                            msg = "[{}]\t[{}]: {}\n".format(message["timestamp"], message["author"]["username"], message["content"])
+                            f.write(msg)
+                r = requests.get(api, headers=headers, params=params)
+
+                if r.status_code == 429:
+                    time.sleep(r.json()["retry_after"] + 5)
+                elif r.status_code != 200:
+                    return
+
+                data = r.json()
+                if not data:
+                    break
+
+                dump(data)
+                params['before'] = data[-1]['id']
+
+
+
         # NSFW
         @self.bot.command()
         async def r34(ctx, search):
@@ -685,37 +719,6 @@ class Bot:
 
                 await ctx.send(file)
 
-        @self.bot.command()
-        async def scrape(ctx, channelid=""):
-            x = 0
-            if not channelid:
-                channelid = ctx.channel.id
-
-            headers = {"authorization": self.token}
-            api = "https://discord.com/api/v9/channels/{}/messages?limit=100".format(channelid)
-            
-            params = {}
-
-            while True:
-                def dump(data):
-                    file_path = "Scrapes/{}.txt".format(channelid)
-                    with open(file_path, "a", encoding="utf-8") as f:
-                        for message in data:
-                            msg = "[{}]\t[{}]: {}\n".format(message["timestamp"], message["author"]["username"], message["content"])
-                            f.write(msg)
-                r = requests.get(api, headers=headers, params=params)
-
-                if r.status_code == 429:
-                    time.sleep(r.json()["retry_after"] + 5)
-                elif r.status_code != 200:
-                    return
-
-                data = r.json()
-                if not data:
-                    break
-
-                dump(data)
-                params['before'] = data[-1]['id']
 
 
         # Other
