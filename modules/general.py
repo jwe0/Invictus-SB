@@ -1,4 +1,4 @@
-import json, os, base64, requests
+import json, os, base64, requests, random, string
 from pystyle import Colors, Colorate, Center
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
@@ -149,3 +149,10 @@ class General:
     def load_nitrosniper_settings(self):
         with open("Assets/Settings/nitrosniper.json", "r") as f:
             return json.load(f)
+        
+    def load_massreact_settings(self):
+        with open("Assets/Settings/massreact.json", "r") as f:
+            return json.load(f)
+        
+    def randomnstring(self, length):
+        return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))

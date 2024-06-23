@@ -258,6 +258,18 @@
         "section" : "fun",
         "page" : 1
     },
+    "massreact" : {
+        "name" : "massreact",
+        "description": "Reacts to messages",
+        "params": [
+            ["MESSAGEID", "(Message ID)"],
+            ["CHANNELID", "(Channel ID)"],
+            ["DELAY", "(Delay between messages)"]
+        ],
+        "example": "massreact 123456789 123456789 y",
+        "section" : "fun",
+        "page" : 1
+    },
     "credits" : {
         "name" : "credits",
         "description": "Shows credits",

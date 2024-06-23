@@ -38,6 +38,14 @@ class Init:
             with open("Assets/Settings/nitrosniper.json", "w") as f:
                 json.dump(config, f, indent=4)
 
+        if not os.path.exists("Assets/Settings/massreact.json"):
+            config = {
+                "emojis" : []
+            }
+
+            with open("Assets/Settings/massreact.json", "w") as f:
+                json.dump(config, f, indent=4)
+
     def config(self):
         if not os.path.exists("Assets/Config.json"):
             self.general.clear()

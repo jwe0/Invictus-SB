@@ -15,6 +15,7 @@ from modules.spoof import Spoof
 from modules.antitokenlog import AntiTokenLog
 from modules.givesniper import GiveSniper
 from modules.nitrosn import NitroSniper
+from modules.mreact import MassReact
 
 class Bot:
     def __init__(self):
@@ -26,6 +27,7 @@ class Bot:
         self.database = Database()
         self.search   = Search()
         self.spoof    = Spoof()
+        self.massr    = None
         self.anti     = None
         self.givesn   = None
         self.nitrosn  = None
@@ -41,6 +43,7 @@ class Bot:
         self.messagel = False
         self.give     = False
         self.session  = tls_client.Session()
+
 
         # Storing values
         self.lastcommand = ""
@@ -315,10 +318,10 @@ class Bot:
                 for member in members:
                     message.append(f"<@{member}>")
                     if len(message) == 3:
-                        await ctx.send(" ".join(message))
+                        await ctx.send(" ".join(message) + " - " + self.general.randomnstring(16))
                         message = []
                 if message:
-                    await ctx.send(" ".join(message))
+                    await ctx.send(" ".join(message) + " - " + self.general.randomnstring(16))
                     message = []
                 time.sleep(delay)
 
@@ -434,10 +437,9 @@ class Bot:
                 await message.delete()
                 time.sleep(int(delay))
 
-
-
-
-
+        @self.bot.command()
+        async def massreact(ctx, messageid, channelid, delay=2):
+            self.massr.react(messageid, channelid, delay)
         
 
         # Utility commands
@@ -664,6 +666,9 @@ I made this to test my skill as a developer when tasked with a large project.
             self.logging.Info("Setting up nitro sniper...")
             self.nitrosn = NitroSniper(self.token)
             self.nitrosn.init()
+        self.logging.Info("Setting up mass react... ")
+        self.massr = MassReact(self.token)
+        self.massr.init()
         self.logging.Info("Loading session headers...")
         self.sessionheaders = self.spoof.headers(self.token)
         self.logging.Info("Running bot...")
