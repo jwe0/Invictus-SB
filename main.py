@@ -300,11 +300,14 @@ class Bot:
 
             
         @self.bot.command()
-        async def massping(ctx, loops=5, delay=1):
+        async def massping(ctx, loops=5, delay=1, mode=1):
             def Get_Members(id):
                 headers = {"Authorization": self.token}
                 api     = "https://discord.com/api/v9/channels/{}/messages?limit=100".format(id)
-                response = requests.get(api, headers=headers).json()
+                response = requests.get(api, headers=headers)
+                if response.status_code != 200:
+                    return []
+                response = response.json()
                 members  = []
 
                 for member in response:
@@ -312,16 +315,23 @@ class Bot:
                         members.append(member["author"]["id"])
 
                 return members
-            members = Get_Members(ctx.channel.id)
+            if mode == 1:
+                members = Get_Members(ctx.channel.id)
+            else:
+                members = []
+                for channel in ctx.guild.channels:
+                    for member in Get_Members(channel.id):
+                        if member not in members:
+                            members.append(member)
             for _ in range(loops):
                 message = []
                 for member in members:
                     message.append(f"<@{member}>")
                     if len(message) == 3:
-                        await ctx.send(" ".join(message) + " - " + self.general.randomnstring(16))
+                        await ctx.send("😘 " + " ".join(message) + " - " + self.general.randomnstring(16))
                         message = []
                 if message:
-                    await ctx.send(" ".join(message) + " - " + self.general.randomnstring(16))
+                    await ctx.send("😘 " + " ".join(message) + " - " + self.general.randomnstring(16))
                     message = []
                 time.sleep(delay)
 

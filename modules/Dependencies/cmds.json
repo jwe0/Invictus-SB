@@ -90,7 +90,8 @@
         "description": "Mass pings users",
         "params": [
             ["LOOPS", "(Number of times to ping)"],
-            ["DELAY", "(Delay between pings)"]
+            ["DELAY", "(Delay between pings)"],
+            ["MODE", "(Current channel or all (1/2))"]
         ],
         "example": "massping 5",
         "section" : "raid",
