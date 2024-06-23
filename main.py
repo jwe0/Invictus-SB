@@ -1,4 +1,4 @@
-import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client
+import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client, os
 from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
@@ -396,7 +396,6 @@ class Bot:
             for i in range(int(count)):
                 join()
                 time.sleep(int(delay))
-
         @self.bot.command()
         async def ippuller(ctx, id):
             def lookup(ip):
@@ -681,6 +680,11 @@ I made this to test my skill as a developer when tasked with a large project.
         self.massr.init()
         self.logging.Info("Loading session headers...")
         self.sessionheaders = self.spoof.headers(self.token)
+        self.logging.Info("Loading scripts...")
+        for file in os.listdir("Scripts"):
+            if file.endswith(".py"):
+                print(file.split(".")[-1])
+                exec(open("Scripts/{}".format(file), "r").read())
         self.logging.Info("Running bot...")
         self.bot.run(self.token, bot=False)
 

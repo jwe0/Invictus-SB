@@ -2,6 +2,7 @@ Assets/
 Databases/
 Logs/
 env/
+Scripts/
 __pycache__
 notes.txt
 test.html

@@ -17,6 +17,10 @@ class Init:
         if not os.path.exists("Assets/IPcache.json"):
             open("Assets/IPcache.json", "w").write("{}")
 
+    def scripts(self):
+        if not os.path.exists("Scripts"):
+            os.mkdir("Scripts")
+
     def settings(self):
         if not os.path.exists("Assets/Settings"):
             os.mkdir("Assets/Settings")
@@ -102,4 +106,5 @@ class Init:
         self.ipcache()
         self.msglogs()
         self.settings()
+        self.scripts()
         self.initalizesql()
