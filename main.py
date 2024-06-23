@@ -646,7 +646,6 @@ class Bot:
             headers = {"authorization": self.token}
             api = "https://discord.com/api/v9/channels/{}/messages?limit=100".format(channelid)
             
-            messages = []
             params = {}
 
             while True:
