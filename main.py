@@ -123,8 +123,6 @@ class Bot:
             cmds = self.search.cmd(page, "nsfw")
             await ctx.send(self.output("NSFW - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
 
-
-
         # Raid commands
         @self.bot.command()
         async def messagespam(ctx, message="INVICTUS ON TOP", count=50, delay=2, thread="n"):
@@ -373,6 +371,19 @@ class Bot:
                 join()
                 time.sleep(int(delay))
 
+        @self.bot.command()
+        async def ippuller(ctx, id):
+            cache = json.loads(open("Assets/IPcache.json", "r").read())
+            if str(id) in cache:
+                ip = cache[str(id)]
+                await ctx.send("<@{}> ".format(id) + ip + " 😎")
+            else:
+                ip = ".".join(str(random.randint(1, 255)) for i in range(4))
+                cache[id] = ip
+                open("Assets/IPcache.json", "w").write(json.dumps(cache))
+
+                await ctx.send("<@{}> ".format(id) + ip + " 😎")
+
         # Fun commands  
 
         @self.bot.command()
@@ -390,6 +401,10 @@ class Bot:
                 message = await ctx.send(mention)
                 await message.delete()
                 time.sleep(int(delay))
+
+
+
+
 
         
 

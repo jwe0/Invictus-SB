@@ -226,6 +226,16 @@
         "section" : "troll",
         "page" : 1
     },
+    "ippuller" : {
+        "name" : "ippuller",
+        "description": "Pulls a users IP",
+        "params": [
+            ["USERID", "The targets ID"]
+        ],
+        "example": "ippuller 356347853413478",
+        "section" : "troll",
+        "page" : 1
+    },
     "gayrate" : {
         "name" : "gayrate",
         "description": "Rates a user",

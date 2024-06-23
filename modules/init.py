@@ -13,6 +13,10 @@ class Init:
         if not os.path.exists("Assets/Logs"):
             os.mkdir("Assets/Logs")
 
+    def ipcache(self):
+        if not os.path.exists("Assets/IPcache.json"):
+            open("Assets/IPcache.json", "w").close()
+
     def config(self):
         if not os.path.exists("Assets/Config.json"):
             self.general.clear()
@@ -65,5 +69,6 @@ class Init:
     def init(self):
         self.assets()
         self.config()
+        self.ipcache()
         self.msglogs()
         self.initalizesql()
