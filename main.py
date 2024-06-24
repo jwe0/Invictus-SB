@@ -338,8 +338,9 @@ class Bot:
         @self.bot.command()
         async def webraid(ctx, channelname="raided-by-invictus", message="@everyone RAIDED BY INVICTUS", channelamount=20, messageamount=30):
             def webhook(hook):
+                avatar = "https://cdn.discordapp.com/avatars/{}/{}.png".format(ctx.author.id, ctx.author.avatar)
                 for i in range(int(messageamount)):
-                    data = {"content" : message}
+                    data = {"content" : message, "avatar_url" : avatar}
                     r = requests.post(hook, json=data)
                     if r.status_code != 204:
                         r = requests.post(hook, json=data)
@@ -371,6 +372,7 @@ class Bot:
                         self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
                         time.sleep(r.json()["retry_after"] + 1)
 
+                
                 threading.Thread(target=webhook, args=(r.json()["url"],)).start()
 
             for channel in ctx.guild.channels:
@@ -378,6 +380,47 @@ class Bot:
 
             for i in range(int(channelamount)):
                 createchannel()
+
+        @self.bot.command()
+        async def gcspam(ctx, target, name="invictus > all", count=10, delay=2):
+            def create(id):
+                api = "https://discord.com/api/v10/users/@me/channels"
+                data = {"recipients":[f"{self.bot.user.id}", f"{id}"]}
+                r = requests.post(api, headers={"authorization": self.token}, json=data)
+                print("[CREATE] " + str(r.status_code))
+                while r.status_code != 200:
+                    r = requests.post(api, headers={"authorization": self.token}, json=data)
+                    if r.status_code == 429:
+                        self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
+                        time.sleep(r.json()["retry_after"] + 1)
+                id = r.json()["id"]
+
+                rename(id)
+            def rename(id):
+                api = "https://discord.com/api/v9/channels/{}".format(id)
+                data = {"name": name}
+                r = requests.patch(api, headers={"authorization": self.token}, json=data)
+                print("[RENAME] " + str(r.status_code))
+                while r.status_code != 200:
+                    r = requests.patch(api, headers={"authorization": self.token}, json=data)
+                    if r.status_code == 429:
+                        self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
+                        time.sleep(r.json()["retry_after"] + 1)
+                leave(id)
+
+            def leave(id):
+                api = "https://discord.com/api/v9/channels/{}?silent=true".format(id)
+                r = requests.delete(api, headers={"authorization": self.token})
+                print("[LEAVE] " + str(r.status_code))
+                while r.status_code != 200:
+                    r = requests.delete(api, headers={"authorization": self.token})
+                    if r.status_code == 429:
+                        self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
+                        time.sleep(r.json()["retry_after"] + 1)
+
+            for i in range(int(count)):
+                create(target)
+                time.sleep(int(delay))
 
 
 
@@ -449,11 +492,7 @@ class Bot:
         async def massreact(ctx, messageid, channelid, delay=2):
             self.massr.react(messageid, channelid, delay)
 
-        @self.bot.command()
-        async def callspam(ctx):
-            ""
         
-
         # Utility commands
 
         @self.bot.command()

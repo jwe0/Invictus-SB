@@ -111,6 +111,19 @@
         "section" : "raid",
         "page" : 1
     },
+    "gcspam" : {
+        "name" : "gcspam",
+        "description" : "Spam adds a user to a group",
+        "params" : [
+            ["TARGET", "(Target ID"],
+            ["NAME", "(Name of the group)"],
+            ["COUNT", "(Number of groups to create)"],
+            ["DELAY", "(Delay between groups)"]
+        ],
+        "example" : "gcspam 123456789 INVICTUS 50 1 n",
+        "section" : "raid",
+        "page" : 1
+    },
     "iplookup" : {
         "name" : "iplookup",
         "description": "Looks up an IP address",
