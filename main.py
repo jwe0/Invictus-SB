@@ -141,13 +141,13 @@ class Bot:
 
         # Raid commands
         @self.bot.command()
-        async def messagespam(ctx, message="INVICTUS ON TOP", count=50, delay=2, thread="n"):
+        async def messagespam(ctx, message="INVICTUS ON TOP", count=50, delay=2, thread="n", randstr="y"):
             WAIT = [False, 0]
             api = "https://discord.com/api/v9/channels/{}/messages".format(ctx.channel.id)
-            data = {"content": message}
             headers = {"authorization": self.token}
 
             def send():
+                data = {"content": message if randstr == "n" else message + " - [" + self.general.randomnstring(16) + "]"}
                 r = requests.post(api, json=data, headers=headers)
                 if r.status_code == 429:
                     self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))

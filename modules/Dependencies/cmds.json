@@ -6,7 +6,8 @@
             ["MESSAGE", "(Message to spam)"],
             ["COUNT", "(Number of messages to spam)"],
             ["DELAY", "(Delay between messages)"],
-            ["THREAD", "(y/n)"]
+            ["THREAD", "(y/n)"],
+            ["RANDSTR", "(Add random string (y/n))"]
         ],
         "example": "messagespam INVICTUS ON TOP 50 2 n",
         "section" : "raid",
