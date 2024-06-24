@@ -1,4 +1,4 @@
-import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client, os
+import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client, os, socket
 from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
@@ -117,7 +117,7 @@ class Bot:
         @self.bot.command()
         async def raid(ctx, page=1):
             cmds = self.search.cmd(page, "raid")
-            await ctx.send(self.output("Raid - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
+            await ctx.send(self.output("Raid - {} - ({}/{})".format(str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0])))
 
         @self.bot.command()
         async def troll(ctx, page=1):
@@ -668,6 +668,12 @@ class Bot:
                 dump(data)
                 params['before'] = data[-1]['id']
 
+        @self.bot.command()
+        async def reversedns(ctx, ip):
+            s = socket.gethostbyaddr(ip)
+
+            await ctx.send(self.output("Reversedns", s[0]))
+
 
 
         # NSFW
@@ -745,6 +751,8 @@ class Bot:
 
         @self.bot.command()
         async def gelbooru(ctx, search):
+            if not self.gelkey or not self.userid:
+                self.logging.Error("Please supply your api key and user id in the config file")
             api = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={}".format(search)
             params = {"api_key" : self.gelkey, "user_id" : self.userid, "tags" : search, "json" : 1}
             

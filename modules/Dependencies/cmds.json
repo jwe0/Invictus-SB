@@ -240,6 +240,16 @@
         "section" : "utility",
         "page" : 1
     },
+    "reversedns" : {
+        "name" : "reversedns",
+        "description": "Reverses a DNS lookup",
+        "params": [
+            ["IP", "(IPv4 address)"]
+        ],
+        "example": "reversedns 8.8.8.8",
+        "section" : "utility",
+        "page" : 1
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",

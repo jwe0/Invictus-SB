@@ -15,18 +15,26 @@ class Output:
             elif mode == "none":
                 return Logging().Info(message)
             return mode
+        
+    def remove_empty_lines(self, message):
+        lines = message.splitlines()
+        lines[len(lines) - 1] = lines[len(lines) - 1].strip()
+        return "\n".join(lines)
+
 
     
     def code_block(self, title, message):
-         msg = """
+        message = self.remove_empty_lines(message)
+        msg = """
 ```ansi
 [[2;31m>[0m]  {title}   [[2;31m<[0m]
 
 {message}
+
 [[2;45m[0m[2;34m~[0m] Invictus [[2;34m~[0m]
 ```
 """.format(title=title, message=message)
-         return msg
+        return msg
     
     def funny_line(self, message):
         linestart = "[[2;33m![0m]"
