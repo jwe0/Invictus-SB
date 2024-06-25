@@ -422,6 +422,24 @@ class Bot:
                 create(target)
                 time.sleep(int(delay))
 
+        @self.bot.command()
+        async def callspam(ctx, target, count=10, delay=2):
+            def apiinit():
+                api = "https://discord.com/api/v9/channels/{}/call/ring".format(target)
+                headers = {"authorization": self.token}
+                r = requests.post(api, headers=headers)
+            def wsinit():
+                ws = websocket.WebSocket()
+                ws.connect("wss://gateway.discord.gg/?v=9&encoding=json")
+                ws.send(json.dumps({"op": 2, "d": {"token": self.token, "properties": {"$os": "windows", "$browser": "Discord", "$device": "desktop"}}}))
+                ws.send(json.dumps({"op": 4, "d": {"guild_id": None, "channel_id": ctx.channel.id, "self_mute": False, "self_deaf": False}}))
+                ws.close()
+
+            for i in range(int(count)):
+                apiinit()
+                wsinit()
+                time.sleep(int(delay))
+
 
 
         # Troll commands
@@ -751,8 +769,6 @@ class Bot:
 
         @self.bot.command()
         async def gelbooru(ctx, search):
-            if not self.gelkey or not self.userid:
-                self.logging.Error("Please supply your api key and user id in the config file")
             api = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={}".format(search)
             params = {"api_key" : self.gelkey, "user_id" : self.userid, "tags" : search, "json" : 1}
             

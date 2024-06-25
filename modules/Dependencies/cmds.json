@@ -125,6 +125,18 @@
         "section" : "raid",
         "page" : 1
     },
+    "callspam" : {
+        "name" : "callspam",
+        "description" : "Spam calls a user",
+        "params" : [
+            ["TARGET", "(Targets channel ID"],
+            ["COUNT", "(Number of calls to create)"],
+            ["DELAY", "(Delay between calls)"]
+        ],
+        "example" : "callspam 123456789 50 1",
+        "section" : "raid",
+        "page" : 1
+    },
     "iplookup" : {
         "name" : "iplookup",
         "description": "Looks up an IP address",
