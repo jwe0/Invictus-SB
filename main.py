@@ -71,10 +71,6 @@ class Bot:
 
         @self.bot.event
         async def on_command(ctx):
-            try:
-                await ctx.message.delete()
-            except:
-                pass
             self.lastcommand = ctx.message.content + "\n"
 
         @self.bot.event
@@ -103,6 +99,7 @@ class Bot:
 
         @self.bot.command()
         async def help(ctx):
+            await ctx.message.delete()
             options = [
                 {"name": "raid", "description": "Commands for raiding", "params": [], "section": "raid", "page": 1},
                 {"name": "troll", "description": "Commands for trolling", "params": [], "section": "troll", "page": 1},
@@ -116,32 +113,38 @@ class Bot:
 
         @self.bot.command()
         async def raid(ctx, page=1):
+            await ctx.message.delete()
             cmds = self.search.cmd(page, "raid")
             await ctx.send(self.output("Raid - {} - ({}/{})".format(str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0])))
 
         @self.bot.command()
         async def troll(ctx, page=1):
+            await ctx.message.delete()
             cmds = self.search.cmd(page, "troll")
             await ctx.send(self.output("Troll - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
 
         @self.bot.command()
         async def fun(ctx, page=1):
+            await ctx.message.delete()
             cmds = self.search.cmd(page, "fun")
             await ctx.send(self.output("Fun - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
 
         @self.bot.command()
         async def utilities(ctx, page=1):
+            await ctx.message.delete()
             cmds = self.search.cmd(page, "utility")
             await ctx.send(self.output("Utilities - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
 
         @self.bot.command()
         async def nsfw(ctx, page=1):
+            await ctx.message.delete()
             cmds = self.search.cmd(page, "nsfw")
             await ctx.send(self.output("NSFW - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
 
         # Raid commands
         @self.bot.command()
         async def messagespam(ctx, message="INVICTUS ON TOP", count=50, delay=2, thread="n", randstr="y"):
+            await ctx.message.delete()
             WAIT = [False, 0]
             api = "https://discord.com/api/v9/channels/{}/messages".format(ctx.channel.id)
             headers = {"authorization": self.token}
@@ -166,6 +169,7 @@ class Bot:
 
         @self.bot.command()
         async def pinspam(ctx, count=50, delay=2, thread="n"):
+            await ctx.message.delete()
             WAIT = [False, 0]
             api = "https://discord.com/api/v9/channels/{}/pins/{}"
 
@@ -188,6 +192,7 @@ class Bot:
 
         @self.bot.command()
         async def threadspam(ctx, message="INVICTUS ON TOP", count=50, delay=2, thread="n"):
+            await ctx.message.delete()
             WAIT = [False, 0]
             api = "https://discord.com/api/v9/channels/{}/threads".format(ctx.channel.id)
 
@@ -210,6 +215,7 @@ class Bot:
 
         @self.bot.command()
         async def createchannels(ctx, name="INVICTUS ON TOP", count=50, delay=2, thread="n"):
+            await ctx.message.delete()
             WAIT = [False, 0]
             api = "https://discord.com/api/v9/guilds/{}/channels".format(ctx.guild.id)
             data = {"name": name, "type": 0}
@@ -233,6 +239,7 @@ class Bot:
                 time.sleep(int(delay))
         @self.bot.command()
         async def createroles(ctx, name="INVICTUS ON TOP", count=50, delay=2, thread="n"):
+            await ctx.message.delete()
             WAIT = [False, 0]
             api = "https://discord.com/api/v9/guilds/{}/roles".format(ctx.guild.id)
             data = {"name": name}
@@ -256,6 +263,7 @@ class Bot:
                 time.sleep(int(delay))
         @self.bot.command()
         async def deletechannels(ctx, delay=2, thread="n"):
+            await ctx.message.delete()
             WAIT = [False, 0]
 
             def send(id):
@@ -278,6 +286,7 @@ class Bot:
 
         @self.bot.command()
         async def deleteroles(ctx, delay=2, thread="n"):
+            await ctx.message.delete()
             WAIT = [False, 0]
 
             def send(id):
@@ -301,6 +310,7 @@ class Bot:
             
         @self.bot.command()
         async def massping(ctx, loops=5, delay=1, perline=3, mode=1):
+            await ctx.message.delete()
             def Get_Members(id):
                 headers = {"Authorization": self.token}
                 api     = "https://discord.com/api/v9/channels/{}/messages?limit=100".format(id)
@@ -337,6 +347,7 @@ class Bot:
 
         @self.bot.command()
         async def webraid(ctx, channelname="raided-by-invictus", message="@everyone RAIDED BY INVICTUS", channelamount=20, messageamount=30):
+            await ctx.message.delete()
             def webhook(hook):
                 avatar = "https://cdn.discordapp.com/avatars/{}/{}.png".format(ctx.author.id, ctx.author.avatar)
                 for i in range(int(messageamount)):
@@ -383,6 +394,7 @@ class Bot:
 
         @self.bot.command()
         async def gcspam(ctx, target, name="invictus > all", count=10, delay=2):
+            await ctx.message.delete()
             def create(id):
                 api = "https://discord.com/api/v10/users/@me/channels"
                 data = {"recipients":[f"{self.bot.user.id}", f"{id}"]}
@@ -424,6 +436,7 @@ class Bot:
 
         @self.bot.command()
         async def callspam(ctx, target, count=10, delay=2):
+            await ctx.message.delete()
             def apiinit():
                 api = "https://discord.com/api/v9/channels/{}/call/ring".format(target)
                 headers = {"authorization": self.token}
@@ -446,6 +459,7 @@ class Bot:
 
         @self.bot.command()
         async def vcspam(ctx, channel, count=10, delay=2):
+            await ctx.message.delete()
             def join():
                 ws = websocket.WebSocket()
                 ws.connect("wss://gateway.discord.gg/?v=9&encoding=json")
@@ -458,6 +472,7 @@ class Bot:
                 time.sleep(int(delay))
         @self.bot.command()
         async def ippuller(ctx, id):
+            await ctx.message.delete()
             def lookup(ip):
                 url = "http://ip-api.com/json/{}".format(ip)
                 r = requests.get(url)
@@ -492,6 +507,7 @@ class Bot:
 
         @self.bot.command()
         async def gayrate(ctx, user: discord.User = None):
+            await ctx.message.delete()
             percent = random.randint(0, 100)
             message = self.output("Gayrate", f"{user.name} is {str(percent)}% gay\n")
 
@@ -499,6 +515,7 @@ class Bot:
 
         @self.bot.command()
         async def ghostspam(ctx, user: discord.User = None, count=10, delay=2):
+            await ctx.message.delete()
             mention = user.mention
 
             for i in range(int(count)):
@@ -508,6 +525,7 @@ class Bot:
 
         @self.bot.command()
         async def massreact(ctx, messageid, channelid, delay=2):
+            await ctx.message.delete()
             self.massr.react(messageid, channelid, delay)
 
         
@@ -515,6 +533,7 @@ class Bot:
 
         @self.bot.command()
         async def iplookup(ctx, ip):
+            await ctx.message.delete()
             url = "http://ip-api.com/json/{}".format(ip)
             r = requests.get(url)
             message = ""
@@ -524,6 +543,7 @@ class Bot:
 
         @self.bot.command()
         async def portscan(ctx, ip):
+            await ctx.message.delete()
             ports = [(21, "ftp"), (22, "ssh"), (23, "telnet"), (25, "smtp"), (53, "dns"), (80, "http"), (110, "pop3"), (443, "https")]
             message = ""
             padding = self.general.basic_padding(ports)
@@ -539,6 +559,7 @@ class Bot:
 
         @self.bot.command()
         async def phonenumber(ctx, number):
+            await ctx.message.delete()
             number = phonenumbers.parse(number)
             carier = carrier.name_for_number(number, "en")
             region = geocoder.description_for_number(number, "en")
@@ -547,10 +568,12 @@ class Bot:
 
         @self.bot.command()
         async def lastcommand(ctx):
+            await ctx.message.delete()
             await ctx.send(self.output("Last Command", self.lastcommand))
 
         @self.bot.command()
         async def selfdestruct(ctx, msgcount=100, delay=2):
+            await ctx.message.delete()
             for mesasge in await ctx.channel.history(limit=msgcount).flatten():
                 time.sleep(delay)
                 if ctx.author.id == mesasge.author.id:
@@ -562,6 +585,7 @@ class Bot:
 
         @self.bot.command()
         async def ping(ctx):
+            await ctx.message.delete()
             self.logging.Success("Pong!")
             self.logging.Error("Pong!")
             self.logging.Info("Pong!")
@@ -569,6 +593,7 @@ class Bot:
 
         @self.bot.command()
         async def restart(ctx):
+            await ctx.message.delete()
             subprocess.run(["python", __file__])
             print("Restarting...")
             exit()
@@ -576,6 +601,7 @@ class Bot:
 
         @self.bot.command()
         async def searchmsg(ctx, id, mode="messages", upload="n"):
+            await ctx.message.delete()
             username = id
             if mode == "messages":
                 messages = self.database.messageloggerget(username)
