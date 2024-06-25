@@ -355,5 +355,15 @@
         "example": "gelbooru femboy",
         "section" : "nsfw",
         "page" : 1
+    },
+    "pornhubmodel" : {
+        "name" : "pornhubmodel",
+        "description" : "Searches for videos from a certain model on pornhub",
+        "params": [
+            ["MODEL", "(Model name)"]
+        ],
+        "example": "pornhubmodel creamy spot",
+        "section" : "nsfw",
+        "page" : 1
     }
 }

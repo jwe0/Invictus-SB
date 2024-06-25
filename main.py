@@ -723,6 +723,7 @@ class Bot:
         # NSFW
         @self.bot.command()
         async def r34(ctx, search):
+            await ctx.message.delete()
             api = "https://api.r34.app/booru/rule34.xxx/posts?baseEndpoint=rule34.xxx&tags={}".format(search)
 
             r = self.session.get(api)
@@ -736,10 +737,13 @@ class Bot:
                 await ctx.send("**[**Rule34 - {}**]** {}".format(search, link))
         @self.bot.command()
         async def pornhub(ctx, search):
+            await ctx.message.delete()
             urls = []
-            searchurl = "https://www.pornhub.com/video/search?search={}".format(search.replace(" ", "+"))
+            searchurl = "https://www.pornhub.com/video/search?search={}".format(search.replace(" ", "+").lower())
 
-            page = self.session.get(searchurl)
+            headers = {"User-Agent" : self.spoof.useragent()}
+
+            page = self.session.get(searchurl, headers=headers)
             soup = BeautifulSoup(page.text, 'html.parser')
 
             a = soup.find_all("a", href=True)
@@ -754,7 +758,40 @@ class Bot:
                 lastpage = 10
 
             for i in range(1, lastpage):
-                page = self.session.get("https://www.pornhub.com/video/search?search={}&page={}".format(search.replace(" ", "+"), i))
+                page = self.session.get("https://www.pornhub.com/video/search?search={}&page={}".format(search.replace(" ", "+").lower(), i))
+                soup = BeautifulSoup(page.text, 'html.parser')
+
+                a = soup.find_all("a", href=True)
+                for i in a:
+                    if "/view_video.php?viewkey=" in i["href"]:
+                        urls.append("https://www.pornhub.com{}".format(i["href"]))
+
+            await ctx.send("**[**PornHub - {}**]** {}".format(search, random.choice(urls)))
+
+        @self.bot.command()
+        async def pornhubmodel(ctx, search):
+            await ctx.message.delete()
+            urls = []
+            searchurl = "https://www.pornhub.com/model/{}/videos".format(search.replace(" ", "-").lower())
+
+            headers = {"User-Agent" : self.spoof.useragent()}
+
+            page = self.session.get(searchurl, headers=headers)
+            soup = BeautifulSoup(page.text, 'html.parser')
+
+            a = soup.find_all("a", href=True)
+            for i in a:
+                if "/view_video.php?viewkey=" in i["href"]:
+                    urls.append("https://www.pornhub.com{}".format(i["href"]))
+
+            lastpage = int(soup.find_all("li", class_="page_number")[-1].text)
+
+            if lastpage >= 10:
+                lastpage = 10
+
+
+            for i in range(1, lastpage):
+                page = self.session.get("https://www.pornhub.com/model/{}/videos?page={}".format(search.replace(" ", "-").lower(), i))
                 soup = BeautifulSoup(page.text, 'html.parser')
 
                 a = soup.find_all("a", href=True)
@@ -766,6 +803,7 @@ class Bot:
 
         @self.bot.command()
         async def xvideos(ctx, search):
+            await ctx.message.delete()
             urls = []
             searchurl = "https://www.xvideos.com/?k={}".format(search.replace(" ", "+"))
 
@@ -795,6 +833,7 @@ class Bot:
 
         @self.bot.command()
         async def gelbooru(ctx, search):
+            await ctx.message.delete()
             api = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&tags={}".format(search)
             params = {"api_key" : self.gelkey, "user_id" : self.userid, "tags" : search, "json" : 1}
             
@@ -813,6 +852,7 @@ class Bot:
         # Other
         @self.bot.command()
         async def credits(ctx):
+            await ctx.message.delete()
             message = """Developed primarily by /jwe0   - https://github.com/jwe0
 Aided by my goo friend neebooo - https://github.com/neebooo
 
