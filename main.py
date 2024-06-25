@@ -766,7 +766,8 @@ class Bot:
                     if "/view_video.php?viewkey=" in i["href"]:
                         urls.append("https://www.pornhub.com{}".format(i["href"]))
 
-            await ctx.send("**[**PornHub - {}**]** {}".format(search, random.choice(urls)))
+            chosenone = random.choice(urls)
+            await ctx.send("**[**PornHub - {} - ({}/{})**]** {}".format(search, str(urls.index(chosenone) + 1), str(len(urls)), chosenone))
 
         @self.bot.command()
         async def pornhubmodel(ctx, search):
@@ -798,8 +799,8 @@ class Bot:
                 for i in a:
                     if "/view_video.php?viewkey=" in i["href"]:
                         urls.append("https://www.pornhub.com{}".format(i["href"]))
-
-            await ctx.send("**[**PornHub - {}**]** {}".format(search, random.choice(urls)))
+            chosenone = random.choice(urls)
+            await ctx.send("**[**PornHub - {} - ({}/{})**]** {}".format(search, str(urls.index(chosenone) + 1), str(len(urls)), chosenone))
 
         @self.bot.command()
         async def xvideos(ctx, search):
@@ -828,8 +829,8 @@ class Bot:
                 for i in a:
                     if "/video." in i["href"]:
                         urls.append("https://www.xvideos.com{}".format(i["href"]))
-
-            await ctx.send("**[**Xvideos - {}**]** {}".format(search, random.choice(urls)))
+            chosenone = random.choice(urls)
+            await ctx.send("**[**Xvideos - {} - ({}/{})**]** {}".format(search, str(urls.index(chosenone) + 1), str(len(urls)), chosenone))
 
         @self.bot.command()
         async def gelbooru(ctx, search):
