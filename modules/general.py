@@ -8,6 +8,7 @@ from modules.logging import Logging
 class General:
     def __init__(self):
         self.logging = Logging()
+        self.rpc     = None
 
     def load_config(self):
         with open("Assets/Config.json", "r") as f:
@@ -175,22 +176,46 @@ class General:
     def randomnstring(self, length):
         return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
     
-    def pres(self):
-        with open("Assets/Config.json", 'r') as f:
+    def pres(self, profile="Default"):
+        with open("Assets/Presence.json", 'r') as f:
             config = json.load(f)
 
-            clientid = config.get("Presence").get("ClientID")
-            state    = config.get("Presence").get("State")
-            largekey = config.get("Presence").get("LargeImageKey")
-            largetxt = config.get("Presence").get("LargeImageText")
+            clientid = config.get("Presence").get(profile).get("ClientID")
+            state    = config.get("Presence").get(profile).get("State")
+            largekey = config.get("Presence").get(profile).get("LargeImageKey")
+            largetxt = config.get("Presence").get(profile).get("LargeImageText")
 
 
-        RPC = Presence(clientid)
-        RPC.connect()
+        self.RPC = Presence(clientid)
+        self.RPC.connect()
         if largekey:
-            RPC.update(state=state, large_image=largekey, large_text=largetxt, start=time.time())
+            self.RPC.update(state=state, large_image=largekey, large_text=largetxt, start=time.time())
         else:
-            RPC.update(state=state, start=time.time())
+            self.RPC.update(state=state, start=time.time())
 
         while True:
-            time.sleep(15)
+            time.sleep(1)
+
+    def update_presence(self, profile="Default"):
+        self.RPC.close()
+        with open("Assets/Presence.json", 'r') as f:
+            config = json.load(f)
+
+            clientid = config.get("Presence").get(profile).get("ClientID")
+            state = config.get("Presence").get(profile).get("State")
+            largekey = config.get("Presence").get(profile).get("LargeImageKey")
+            largetxt = config.get("Presence").get(profile).get("LargeImageText")
+
+        self.RPC = Presence(clientid)
+        self.RPC.connect()
+
+        if largekey:
+            self.RPC.update(state=state, large_image=largekey, large_text=largetxt, start=time.time())
+        else:
+            self.RPC.update(state=state, start=time.time())
+
+        while True:
+            time.sleep(1)
+
+    def stoppres(self):
+        self.RPC.close()

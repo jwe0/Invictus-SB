@@ -715,6 +715,26 @@ class Bot:
 
             await ctx.send(self.output("Reversedns", s[0]))
 
+        @self.bot.command()
+        async def addpresence(ctx, name, id, state="", largeimagekey="", largeimagetext=""):
+            await ctx.message.delete()
+            with open("Assets/Presence.json", "r") as f:
+                data = json.load(f)
+
+            with open("Assets/Presence.json", "w") as f:
+                data["Presence"][name] = {"ClientID": id, "State": state, "LargeImageKey": largeimagekey, "LargeImageText": largeimagetext}
+                json.dump(data, f, indent=4)
+
+        @self.bot.command()
+        async def loadpresence(ctx, name):
+            await ctx.message.delete()
+            threading.Thread(target=self.general.update_presence, args=(name,)).start()
+
+        @self.bot.command()
+        async def stoppresence(ctx):
+            await ctx.message.delete()
+            self.general.stoppres()
+
 
 
         # NSFW

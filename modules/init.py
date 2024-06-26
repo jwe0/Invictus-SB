@@ -54,6 +54,12 @@ class Init:
             with open("Assets/Settings/massreact.json", "w") as f:
                 json.dump(config, f, indent=4)
 
+        if not os.path.exists("Assets/Presence.json"):
+            config = {}
+
+            with open("Assets/Presence.json", "w") as f:
+                json.dump(config, f, indent=4)
+
     def config(self):
         if not os.path.exists("Assets/Config.json"):
             self.general.clear()
@@ -100,15 +106,20 @@ class Init:
                                        "custompresence": True if custompres.lower() == "y" else False}, 
                             "Keys" : {"gelboorukey": gelkey, "gelbooruid": userid}, 
                             "TCrypt": True if tcrypt.lower() == "y" else False, 
-                            "Account": {"password": userpass} if autolo.lower() == "y" else {}, 
-                            "Presence": {"ClientID": clientid, 
-                                         "State": clientms, 
-                                         "LargeImageKey": clientli if clientli else False, 
-                                         "LargeImageText": clientlit if clientli else False} if custompres.lower() == "y" else {"ClientID": "", 
-                                                                                                                                "State": "", 
-                                                                                                                                "LargeImageKey": "", 
-                                                                                                                                "LargeImageText": ""}
+                            "Account": {"password": userpass} if autolo.lower() == "y" else {}
                         }, f, indent=4)
+            with open("Assets/Presence.json", "w") as f:
+                presence_data = {
+                    "Presence": {
+                        "Default" : {
+                            "ClientID": clientid if custompres.lower() == "y" else "",
+                            "State": clientms if custompres.lower() == "y" else "Invictus selfbot best",
+                            "LargeImageKey": clientli if custompres.lower() == "y" else "",
+                            "LargeImageText": clientlit if custompres.lower() == "y" else ""
+                        }
+                    }
+                }
+                json.dump(presence_data, f, indent=4)
 
     def initalizesql(self):
         if not os.path.exists("Databases"):
@@ -133,10 +144,10 @@ class Init:
 
     def init(self):
         self.assets()
-        self.config()
         self.ipcache()
         self.msglogs()
         self.settings()
         self.scripts()
         self.scrapes()
         self.initalizesql()
+        self.config()

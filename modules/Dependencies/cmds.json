@@ -272,6 +272,38 @@
         "section" : "utility",
         "page" : 1
     },
+    "addpresence" : {
+        "name" : "addpresence",
+        "description": "Adds a status to the bot",
+        "params": [
+            ["NAME", "(Profile name)"],
+            ["ID", "(Application ID)"],
+            ["STATE", "(Status)"],
+            ["LARGEIMAGEKEY", "(Large image key)"],
+            ["LARGETEXT", "(Large image text)"]
+        ],
+        "example": "addpresence n",
+        "section" : "utility",
+        "page" : 1
+    },
+    "loadpresence" : {
+        "name" : "loadpresence",
+        "description": "Loads a status",
+        "params": [
+            ["NAME", "(Profile name)"]
+        ],
+        "example": "loadpresence n",
+        "section" : "utility",
+        "page" : 1
+    },
+    "stoppresence" : {
+        "name" : "stoppresence",
+        "description": "Stop status",
+        "params": [],
+        "example": "stoppresence n",
+        "section" : "utility",
+        "page" : 1
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
