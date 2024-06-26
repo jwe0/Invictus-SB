@@ -580,9 +580,6 @@ class Bot:
                     if mesasge.id != ctx.message.id:
                         await mesasge.delete()
 
-                        
-
-
         @self.bot.command()
         async def ping(ctx):
             await ctx.message.delete()
@@ -848,6 +845,10 @@ class Bot:
 
                 await ctx.send("**[**Gelbooru - {}**]** {}".format(search, file))
 
+        @self.bot.command()
+        async def status(ctx, status):
+            await ctx.message.delete()
+            await self.bot.change_presence(activity=discord.Game(name=status))
 
 
         # Other

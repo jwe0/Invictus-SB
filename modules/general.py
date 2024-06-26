@@ -87,11 +87,17 @@ class General:
 
         options_padding   = max(len(option) for option in options) + 2
         arguments_padding = max(len(argument) for argument in arguments) + 2
-
+        
+        cache1 = []
 
         message += f"{'Command'.ljust(options_padding)} | {'Arguments'.ljust(arguments_padding)} | Description\n"
         for i in range(len(options)):
-            message += f"{options[i].ljust(options_padding)} | {arguments[i].ljust(arguments_padding)} | {descriptions[i]}\n"
+            cache1.append(f"{options[i].ljust(options_padding)} | {arguments[i].ljust(arguments_padding)} | {descriptions[i]}\n")
+        
+        while cache1:
+            max_length = max(cache1, key=len)
+            message += max_length
+            cache1.remove(max_length)
         
         
 

@@ -262,6 +262,16 @@
         "section" : "utility",
         "page" : 1
     },
+    "status" : {
+        "name" : "status",
+        "description": "Changes the bots status",
+        "params": [
+            ["STATUS", "(Status)"]
+        ],
+        "example": "status n",
+        "section" : "utility",
+        "page" : 1
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
