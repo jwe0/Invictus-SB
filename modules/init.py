@@ -81,7 +81,24 @@ class Init:
                 if gelkey:
                     userid = input("[>] Enter gelbooru user ID: ")
                 givesniper = input("[>] GiveSniper?     : ")
-                json.dump({"Token": token, "Prefix": prefix, "Output": output, "Modules": {"nitro": True if nitro.lower() == "y" else False, "msglog": True if msglog.lower() == "y" else False, "antitokenlog": True if antitl.lower() == "y" else False, "autologout": True if autolo.lower() == "y" else False, "givesniper": True if givesniper.lower() == "y" else False}, "Keys" : {"gelboorukey": gelkey, "gelbooruid": userid}, "TCrypt": True if tcrypt.lower() == "y" else False, "Account": {"password": userpass} if autolo.lower() == "y" else {}}, f, indent=4)
+                custompres = input("[>] Custom presence? : ")
+                if custompres.lower() == "y":
+                    clientid = input("[>] Enter client ID: ")
+                    clientms = input("[>] Enter presence message: ")
+
+                json.dump({"Token": token, 
+                           "Prefix": prefix, 
+                           "Output": output, 
+                           "Modules": {"nitro": True if nitro.lower() == "y" else False, 
+                                       "msglog": True if msglog.lower() == "y" else False, 
+                                       "antitokenlog": True if antitl.lower() == "y" else False, 
+                                       "autologout": True if autolo.lower() == "y" else False, 
+                                       "givesniper": True if givesniper.lower() == "y" else False, 
+                                       "custompresence": True if custompres.lower() == "y" else False}, 
+                            "Keys" : {"gelboorukey": gelkey, "gelbooruid": userid}, "TCrypt": True if tcrypt.lower() == "y" else False, 
+                            "Account": {"password": userpass} if autolo.lower() == "y" else {}, 
+                            "Presence": {"ClientID": clientid, "State": clientms} if custompres.lower() == "y" else {"ClientID": "", "State": ""}
+                        }, f, indent=4)
 
     def initalizesql(self):
         if not os.path.exists("Databases"):

@@ -1,5 +1,6 @@
-import json, os, base64, requests, random, string
+import json, os, base64, requests, random, string, time
 from pystyle import Colors, Colorate, Center
+from pypresence import Presence
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from modules.logging import Logging
@@ -24,18 +25,21 @@ class General:
             gelkey = config.get("Keys", {}).get("gelbooru", "")
             userid = config.get("Keys", {}).get("gelbooruuser", "")
             givesn = config.get("Modules", {}).get("givesniper", False)
+            preses = config.get("Modules", {}).get("custompresence", False)
+
             if tcrypt:
                 self.clear()
                 self.art()
                 tpass  = input("[>] Enter encryption password: ")
                 try:
                     token  = self.tdecrypt(token, tpass)
-                    userps = self.tdecrypt(userps, tpass)
-                except:
+                    if userps:
+                        userps = self.tdecrypt(userps, tpass)
+                except Exception as e:
                     self.logging.Error("Invalid encryption password.")
                     input("[>] Press enter to exit.")
                     exit()
-        return token, prefix, nitro, msgl, antitl, autolo, userps, tcrypt, gelkey, userid, givesn
+        return token, prefix, nitro, msgl, antitl, autolo, userps, tcrypt, gelkey, userid, givesn, preses
     
     def art(self):
         ascii_art = """
@@ -170,3 +174,17 @@ class General:
         
     def randomnstring(self, length):
         return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
+    
+    def pres(self):
+        with open("Assets/Config.json", 'r') as f:
+            config = json.load(f)
+
+            clientid = config.get("Presence").get("ClientID")
+            state    = config.get("Presence").get("State")
+
+        RPC = Presence(clientid)
+        RPC.connect()
+        RPC.update(state=state)
+
+        while True:
+            time.sleep(15)

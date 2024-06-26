@@ -869,7 +869,7 @@ I made this to test my skill as a developer when tasked with a large project.
     def run(self):
         Colors.white
         self.logging.Info("Loading config...")
-        self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt, self.gelkey, self.userid, self.give = self.general.load_config()
+        self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt, self.gelkey, self.userid, self.give, press = self.general.load_config()
         if self.general.checktoken(self.token) == False:
             self.logging.Error("Invalid token!")
             input("[>] Press enter to exit.")
@@ -900,6 +900,9 @@ I made this to test my skill as a developer when tasked with a large project.
         for file in os.listdir("Scripts"):
             if file.endswith(".py"):
                 exec(open("Scripts/{}".format(file), "r").read())
+        if press:
+            self.logging.Info("Setting up pypresence...")
+            threading.Thread(target=self.general.pres).start()
         self.logging.Info("Running bot...")
         self.bot.run(self.token, bot=False)
 
