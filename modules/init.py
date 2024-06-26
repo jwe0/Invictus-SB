@@ -85,6 +85,9 @@ class Init:
                 if custompres.lower() == "y":
                     clientid = input("[>] Enter client ID: ")
                     clientms = input("[>] Enter presence message: ")
+                    clientli = input("[>] Enter large image key: ")
+                    if clientli:
+                        clientlit = input("[>] Enter large image text: ")
 
                 json.dump({"Token": token, 
                            "Prefix": prefix, 
@@ -95,9 +98,16 @@ class Init:
                                        "autologout": True if autolo.lower() == "y" else False, 
                                        "givesniper": True if givesniper.lower() == "y" else False, 
                                        "custompresence": True if custompres.lower() == "y" else False}, 
-                            "Keys" : {"gelboorukey": gelkey, "gelbooruid": userid}, "TCrypt": True if tcrypt.lower() == "y" else False, 
+                            "Keys" : {"gelboorukey": gelkey, "gelbooruid": userid}, 
+                            "TCrypt": True if tcrypt.lower() == "y" else False, 
                             "Account": {"password": userpass} if autolo.lower() == "y" else {}, 
-                            "Presence": {"ClientID": clientid, "State": clientms} if custompres.lower() == "y" else {"ClientID": "", "State": ""}
+                            "Presence": {"ClientID": clientid, 
+                                         "State": clientms, 
+                                         "LargeImageKey": clientli if clientli else False, 
+                                         "LargeImageText": clientlit if clientli else False} if custompres.lower() == "y" else {"ClientID": "", 
+                                                                                                                                "State": "", 
+                                                                                                                                "LargeImageKey": "", 
+                                                                                                                                "LargeImageText": ""}
                         }, f, indent=4)
 
     def initalizesql(self):

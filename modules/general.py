@@ -181,10 +181,16 @@ class General:
 
             clientid = config.get("Presence").get("ClientID")
             state    = config.get("Presence").get("State")
+            largekey = config.get("Presence").get("LargeImageKey")
+            largetxt = config.get("Presence").get("LargeImageText")
+
 
         RPC = Presence(clientid)
         RPC.connect()
-        RPC.update(state=state)
+        if largekey:
+            RPC.update(state=state, large_image=largekey, large_text=largetxt, start=time.time())
+        else:
+            RPC.update(state=state, start=time.time())
 
         while True:
             time.sleep(15)
