@@ -16,6 +16,7 @@ from modules.antitokenlog import AntiTokenLog
 from modules.givesniper import GiveSniper
 from modules.nitrosn import NitroSniper
 from modules.mreact import MassReact
+from modules.presence import Presence
 
 class Bot:
     def __init__(self):
@@ -27,6 +28,7 @@ class Bot:
         self.database = Database()
         self.search   = Search()
         self.spoof    = Spoof()
+        self.presence = None
         self.massr    = None
         self.anti     = None
         self.givesn   = None
@@ -639,7 +641,7 @@ class Bot:
             await ctx.message.delete()
             description, params, example = self.search.get(cmd)
             message = ""
-            maxparam = max([len(param[0]) for param in params])
+            maxparam = max([len(param[0]) for param in params]) if params else 0
             for param in params:
                 message += "{} : {}\n".format(param[0].ljust(maxparam), param[1])
             await ctx.send(self.output("Command Info", f"Description: {description}\n\n{message}\nExample: {example}\n"))
@@ -723,23 +725,30 @@ class Bot:
         @self.bot.command()
         async def addpresence(ctx, name, id, state="", largeimagekey="", largeimagetext="", smallimagekey="", smallimagetext=""):
             await ctx.message.delete()
-            with open("Assets/Presence.json", "r") as f:
-                data = json.load(f)
+            self.presence.addpres(name, id, state, largeimagekey, largeimagetext, smallimagekey, smallimagetext)
 
-            with open("Assets/Presence.json", "w") as f:
-                data["Presence"][name] = {"ClientID": id, "State": state, "LargeImageKey": largeimagekey, "LargeImageText": largeimagetext, "SmallImageKey": smallimagekey, "SmallImageText": smallimagetext, "Buttons": []}
-                json.dump(data, f, indent=4)
+        @self.bot.command()
+        async def createpresence(ctx, name, state="", largeimagekeypath=None, largeimagetext=None, smallimagekeypath=None, smallimagetext=None):
+            await ctx.message.delete()
+            self.presence.altadd(name, state, largeimagekeypath, largeimagetext, smallimagekeypath, smallimagetext)
 
         @self.bot.command()
         async def loadpresence(ctx, name):
             await ctx.message.delete()
-            threading.Thread(target=self.general.pres, args=(name,)).start()
+            threading.Thread(target=self.presence.pres, args=(name,)).start()
 
         @self.bot.command()
         async def stoppresence(ctx):
             await ctx.message.delete()
-            self.general.stoppres()
+            self.presence.stoppres()
+        
+        @self.bot.command()
+        async def listpres(ctx):
+            await ctx.message.delete()
+            profiles = self.presence.listpres()
 
+            await ctx.send(self.output("List Presence", "\n".join(profiles)))
+            
 
 
         # NSFW
@@ -927,7 +936,8 @@ I made this to test my skill as a developer when tasked with a large project.
                 exec(open("Scripts/{}".format(file), "r").read())
         if press:
             self.logging.Info("Setting up pypresence...")
-            threading.Thread(target=self.general.pres).start()
+            self.presence = Presence(self.token)
+            threading.Thread(target=self.presence.pres).start()
         self.logging.Info("Running bot...")
         self.bot.run(self.token, bot=False)
 

@@ -298,11 +298,34 @@
         "section" : "utility",
         "page" : 2
     },
+    "createpresence" : {
+        "name" : "createpresence",
+        "description": "Creates an application and presence",
+        "params": [
+            ["NAME", "(Profile name)"],
+            ["STATE", "(Status)"],
+            ["LARGEIMAGEKEYPATH", "(Path to large image key)"],
+            ["LARGETEXT", "(Large image text must be over 2 characters)"],
+            ["SMALLIMAGEKEYPATH", "(Path to small image key)"],
+            ["SMALLTEXT", "(Small image text must be over 2 characters)"]
+        ],
+        "example": "createpresence Test online ./large.png large./small.png small",
+        "section" : "utility",
+        "page" : 2
+    },
     "stoppresence" : {
         "name" : "stoppresence",
         "description": "Stop status",
         "params": [],
         "example": "stoppresence n",
+        "section" : "utility",
+        "page" : 2
+    },
+    "listpres" : {
+        "name" : "listpres",
+        "description": "List available presences",
+        "params": [],
+        "example": "listpres",
         "section" : "utility",
         "page" : 2
     },

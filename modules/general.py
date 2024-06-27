@@ -1,6 +1,5 @@
 import json, os, base64, requests, random, string, time
 from pystyle import Colors, Colorate, Center
-from pypresence import Presence
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from modules.logging import Logging
@@ -176,36 +175,3 @@ class General:
     def randomnstring(self, length):
         return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
     
-    def pres(self, profile="Default"):
-        if self.RPC is not None:
-            self.RPC.close()
-        with open("Assets/Presence.json", 'r') as f:
-            config = json.load(f)
-
-            clientid = config.get("Presence").get(profile).get("ClientID")
-            state    = config.get("Presence").get(profile).get("State")
-            largekey = config.get("Presence").get(profile).get("LargeImageKey")
-            largetxt = config.get("Presence").get(profile).get("LargeImageText")
-            smallkey = config.get("Presence").get(profile).get("SmallImageKey")
-            smalltxt = config.get("Presence").get(profile).get("SmallImageText")
-            buttons  = config.get("Presence").get(profile).get("Buttons")
-
-        self.RPC = Presence(clientid)
-        self.RPC.connect()
-        self.RPC.update(state=state, 
-                        large_image=largekey if largekey else None, 
-                        large_text=largetxt if largetxt else None, 
-                        small_image=smallkey if smallkey else None, 
-                        small_text=smalltxt if smalltxt else None, 
-                        buttons=buttons if buttons else None, 
-                        start=time.time()
-                        )
-        
-
-
-        while True:
-            time.sleep(1)
-
-
-    def stoppres(self):
-        self.RPC.close()
