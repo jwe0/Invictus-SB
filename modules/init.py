@@ -88,12 +88,6 @@ class Init:
                     userid = input("[>] Enter gelbooru user ID: ")
                 givesniper = input("[>] GiveSniper?     : ")
                 custompres = input("[>] Custom presence? : ")
-                if custompres.lower() == "y":
-                    clientid = input("[>] Enter client ID: ")
-                    clientms = input("[>] Enter presence message: ")
-                    clientli = input("[>] Enter large image key: ")
-                    if clientli:
-                        clientlit = input("[>] Enter large image text: ")
 
                 json.dump({"Token": token, 
                            "Prefix": prefix, 
@@ -108,18 +102,48 @@ class Init:
                             "TCrypt": True if tcrypt.lower() == "y" else False, 
                             "Account": {"password": userpass} if autolo.lower() == "y" else {}
                         }, f, indent=4)
-            with open("Assets/Presence.json", "w") as f:
-                presence_data = {
-                    "Presence": {
-                        "Default" : {
-                            "ClientID": clientid if custompres.lower() == "y" else "",
-                            "State": clientms if custompres.lower() == "y" else "Invictus selfbot best",
-                            "LargeImageKey": clientli if custompres.lower() == "y" else "",
-                            "LargeImageText": clientlit if custompres.lower() == "y" else ""
-                        }
+                if custompres.lower() == "y":
+                    self.presinit()
+                
+    def presinit(self):
+        custompres = input("[>] Custom presence? : ")
+        if custompres.lower() == "y":
+            clientid = input("[>] Enter client ID: ")
+            clientms = input("[>] Enter presence message: ")
+            clientli = input("[>] Enter large image key: ")
+            if clientli:
+                clientlit = input("[>] Enter large image text: ")
+            clientsi = input("[>] Enter small image key: ")
+            if clientsi:
+                clientsit = input("[>] Enter small image text: ")
+
+            cb = input("[>] Buttons? : ")
+            if cb.lower() == "y":
+                buttons = []
+                print("[*] Enter !q to quit buttons")
+                clientbt = input("[>] Enter button label: ")
+                clientbu = input("[>] Enter button url: ")
+                while clientbt != "!q":
+                    buttons.append({"label": clientbt, "url": clientbu})
+                    clientbt = input("[>] Enter button label: ")
+                    clientbu = input("[>] Enter button url: ")
+
+
+        with open("Assets/Presence.json", "w") as f:
+            presence_data = {
+                "Presence": {
+                    "Default" : {
+                        "ClientID": clientid if custompres.lower() == "y" else "",
+                        "State": clientms if custompres.lower() == "y" else "Invictus selfbot best",
+                        "LargeImageKey": clientli if custompres.lower() == "y" else "",
+                        "LargeImageText": clientlit if custompres.lower() == "y" else "",
+                        "SmallImageKey": clientsi if custompres.lower() == "y" else "",
+                        "SmallImageText": clientsit if custompres.lower() == "y" else "",
+                        "Buttons" : buttons if cb.lower() == "y" else []
                     }
                 }
-                json.dump(presence_data, f, indent=4)
+            }
+            json.dump(presence_data, f, indent=4)
 
     def initalizesql(self):
         if not os.path.exists("Databases"):

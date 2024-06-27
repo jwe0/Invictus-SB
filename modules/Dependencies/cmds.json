@@ -280,11 +280,13 @@
             ["ID", "(Application ID)"],
             ["STATE", "(Status)"],
             ["LARGEIMAGEKEY", "(Large image key)"],
-            ["LARGETEXT", "(Large image text)"]
+            ["LARGETEXT", "(Large image text must be over 2 characters)"],
+            ["SMALLIMAGEKEY", "(Small image key)"],
+            ["SMALLTEXT", "(Small image text must be over 2 characters)"]
         ],
         "example": "addpresence n",
         "section" : "utility",
-        "page" : 1
+        "page" : 2
     },
     "loadpresence" : {
         "name" : "loadpresence",
@@ -294,7 +296,7 @@
         ],
         "example": "loadpresence n",
         "section" : "utility",
-        "page" : 1
+        "page" : 2
     },
     "stoppresence" : {
         "name" : "stoppresence",
@@ -302,7 +304,7 @@
         "params": [],
         "example": "stoppresence n",
         "section" : "utility",
-        "page" : 1
+        "page" : 2
     },
     "vcspam" : {
         "name" : "vcspam",

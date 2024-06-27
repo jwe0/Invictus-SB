@@ -121,25 +121,25 @@ class Bot:
         async def troll(ctx, page=1):
             await ctx.message.delete()
             cmds = self.search.cmd(page, "troll")
-            await ctx.send(self.output("Troll - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
+            await ctx.send(self.output("Troll - {} - ({}/{})".format(str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0])))
 
         @self.bot.command()
         async def fun(ctx, page=1):
             await ctx.message.delete()
             cmds = self.search.cmd(page, "fun")
-            await ctx.send(self.output("Fun - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
+            await ctx.send(self.output("Fun - {} - ({}/{})".format(str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0])))
 
         @self.bot.command()
         async def utilities(ctx, page=1):
             await ctx.message.delete()
             cmds = self.search.cmd(page, "utility")
-            await ctx.send(self.output("Utilities - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
+            await ctx.send(self.output("Utilities - {} - ({}/{})".format(str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0])))
 
         @self.bot.command()
         async def nsfw(ctx, page=1):
             await ctx.message.delete()
             cmds = self.search.cmd(page, "nsfw")
-            await ctx.send(self.output("NSFW - {}".format(str(cmds[1])), self.general.help_format(cmds[0])))
+            await ctx.send(self.output("NSFW - {} - ({}/{})".format(str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0])))
 
         # Raid commands
         @self.bot.command()
@@ -636,6 +636,7 @@ class Bot:
 
         @self.bot.command()
         async def cmdinfo(ctx, cmd):
+            await ctx.message.delete()
             description, params, example = self.search.get(cmd)
             message = ""
             maxparam = max([len(param[0]) for param in params])
@@ -645,6 +646,7 @@ class Bot:
 
         @self.bot.command()
         async def whois(ctx, id):
+            await ctx.message.delete()
             api = "https://discord.com/api/v9/users/{}/profile".format(id)
             headers = {"authorization": self.token}
 
@@ -675,10 +677,12 @@ class Bot:
 
         @self.bot.command()
         async def cmdcount(ctx):
+            await ctx.message.delete()
             await ctx.send(self.output("Command Count", str(len(self.bot.commands)) + "\n"))
 
         @self.bot.command()
         async def scrape(ctx, channelid=""):
+            await ctx.message.delete()
             x = 0
             if not channelid:
                 channelid = ctx.channel.id
@@ -711,24 +715,25 @@ class Bot:
 
         @self.bot.command()
         async def reversedns(ctx, ip):
+            await ctx.message.delete()
             s = socket.gethostbyaddr(ip)
 
             await ctx.send(self.output("Reversedns", s[0]))
 
         @self.bot.command()
-        async def addpresence(ctx, name, id, state="", largeimagekey="", largeimagetext=""):
+        async def addpresence(ctx, name, id, state="", largeimagekey="", largeimagetext="", smallimagekey="", smallimagetext=""):
             await ctx.message.delete()
             with open("Assets/Presence.json", "r") as f:
                 data = json.load(f)
 
             with open("Assets/Presence.json", "w") as f:
-                data["Presence"][name] = {"ClientID": id, "State": state, "LargeImageKey": largeimagekey, "LargeImageText": largeimagetext}
+                data["Presence"][name] = {"ClientID": id, "State": state, "LargeImageKey": largeimagekey, "LargeImageText": largeimagetext, "SmallImageKey": smallimagekey, "SmallImageText": smallimagetext, "Buttons": []}
                 json.dump(data, f, indent=4)
 
         @self.bot.command()
         async def loadpresence(ctx, name):
             await ctx.message.delete()
-            threading.Thread(target=self.general.update_presence, args=(name,)).start()
+            threading.Thread(target=self.general.pres, args=(name,)).start()
 
         @self.bot.command()
         async def stoppresence(ctx):

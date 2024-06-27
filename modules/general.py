@@ -8,7 +8,7 @@ from modules.logging import Logging
 class General:
     def __init__(self):
         self.logging = Logging()
-        self.rpc     = None
+        self.RPC     = None
 
     def load_config(self):
         with open("Assets/Config.json", "r") as f:
@@ -177,6 +177,8 @@ class General:
         return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
     
     def pres(self, profile="Default"):
+        if self.RPC is not None:
+            self.RPC.close()
         with open("Assets/Presence.json", 'r') as f:
             config = json.load(f)
 
@@ -184,38 +186,26 @@ class General:
             state    = config.get("Presence").get(profile).get("State")
             largekey = config.get("Presence").get(profile).get("LargeImageKey")
             largetxt = config.get("Presence").get(profile).get("LargeImageText")
-
+            smallkey = config.get("Presence").get(profile).get("SmallImageKey")
+            smalltxt = config.get("Presence").get(profile).get("SmallImageText")
+            buttons  = config.get("Presence").get(profile).get("Buttons")
 
         self.RPC = Presence(clientid)
         self.RPC.connect()
-        if largekey:
-            self.RPC.update(state=state, large_image=largekey, large_text=largetxt, start=time.time())
-        else:
-            self.RPC.update(state=state, start=time.time())
+        self.RPC.update(state=state, 
+                        large_image=largekey if largekey else None, 
+                        large_text=largetxt if largetxt else None, 
+                        small_image=smallkey if smallkey else None, 
+                        small_text=smalltxt if smalltxt else None, 
+                        buttons=buttons if buttons else None, 
+                        start=time.time()
+                        )
+        
+
 
         while True:
             time.sleep(1)
 
-    def update_presence(self, profile="Default"):
-        self.RPC.close()
-        with open("Assets/Presence.json", 'r') as f:
-            config = json.load(f)
-
-            clientid = config.get("Presence").get(profile).get("ClientID")
-            state = config.get("Presence").get(profile).get("State")
-            largekey = config.get("Presence").get(profile).get("LargeImageKey")
-            largetxt = config.get("Presence").get(profile).get("LargeImageText")
-
-        self.RPC = Presence(clientid)
-        self.RPC.connect()
-
-        if largekey:
-            self.RPC.update(state=state, large_image=largekey, large_text=largetxt, start=time.time())
-        else:
-            self.RPC.update(state=state, start=time.time())
-
-        while True:
-            time.sleep(1)
 
     def stoppres(self):
         self.RPC.close()
