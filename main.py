@@ -748,7 +748,67 @@ class Bot:
             profiles = self.presence.listpres()
 
             await ctx.send(self.output("List Presence", "\n".join(profiles)))
+
+        @self.bot.command()
+        async def spoofmobile(ctx):
+            global last_heartbeat_ack, heartbeat_interval
             
+            last_heartbeat_ack = False
+            heartbeat_interval = 0
+            ws = None
+            dcws = "wss://gateway.discord.gg/"
+            
+            def payload():
+                return json.dumps({
+                    "op": 2,
+                    "d": {
+                        "token": self.token,
+                        "properties": {
+                            "$os": "iOS",
+                            "$browser": "Discord iOS",
+                            "$device": "Discord iOS"
+                        }
+                    }
+                })
+            
+            def heartbeat():
+                global last_heartbeat_ack, heartbeat_interval
+                while True:
+                    if heartbeat_interval:
+                        time.sleep(heartbeat_interval / 1000)
+                        if not last_heartbeat_ack:
+                            print("Heartbeat not acknowledged, reconnecting...")
+                        last_heartbeat_ack = False
+                        ws.send(payload())
+
+            def on_message(ws, message):
+                global last_heartbeat_ack, heartbeat_interval
+                data = json.loads(message)
+                if data['op'] == 10:  # Hello
+                    heartbeat_interval = data['d']['heartbeat_interval']
+                    threading.Thread(target=heartbeat).start()
+                    ws.send(payload())
+                elif data['op'] == 11:
+                    last_heartbeat_ack = True
+            2
+            def on_error(ws, error):
+                print(f"WebSocket Error: {error}")
+            
+            def on_close(ws, close_status_code, close_msg):
+                print(f"WebSocket closed with code {close_status_code}: {close_msg}")
+            
+            def on_open(ws):
+                print("WebSocket connection established.")
+            
+            ws = websocket.WebSocketApp(dcws,
+                                        on_message=on_message,
+                                        on_error=on_error,
+                                        on_close=on_close,
+                                        on_open=on_open)
+            
+            ws.run_forever()
+
+
 
 
         # NSFW
