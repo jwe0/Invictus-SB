@@ -2,6 +2,7 @@ import json, tls_client, time
 from modules.spoof import Spoof
 from modules.logging import Logging
 from modules.general import General
+from modules.output import Output
 
 class GiveSniper:
     def __init__(self, token, httptoken) -> None:
@@ -11,6 +12,7 @@ class GiveSniper:
         self.spoof   = Spoof()
         self.logging = Logging()
         self.general = General()
+        self.output  = Output()
         self.setting = {}
         self.botjs   = {}
         self.bots    = []
@@ -24,7 +26,7 @@ class GiveSniper:
             headers = self.spoof.headers(self.token)
             r = self.session.put(api, headers=headers)
             if r.status_code == 204:
-                self.logging.Info(f"Joined giveaway for {bot}")
+                self.output.terminal("GiveSniper", {"Message" : "Joined giveaway", "Bot" : bot, "Channel" : channelname, "Server" : servername}, True)
 
         elif self.botjs[bot]["React-Mode"]["Type"] == 2:
             api = "https://discord.com/api/v9/interactions"
@@ -44,14 +46,14 @@ class GiveSniper:
             headers = self.spoof.headers(self.token)
             r = self.session.post(api, json=data, headers=headers)
             if r.status_code == 204:
-                self.logging.Info(f"Joined giveaway for {bot} in {channelname} : {servername}")
+                self.output.terminal("GiveSniper", {"Message" : "Joined giveaway", "Bot" : bot, "Channel" : channelname, "Server" : servername}, True)
                 
 
 
     def detect(self, message):
         if message.author.name in self.bots:
             if self.botjs[message.author.name]["Win-Data"] in message.content:
-                self.logging.Info(f"Won giveaway for {message.author.name}")
+                self.output.terminal("GiveSniper", {"Message" : "Won giveaway!", "Bot" : message.author.name, "Channel" : message.channel.name, "Server" : message.guild.name}, True)
             else:
                 self.join(message.guild.id, message.channel.id, message.id, message.author.name, message.channel.name, message.guild.name)
 

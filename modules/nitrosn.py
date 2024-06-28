@@ -2,6 +2,7 @@ import time, tls_client
 from modules.spoof import Spoof
 from modules.logging import Logging
 from modules.general import General
+from modules.output import Output
 
 class NitroSniper:
     def __init__(self, token) -> None:
@@ -9,27 +10,29 @@ class NitroSniper:
         self.logging = Logging()
         self.spoof   = Spoof()
         self.general = General()
+        self.output  = Output()
         self.session = tls_client.Session()
         self.setting = {}
 
-    def redeem(self, codeid):
+    def redeem(self, codeid, channel, server):
         api = f"https://discord.com/api/v9/entitlements/gift-codes/{codeid}/redeem"
         headers = self.spoof.headers(self.token)
         r = self.session.post(api, headers=headers)
         if r.status_code == 200:
-            self.logging.Info(f"Redeemed nitro code: {codeid}")
+            self.output.terminal("Nitro Sniper", {"Message" : "Found code", "Code" : codeid, "Channel" : channel, "Server" : server, "Status" : "Redeemed"}, False)
         else:
-            self.logging.Error(f"Failed to redeem nitro code: {codeid}")
+            self.output.terminal("Nitro Sniper", {"Message" : "Found code", "Code": codeid, "Channel" : channel, "Server" : server, "Status" : "Failed"}, True)
 
 
     def detect(self, message):
         if "discord.gift/" in message.content:
             codeid = message.content.split("/")[-1]
             if len(codeid) >= 16:
-                self.logging.Info(f"Found nitro code: {codeid}")
-            time.sleep(self.setting["delay"])
-            if self.setting["autoredeem"]:
-                self.redeem(codeid)
+                time.sleep(self.setting["delay"])
+                if self.setting["autoredeem"]:
+                    self.redeem(codeid, message.channel.name)
+                else:
+                    self.output.terminal("Nitro Sniper", {"Message" : "Found code", "Code": codeid, "Channel" : message.channel.name, "Server" : message.guild.name, "Status" : "N/A"}, True)
 
     def init(self):
         self.setting = self.general.load_nitrosniper_settings()

@@ -8,3 +8,4 @@ class Colors:
     magenta = Fore.MAGENTA
     cyan = Fore.CYAN
     white = Fore.WHITE
+    reset = Fore.RESET

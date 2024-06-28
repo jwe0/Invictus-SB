@@ -1,5 +1,6 @@
-import json, urllib.parse
+import json, datetime
 from modules.logging import Logging
+from modules.colors import Colors
 
 class Output:
     def __init__(self):
@@ -43,3 +44,22 @@ class Output:
             newmessage += f"{linestart} {line}\n"
         return newmessage
     
+    def terminal(self, section, args, newline):
+        keys = []
+        vals = []
+        message = []
+
+        for key, val in args.items():
+            keys.append(key.title())
+            vals.append(val)
+
+
+        mkey = max(len(key) for key in keys)
+
+        for i in range(len(keys)):
+            message.append("[{}] |  [{}]  | {} | {}".format(datetime.datetime.now().strftime("%H:%M:%S"), f"{Colors.magenta}{section}{Colors.white}", keys[i].ljust(mkey), vals[i]) + "\n")
+
+        if not newline:
+            message[-1] = message[-1].rstrip("\n")
+
+        print("".join(message))

@@ -7,7 +7,6 @@ from modules.logging import Logging
 class General:
     def __init__(self):
         self.logging = Logging()
-        self.RPC     = None
 
     def load_config(self):
         with open("Assets/Config.json", "r") as f:
