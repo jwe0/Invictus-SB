@@ -777,7 +777,7 @@ class Bot:
                     if heartbeat_interval:
                         time.sleep(heartbeat_interval / 1000)
                         if not last_heartbeat_ack:
-                            print("Heartbeat not acknowledged, reconnecting...")
+                            self.logging.info("Heartbeat not acknowledged, reconnecting...")
                         last_heartbeat_ack = False
                         ws.send(payload())
 
@@ -790,16 +790,16 @@ class Bot:
                     ws.send(payload())
                 elif data['op'] == 11:
                     last_heartbeat_ack = True
-            2
+            
             def on_error(ws, error):
-                print(f"WebSocket Error: {error}")
+                self.logging.error(error)
             
             def on_close(ws, close_status_code, close_msg):
-                print(f"WebSocket closed with code {close_status_code}: {close_msg}")
+                self.logging.info("[>] Connection closed")
                 connect()
             
             def on_open(ws):
-                print("WebSocket connection established.")
+                self.logging.info("[>] Spoofing mobile device...")
 
             def connect():
                 global ws
