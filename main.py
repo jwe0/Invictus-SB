@@ -751,7 +751,7 @@ class Bot:
 
         @self.bot.command()
         async def spoofmobile(ctx):
-            global last_heartbeat_ack, heartbeat_interval
+            global last_heartbeat_ack, heartbeat_interval, ws
             
             last_heartbeat_ack = False
             heartbeat_interval = 0
@@ -796,17 +796,22 @@ class Bot:
             
             def on_close(ws, close_status_code, close_msg):
                 print(f"WebSocket closed with code {close_status_code}: {close_msg}")
+                connect()
             
             def on_open(ws):
                 print("WebSocket connection established.")
-            
-            ws = websocket.WebSocketApp(dcws,
-                                        on_message=on_message,
-                                        on_error=on_error,
-                                        on_close=on_close,
-                                        on_open=on_open)
-            
-            ws.run_forever()
+
+            def connect():
+                global ws
+                ws = websocket.WebSocketApp(dcws,
+                                            on_message=on_message,
+                                            on_error=on_error,
+                                            on_close=on_close,
+                                            on_open=on_open)
+                
+                ws.run_forever()
+
+            connect()
 
 
 

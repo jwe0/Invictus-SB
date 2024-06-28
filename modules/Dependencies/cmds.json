@@ -329,6 +329,14 @@
         "section" : "utility",
         "page" : 2
     },
+    "spoofmobile" : {
+        "name" : "spoofmobile",
+        "description": "Spoofs mobile",
+        "params": [],
+        "example": "spoofmobile",
+        "section" : "utility",
+        "page" : 2
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
