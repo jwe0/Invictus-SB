@@ -756,7 +756,7 @@ class Bot:
             last_heartbeat_ack = False
             heartbeat_interval = 0
             ws = None
-            dcws = "wss://gateway.discord.gg/"
+            dcws = "wss://gateway.discord.gg/?v=9&encoding=json"
             
             def payload():
                 return json.dumps({
