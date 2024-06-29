@@ -37,7 +37,7 @@ class Events:
             r = requests.post(api, json=data, headers=self.headers)
             while r.status_code == 429:
                 self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
-                time.sleep(r.json()["retry_after"] + 1)
+                time.sleep(r.json()["retry_after"] + 5)
                 r = requests.post(api, json=data, headers=self.headers)
             return r.json().get("id")
 
@@ -47,7 +47,7 @@ class Events:
             r = requests.post(api, json=data, headers=self.headers)
             while r.status_code == 429:
                 self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
-                time.sleep(r.json()["retry_after"] + 1)
+                time.sleep(r.json()["retry_after"] + 5)
                 r = requests.post(api, json=data, headers=self.headers)
             return r.json().get("id")
 
@@ -57,7 +57,7 @@ class Events:
             r = requests.post(api, json=data, headers=self.headers)
             while r.status_code == 429:
                 self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
-                time.sleep(r.json()["retry_after"] + 1)
+                time.sleep(r.json()["retry_after"] + 5)
                 r = requests.post(api, json=data, headers=self.headers)
             return r.json().get("url")
 
@@ -67,6 +67,7 @@ class Events:
                 id = create(guildid, event, parent)
                 hooks = webhook(id, event)
                 self.dumphooks(hooks, event)
+                time.sleep(1)
 
     def wspayload(self):
         return json.dumps({
