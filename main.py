@@ -17,6 +17,7 @@ from modules.givesniper import GiveSniper
 from modules.nitrosn import NitroSniper
 from modules.mreact import MassReact
 from modules.presence import Presence
+from modules.events import Events
 
 class Bot:
     def __init__(self):
@@ -28,6 +29,7 @@ class Bot:
         self.database = Database()
         self.search   = Search()
         self.spoof    = Spoof()
+        self.events   = None
         self.presence = None
         self.massr    = None
         self.anti     = None
@@ -63,6 +65,7 @@ class Bot:
     def initalize(self):
         @self.bot.event
         async def on_ready():
+            # Setting up giveaway
             if self.give:
                 self.logging.Info("Setting up give sniper...")
                 self.givesn = GiveSniper(self.token, self.bot.http.token)
@@ -777,9 +780,10 @@ class Bot:
                     if heartbeat_interval:
                         time.sleep(heartbeat_interval / 1000)
                         if not last_heartbeat_ack:
-                            self.logging.info("Heartbeat not acknowledged, reconnecting...")
+                            self.logging.Info("Heartbeat not acknowledged, reconnecting...")
+                            ws.send(json.dumps({"op": 1, "d": None}))
                         last_heartbeat_ack = False
-                        ws.send(payload())
+                        ws.send(json.dumps({"op": 1, "d": None}))
 
             def on_message(ws, message):
                 global last_heartbeat_ack, heartbeat_interval
@@ -792,14 +796,14 @@ class Bot:
                     last_heartbeat_ack = True
             
             def on_error(ws, error):
-                self.logging.error(error)
+                self.logging.Error(error)
             
             def on_close(ws, close_status_code, close_msg):
-                self.logging.info("[>] Connection closed")
+                self.logging.Info("[>] Connection closed")
                 connect()
             
             def on_open(ws):
-                self.logging.info("[>] Spoofing mobile device...")
+                self.logging.Info("[>] Spoofing mobile device...")
 
             def connect():
                 global ws
@@ -812,9 +816,15 @@ class Bot:
                 ws.run_forever()
 
             connect()
+        
+        @self.bot.command()
+        async def setupnotifs(ctx):
+            self.events.setup(ctx.guild.id)
 
 
-
+        @self.bot.command()
+        async def checkhooks(ctx):
+            self.events.checkhooks()
 
         # NSFW
         @self.bot.command()
@@ -967,42 +977,56 @@ I made this to test my skill as a developer when tasked with a large project.
 
     def run(self):
         Colors.white
+        # Load config
         self.logging.Info("Loading config...")
         self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt, self.gelkey, self.userid, self.give, press = self.general.load_config()
         if self.general.checktoken(self.token) == False:
             self.logging.Error("Invalid token!")
             input("[>] Press enter to exit.")
             exit()
+        # Initalize discord.py
         self.logging.Info("Setting up the bot...")
         self.bot = commands.Bot(command_prefix=self.prefix, self_bot=True)
         self.bot.remove_command("help")
         self.logging.Info("Initializing...")
         self.initalize()
+        # Setup anti token logger
         if antitokenlog:
             self.logging.Info("Setting up anti token logger...")
             self.anti = AntiTokenLog(self.token, autologout, userpass, tcrypt)
             self.anti.getclients()
             threading.Thread(target=self.anti.getrecent).start()
+        # Load other configs
         self.logging.Info("Loading other configs...")
         self.givesettings  = self.general.load_givesniper_settings()
         self.nitrosettings = self.general.load_nitrosniper_settings()
+        # Setup nitro sniper
         if self.nitro:
             self.logging.Info("Setting up nitro sniper...")
             self.nitrosn = NitroSniper(self.token)
             self.nitrosn.init()
+        # Setup mass react
         self.logging.Info("Setting up mass react... ")
         self.massr = MassReact(self.token)
         self.massr.init()
+        # Create session headers
         self.logging.Info("Loading session headers...")
         self.sessionheaders = self.spoof.headers(self.token)
+        # Load custom scripts
         self.logging.Info("Loading scripts...")
         for file in os.listdir("Scripts"):
             if file.endswith(".py"):
                 exec(open("Scripts/{}".format(file), "r").read())
+        # Setup pypresence
         if press:
             self.logging.Info("Setting up pypresence...")
             self.presence = Presence(self.token)
             threading.Thread(target=self.presence.pres).start()
+        # Setup event logger
+        self.logging.Info("Starting event logger...")
+        self.events = Events(self.token)
+        self.events.init()
+        # Run
         self.logging.Info("Running bot...")
         self.bot.run(self.token, bot=False)
 

@@ -13,7 +13,9 @@
                 "emoji" : ""
             }
         },
-        "Win-Data" : "Congratulations"
+        "Win-Data" : "Congratulations",
+        "Prize-Split" : "You won the ",
+        "Split-End" : "**"
     },
     "Carl-bot" : {
         "name" : "Carl-bot",
@@ -29,6 +31,8 @@
                 "emoji" : ""
             }
         },
-        "Win-Data" : "Congratulations"
+        "Win-Data" : "Congratulations",
+        "Prize-Split" : "Congratulations to the winner of ",
+        "Split-End" : "**"
     }
 }

@@ -163,6 +163,18 @@ class Init:
             conn.commit()
             conn.close()
 
+    def eventloggerinit(self):
+        if not os.path.exists("Assets/Events.json"):
+            with open("Assets/Events.json", "w") as f:
+                jsondata = {
+                    "Guild Join"  : {"status" : False, "name" : "Guild Join", "webhooks" : []},
+                    "Guild Leave" : {"status" : False, "name" : "Guild Leave", "webhooks" : []},
+                    "Bans"        : {"status" : False, "name" : "Bans", "webhooks" : []},
+                    "Giveaways"   : {"status" : False, "name" : "Giveaways", "webhooks" : []},
+                    "Nitros"      : {"status" : False, "name" : "Nitros", "webhooks" : []}
+                }
+                json.dump(jsondata, f, indent=4)
+
 
 
 
@@ -174,4 +186,5 @@ class Init:
         self.scripts()
         self.scrapes()
         self.initalizesql()
+        self.eventloggerinit()
         self.config()
