@@ -13,8 +13,6 @@ from modules.database import Database
 from modules.searchcmd import Search
 from modules.spoof import Spoof
 from modules.antitokenlog import AntiTokenLog
-from modules.givesniper import GiveSniper
-from modules.nitrosn import NitroSniper
 from modules.mreact import MassReact
 from modules.presence import Presence
 from modules.events import Events
@@ -65,11 +63,9 @@ class Bot:
     def initalize(self):
         @self.bot.event
         async def on_ready():
-            # Setting up giveaway
-            if self.give:
-                self.logging.Info("Setting up give sniper...")
-                self.givesn = GiveSniper(self.token, self.bot.http.token)
-                self.givesn.init()
+            self.logging.Info("Starting event logger...")
+            self.events = Events(self.token, self.bot.http.token)
+            self.events.init()
             self.general.clear()
             self.general.art()
             print(Center.XCenter(f"Logged in as {self.bot.user} (ID: {self.bot.user.id})\n"))
@@ -87,13 +83,6 @@ class Bot:
             await self.bot.process_commands(message)
             if self.messagel:
                 self.database.messageloggeradd(message.author.id, message.author.name, self.general.removespecial(message.content), message.created_at.strftime("%Y-%m-%d - %H:%M:%S"))
-            # if message.author != self.bot.user:
-            if self.nitro:
-                self.nitrosn.detect(message)
-            if self.give:
-                self.givesn.detect(message)
-                    
-
 
         @self.bot.event
         async def on_message_delete(message):
@@ -819,11 +808,13 @@ class Bot:
         
         @self.bot.command()
         async def setupnotifs(ctx):
+            await ctx.message.delete()
             self.events.setup(ctx.guild.id)
 
 
         @self.bot.command()
         async def checkhooks(ctx):
+            await ctx.message.delete()
             self.events.checkhooks()
 
         # NSFW
@@ -1000,11 +991,6 @@ I made this to test my skill as a developer when tasked with a large project.
         self.logging.Info("Loading other configs...")
         self.givesettings  = self.general.load_givesniper_settings()
         self.nitrosettings = self.general.load_nitrosniper_settings()
-        # Setup nitro sniper
-        if self.nitro:
-            self.logging.Info("Setting up nitro sniper...")
-            self.nitrosn = NitroSniper(self.token)
-            self.nitrosn.init()
         # Setup mass react
         self.logging.Info("Setting up mass react... ")
         self.massr = MassReact(self.token)
@@ -1022,10 +1008,6 @@ I made this to test my skill as a developer when tasked with a large project.
             self.logging.Info("Setting up pypresence...")
             self.presence = Presence(self.token)
             threading.Thread(target=self.presence.pres).start()
-        # Setup event logger
-        self.logging.Info("Starting event logger...")
-        self.events = Events(self.token)
-        self.events.init()
         # Run
         self.logging.Info("Running bot...")
         self.bot.run(self.token, bot=False)

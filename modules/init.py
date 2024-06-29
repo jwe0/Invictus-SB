@@ -60,6 +60,15 @@ class Init:
             with open("Assets/Presence.json", "w") as f:
                 json.dump(config, f, indent=4)
 
+        if not os.path.exists("Assets/Settings/webhook.json"):
+            config = {
+                "Author": "Invictus",
+                "Color": 16711680
+            }
+
+            with open("Assets/Settings/webhook.json", "w") as f:
+                json.dump(config, f, indent=4)
+
     def config(self):
         if not os.path.exists("Assets/Config.json"):
             self.general.clear()

@@ -3,7 +3,7 @@ from modules.spoof import Spoof
 from modules.logging import Logging
 from modules.general import General
 from modules.output import Output
-from modules.events import Events
+# from modules.events import Events
 
 class GiveSniper:
     def __init__(self, token, httptoken) -> None:
@@ -14,7 +14,7 @@ class GiveSniper:
         self.logging = Logging()
         self.general = General()
         self.output  = Output()
-        self.events  = Events(token)
+        # self.events  = Events(token)
         self.setting = {}
         self.botjs   = {}
         self.headers = {}
@@ -28,7 +28,9 @@ class GiveSniper:
             api = f"https://discord.com/api/v9/channels/{channelid}/messages/{messageid}/reactions/{emoji}/@me"
             r = self.session.put(api, headers=self.headers)
             if r.status_code == 204:
-                self.output.terminal("GiveSniper", {"Message" : "Joined giveaway", "Bot" : bot, "Channel" : channelname, "Server" : servername}, True)
+                data = {"Message" : "Joined giveaway", "Bot" : bot, "Channel" : channelname, "Server" : servername}
+                self.output.terminal("GiveSniper", data, True)
+                return data
 
         elif self.botjs[bot]["React-Mode"]["Type"] == 2:
             api = "https://discord.com/api/v9/interactions"
@@ -47,8 +49,9 @@ class GiveSniper:
 
             r = self.session.post(api, json=data, headers=self.headers)
             if r.status_code == 204:
-                self.output.terminal("GiveSniper", {"Message" : "Joined giveaway", "Bot" : bot, "Channel" : channelname, "Server" : servername}, True)
-                self.events.hooklog({"Message" : "Joined giveaway", "Bot" : bot, "Channel" : channelname, "Server" : servername}, "Giveaways")
+                data = {"Message" : "Joined giveaway", "Bot" : bot, "Channel" : channelname, "Server" : servername}
+                self.output.terminal("GiveSniper", data, True)
+                return data
                 
 
     def get_prize(self, bot, message):
@@ -58,20 +61,24 @@ class GiveSniper:
             return "No prize specified"
         prize = message.split(splitval)[1]
         if splitend:
-            prize = prize.split(splitend)[0]
+            prize = prize.split(splitend)[1]
         if prize:
             return prize
         return "No prize found"
 
 
-    def detect(self, message):
-        if message.author.name in self.bots:
-            if self.botjs[message.author.name]["Win-Data"] in message.content:
-                prize = self.get_prize(message.author.name, message.content)
-                self.output.terminal("GiveSniper", {"Message" : "Won giveaway!", "Bot" : message.author.name, "Channel" : message.channel.name, "Server" : message.guild.name, "Prize" : prize}, True)
-                self.events.hooklog({"Message" : "Won giveaway!", "Bot" : message.author.name, "Channel" : message.channel.name, "Server" : message.guild.name, "Prize" : prize}, "Giveaways")
+    def detect(self, messagec, author, server, guildid, channelid, messageid):
+        if author in self.bots:
+            channel = self.session.get(f"https://discord.com/api/v9/channels/{channelid}", headers=self.headers).json().get("name", "None")
+            if self.botjs[author]["Win-Data"] in messagec:
+                prize = self.get_prize(author, messagec)
+                data = {"Message" : "Won giveaway!", "Bot" : author, "Channel" : channel, "Server" : server, "Prize" : prize}
+                self.output.terminal("GiveSniper", data, True)
+                return ("won", data)
             else:
-                self.join(message.guild.id, message.channel.id, message.id, message.author.name, message.channel.name, message.guild.name)
+                data = self.join(guildid, channelid, messageid, author, channel, server)
+                if data:
+                    return ("joined", data)
 
     def init(self):
         with open("modules/Dependencies/givebots.json", "r") as f:

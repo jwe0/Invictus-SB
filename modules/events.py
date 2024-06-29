@@ -6,24 +6,36 @@ import threading
 from modules.spoof import Spoof
 from modules.logging import Logging
 from modules.output import Output
+from modules.givesniper import GiveSniper
+from modules.nitrosn import NitroSniper
 
 class Events:
-    def __init__(self, token) -> None:
-        self.token   = token
-        self.config  = {}
-        self.headers = {}
-        self.spoof   = Spoof()
-        self.logging = Logging()
-        self.output  = Output()
-        self.ws      = None
-        self.dcws    = "wss://gateway.discord.gg/?v=9&encoding=json"
-        self.lastack = False
-        self.hbint   = 0
-        self.servers = {}
+    def __init__(self, token, httptoken) -> None:
+        self.token     = token
+        self.httptoken = httptoken
+        self.config    = {}
+        self.headers   = {}
+        self.spoof     = Spoof()
+        self.logging   = Logging()
+        self.output    = Output()
+        self.ws        = None
+        self.dcws      = "wss://gateway.discord.gg/?v=9&encoding=json"
+        self.lastack   = False
+        self.hbint     = 0
+        self.servers   = {}
+        self.hookstyle = {}
+        self.nitro     = False
+        self.givsnipe  = False
+        self.nitrosn   = None
+        self.givesn    = None
 
     def load(self):
         with open("Assets/Events.json", "r") as f:
             self.config = json.load(f)
+
+    def style(self):
+        with open("Assets/Settings/webhook.json", "r") as f:
+            self.hookstyle = json.load(f)
 
     def dumphooks(self, hooks, event):
         self.config[event]["webhooks"].append(hooks) 
@@ -92,46 +104,75 @@ class Events:
                 self.ws.send(json.dumps({"op": 1, "d": None}))
 
     def on_message(self, ws, message):
-        data = json.loads(message)
-        if data["op"] == 10:
-            self.hbint = data["d"]["heartbeat_interval"]
-            threading.Thread(target=self.heartbeat).start()
-            ws.send(self.wspayload())
-        elif data["op"] == 11:
-            self.lastack = True
-        elif data['t'] == "GUILD_CREATE":
-            self.servers[data.get('d').get('id')] = {"name": data.get('d').get('name')}
-            if self.config.get("Guild Join").get("status"):
-                name    = data.get('d').get('name')
-                owner   = data.get('d').get('owner_id')
-                memberc = data.get('d').get('member_count')
-                vanyrle = data.get('d').get('vanity_url_code')
-                premium = "None" if not data.get('d').get('premium_tier') else data.get('d').get('premium_tier')
-                joinat  = data.get('d').get('joined_at')
-                data = {"Name": name, "Owner": owner, "Members": memberc, "Vanity": vanyrle, "Premium": premium, "Joined": joinat}
-                self.output.terminal("Guild Joined", data, True)
-                self.hooklog(data, "Guild Join")
-        elif data['t'] == "GUILD_DELETE":
-            if self.config.get("Guild Leave").get("status"):
-                type = data.get('t')
-                opcode = data.get("op")
-                server = data.get('d').get('id')
-                sname  = self.id_to_name(server)
-                data = {"Type": type, "Opcode": opcode, "Server Name": sname, "Server ID": server}
-                self.output.terminal("Guild Left", data, True)
-                self.hooklog(data, "Guild Leave")
-        elif data['t'] == "GUILD_BAN_ADD":
-            if self.config.get("Bans").get("status"):
-                type   = data.get('t')
-                opcode = data.get("op")
-                server = data.get('d').get('guild_id')
-                sname  = self.id_to_name(server)
-                data = {"Type": type, "Opcode": opcode, "Server": sname, "Server ID": server}
-                self.output.terminal("Ban", data, True)
-                self.hooklog(data, "Bans")
+        if message:
+            data = json.loads(message)
+            if data["op"] == 10:
+                self.hbint = data["d"]["heartbeat_interval"]
+                threading.Thread(target=self.heartbeat).start()
+                ws.send(self.wspayload())
+            elif data["op"] == 11:
+                self.lastack = True
+            if "t" not in data:
+                return
+            elif data['t'] == "GUILD_CREATE":
+                self.servers[data.get('d').get('id')] = {"name": data.get('d').get('name')}
+                if self.config.get("Guild Join").get("status"):
+                    name    = data.get('d').get('name')
+                    owner   = data.get('d').get('owner_id')
+                    memberc = data.get('d').get('member_count')
+                    vanyrle = data.get('d').get('vanity_url_code')
+                    premium = "None" if not data.get('d').get('premium_tier') else data.get('d').get('premium_tier')
+                    joinat  = data.get('d').get('joined_at')
+                    data = {"Name": name, "Owner": owner, "Members": memberc, "Vanity": vanyrle, "Premium": premium, "Joined": joinat}
+                    self.output.terminal("Guild Joined", data, True)
+                    self.hooklog(data, "Guild Join")
+            elif data['t'] == "GUILD_DELETE":
+                if self.config.get("Guild Leave").get("status"):
+                    type = data.get('t')
+                    opcode = data.get("op")
+                    server = data.get('d').get('id')
+                    sname  = self.id_to_name(server)
+                    data = {"Type": type, "Opcode": opcode, "Server Name": sname, "Server ID": server}
+                    self.output.terminal("Guild Left", data, True)
+                    self.hooklog(data, "Guild Leave")
+            elif data['t'] == "GUILD_BAN_ADD":
+                if self.config.get("Bans").get("status"):
+                    type   = data.get('t')
+                    opcode = data.get("op")
+                    server = data.get('d').get('guild_id')
+                    sname  = self.id_to_name(server)
+                    data = {"Type": type, "Opcode": opcode, "Server": sname, "Server ID": server}
+                    self.output.terminal("Ban", data, True)
+                    self.hooklog(data, "Bans")
+            elif data['t'] == "MESSAGE_CREATE":
+                if self.nitro:
+                    content, guildid, guild, chanlid, author, msgid = self.getdata(data)
+                    result = self.nitrosn.detect(content, guild, chanlid)
+                    if result:
+                        self.hooklog(result, "Nitros")
+                if self.givesn:
+                    content, guildid, guild, chanlid, author, msgid = self.getdata(data)
+                    result = self.givesn.detect(content, author, guild, guildid, chanlid, msgid)
+                    status = result[0]
+                    data   = result[1]
+                    if status:
+                        self.hooklog(data, "Giveaways", status)
+
+    def getdata(self, data):
+        content = data.get('d').get('content', "None") #
+        guildid = data.get('d').get('guild_id', "None") # 
+        guild   = self.id_to_name(guildid) # 
+        chanlid = data.get('d').get('channel_id', "None") #
+        author  = data.get('d').get('author').get('username', "None") #
+        msgid   = data.get('d').get('id', "None") #
+
+        return content, guildid, guild, chanlid, author, msgid
 
     def on_error(self, ws, error):
-        self.logging.Error(error)
+        if error:
+            self.logging.Error("WS Error: {}".format(error))
+        else:
+            self.logging.Error("WS Error: Unknown")
 
     def on_close(self, ws):
         self.logging.Info("Connection closed")
@@ -142,23 +183,31 @@ class Events:
         self.ws = websocket.WebSocketApp(
             self.dcws,
             on_message=self.on_message,
-            on_error=self.on_error,
             on_close=self.on_close,
             on_open=self.on_open
         )
         self.ws.run_forever()
 
-    def hooklog(self, dic, event):
+    def hooklog(self, dic, event, trigger=""):
         self.load()
-        message = ""
+        self.style()
+        message = "```\n"
+        keys = list(dic.keys())
+        mkey = max(len(k) for k in keys)
 
         for key, value in dic.items():
-            message += "**" + str(key) + "**" + ": " + str(value) + "\n"
+            message += key.ljust(mkey) + "  :  " + str(value) + "\n"
+
+        message += "```"
         data = {
             "content" : event,
             "embeds" : [{
                 "title" : event,
-                "description" : "Event Triggered",
+                "author" : {
+                    "name" : self.hookstyle.get("Author")
+                },
+                "color" : self.hookstyle["Color"],
+                "description" : "Event Triggered: {}".format(trigger) if trigger else "Event Triggered",
                 "fields" : [
                     {
                         "name" : "Event",
@@ -207,14 +256,25 @@ class Events:
                     r = requests.get(webhook)
                 if r.status_code == 404:
                     self.config[event]["webhooks"].remove(webhook)
-                
-                
-
-
         self.redump()
-    
+
+    def loadmodules(self):
+        with open("Assets/Config.json", "r") as f:
+            self.config = json.load(f)
+            self.nitro    = self.config.get("Modules").get("nitro", False)
+            if self.nitro:
+                self.logging.Info("Setting up nitro sniper...")
+                self.nitrosn = NitroSniper(self.token)
+                self.nitrosn.init()
+            self.givsnipe = self.config.get("Modules").get("givesniper", False)    
+            if self.givsnipe:
+                self.logging.Info("Setting up give sniper...")
+                self.givesn = GiveSniper(self.token, self.httptoken)
+                self.givesn.init()  
+
     def init(self):
         self.load()
         self.get_servers()
+        self.loadmodules()
         self.headers = self.spoof.headers(self.token)
         threading.Thread(target=self.run).start()
