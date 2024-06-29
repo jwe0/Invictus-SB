@@ -200,7 +200,6 @@ class Events:
 
         message += "```"
         data = {
-            "content" : event,
             "embeds" : [{
                 "title" : event,
                 "author" : {
@@ -256,6 +255,7 @@ class Events:
                     r = requests.get(webhook)
                 if r.status_code == 404:
                     self.config[event]["webhooks"].remove(webhook)
+                time.sleep(1)
         self.redump()
 
     def loadmodules(self):

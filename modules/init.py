@@ -75,28 +75,36 @@ class Init:
             self.general.art()
             with open("Assets/Config.json", "w") as f:
                 output_modes = ["codeblock"]
+                print("[+] General Settings\n")
+
                 token  = input("[>] User token     : ")
                 prefix = input("[>] Command prefix : ")
                 output = input("[>] Output mode    : ")
                 while output not in output_modes:
                     output = input("[!] Invalid output mode. Try again: ")
+
+                print("\n[+] Modules\n")
+
                 nitro  = input("[>] Nitro sniper?  : ")
                 msglog = input("[>] Log messages?  : ")
                 tcrypt = input("[>] Encrypt token? : ")
                 if tcrypt.lower() == "y":
                     tpass = input("[>] Enter encryption password: ")
                     token = self.general.tcrypt(token, tpass)
+                givesniper = input("[>] GiveSniper?     : ")
+                custompres = input("[>] Custom presence? : ")
                 antitl = input("[>] Anti tokenlog? : ")
                 autolo = input("[>] Auto logout?   : ")
                 if autolo.lower() == "y":
                     userpass = input("[>] Enter account password: ") 
                     if tcrypt.lower() == "y":
                         userpass = self.general.tcrypt(userpass, tpass)
+
+                print("\n[+] Keys\n")
+                    
                 gelkey   = input("[>] Enter gelbooru API key: ")
                 if gelkey:
                     userid = input("[>] Enter gelbooru user ID: ")
-                givesniper = input("[>] GiveSniper?     : ")
-                custompres = input("[>] Custom presence? : ")
 
                 json.dump({"Token": token, 
                            "Prefix": prefix, 
@@ -107,7 +115,8 @@ class Init:
                                        "autologout": True if autolo.lower() == "y" else False, 
                                        "givesniper": True if givesniper.lower() == "y" else False, 
                                        "custompresence": True if custompres.lower() == "y" else False}, 
-                            "Keys" : {"gelboorukey": gelkey, "gelbooruid": userid}, 
+                            "Keys" : {"gelboorukey": gelkey if gelkey else None, 
+                                      "gelbooruid": userid if gelkey else None}, 
                             "TCrypt": True if tcrypt.lower() == "y" else False, 
                             "Account": {"password": userpass} if autolo.lower() == "y" else {}
                         }, f, indent=4)
@@ -115,6 +124,7 @@ class Init:
                     self.presinit()
                 
     def presinit(self):
+        print("\n[+] Custom presence\n")
         custompres = input("[>] Custom presence? : ")
         if custompres.lower() == "y":
             clientid = input("[>] Enter client ID: ")
