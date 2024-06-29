@@ -35,18 +35,30 @@ class Events:
             api = "https://discord.com/api/v9/guilds/{}/channels".format(guildid)
             data = {"name": "Events", "type": 4}
             r = requests.post(api, json=data, headers=self.headers)
+            while r.status_code == 429:
+                self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
+                time.sleep(r.json()["retry_after"] + 1)
+                r = requests.post(api, json=data, headers=self.headers)
             return r.json().get("id")
 
         def create(guildid, name, parent):
             api = "https://discord.com/api/v9/guilds/{}/channels".format(guildid)
             data = {"name": name, "type": 0, "parent_id": parent}
             r = requests.post(api, json=data, headers=self.headers)
+            while r.status_code == 429:
+                self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
+                time.sleep(r.json()["retry_after"] + 1)
+                r = requests.post(api, json=data, headers=self.headers)
             return r.json().get("id")
 
         def webhook(channelid, name):
             api = "https://discord.com/api/v9/channels/{}/webhooks".format(channelid)
             data = {"name": name}
             r = requests.post(api, json=data, headers=self.headers)
+            while r.status_code == 429:
+                self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
+                time.sleep(r.json()["retry_after"] + 1)
+                r = requests.post(api, json=data, headers=self.headers)
             return r.json().get("url")
 
         parent = category()
@@ -188,8 +200,13 @@ class Events:
                 continue
             for webhook in webhooks:
                 r = requests.get(webhook)
+                while r.status_code == 429:
+                    self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
+                    time.sleep(r.json()["retry_after"] + 5)
+                    r = requests.get(webhook)
                 if r.status_code == 404:
                     self.config[event]["webhooks"].remove(webhook)
+                
                 
 
 
