@@ -337,6 +337,22 @@
         "section" : "utility",
         "page" : 2
     },
+    "setupnotifs" : {
+        "name" : "setupnotifs",
+        "description": "Sets up notifications",
+        "params": [],
+        "example": "setupnotifs",
+        "section" : "utility",
+        "page" : 2
+    },
+    "checkhooks" : {
+        "name" : "checkhooks",
+        "description": "Checks if hooks are working",
+        "params": [],
+        "example": "checkhooks",
+        "section" : "utility",
+        "page" : 2
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
