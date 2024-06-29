@@ -53,6 +53,7 @@ class Bot:
         self.sessionheaders = ""
         self.nitrosettings  = {}
         self.givesettings   = {}
+        self.scripts        = []
 
         # Api keys
         self.gelkey = ""
@@ -817,6 +818,14 @@ class Bot:
             await ctx.message.delete()
             self.events.checkhooks()
 
+        @self.bot.command()
+        async def listscripts(ctx):
+            await ctx.message.delete()
+            message = ""
+            for script in self.scripts:
+                message += "[{}] {}".format(str(self.scripts.index(script) + 1), script) + "\n"
+            await ctx.send(self.output("Scripts", self.output2.funny_line(message)))
+
         # NSFW
         @self.bot.command()
         async def r34(ctx, search):
@@ -1003,6 +1012,7 @@ I made this to test my skill as a developer when tasked with a large project.
         for file in os.listdir("Scripts"):
             if file.endswith(".py"):
                 exec(open("Scripts/{}".format(file), "r").read())
+                self.scripts.append(file.split(".py")[0])
         # Setup pypresence
         if press:
             self.logging.Info("Setting up pypresence...")

@@ -24,8 +24,11 @@ class Presence:
             smalltxt = config.get("Presence").get(profile).get("SmallImageText")
             buttons  = config.get("Presence").get(profile).get("Buttons")
 
-
-        self.RPC = PyPres(clientid)
+        try:
+            self.RPC = PyPres(clientid)
+        except Exception as e:
+            self.logging.Info(e)
+            return
         self.RPC.connect()
         self.RPC.update(state=state, 
                         large_image=largekey if largekey else None, 

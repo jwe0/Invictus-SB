@@ -353,6 +353,14 @@
         "section" : "utility",
         "page" : 2
     },
+    "listscripts" : {
+        "name" : "listscripts",
+        "description": "Lists currently loaded scripts",
+        "params": [],
+        "example": "listscripts",
+        "section" : "utility",
+        "page" : 2
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
