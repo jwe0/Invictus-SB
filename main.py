@@ -827,6 +827,36 @@ class Bot:
                 message += "[{}] {}".format(str(self.scripts.index(script) + 1), script) + "\n"
             await ctx.send(self.output("Scripts", self.output2.funny_line(message)))
 
+        @self.bot.command()
+        async def isfemboy(ctx, userid):
+            api = "https://discord.com/api/v9/users/{}/profile".format(userid)
+            score = 0
+
+            flags = [">.<", "^-^", "^_^", ">w<", ":c", "c:", ":p", ":3", "only-my.space", "femboy", ":flag_cz:", ":flag_pl:", "they/them"]
+            possible = len(flags)
+
+            r = requests.get(api, headers=self.sessionheaders)
+
+            if r.status_code == 200:
+                data = r.json()
+                user = []
+                user.append(data.get("user", {}).get("username", ""))
+                user.append(data.get("user", {}).get("global_name", ""))
+                user.append(data.get("user", {}).get("bio", ""))
+                user.append(data.get("user", {}).get("pronouns", ""))
+                
+                for account in data.get("connected_accounts", []):
+                    user.append(account.get("name", ""))
+                
+                for item in user:
+                    for flag in flags:
+                        if flag in item:
+                            score += 1
+                            break
+
+            await ctx.send("Score: {}/{}".format(score, str(possible)))
+
+
         # NSFW
         @self.bot.command()
         async def r34(ctx, search):

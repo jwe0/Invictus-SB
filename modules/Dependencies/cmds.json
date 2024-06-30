@@ -361,6 +361,16 @@
         "section" : "utility",
         "page" : 2
     },
+    "isfemboy" : {
+        "name" : "isfemboy",
+        "description": "Checks if a user is femboy",
+        "params": [
+            ["USER", "(User ID)"]
+        ],
+        "example": "isfemboy 123456789",
+        "section" : "utility",
+        "page" : 2
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
