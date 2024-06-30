@@ -17,4 +17,3 @@ Discord selfbot project.
 
 ## Todo
 - Add proxy support
-- Add notifications - Setup, webhooks, websocket | on join, new friend etc

@@ -744,6 +744,7 @@ class Bot:
 
         @self.bot.command()
         async def spoofmobile(ctx):
+            await ctx.message.delete()
             global last_heartbeat_ack, heartbeat_interval, ws
             
             last_heartbeat_ack = False
@@ -789,11 +790,11 @@ class Bot:
                 self.logging.Error(error)
             
             def on_close(ws, close_status_code, close_msg):
-                self.logging.Info("[>] Connection closed")
+                self.logging.Info("Connection closed")
                 connect()
             
             def on_open(ws):
-                self.logging.Info("[>] Spoofing mobile device...")
+                self.logging.Info("Spoofing mobile device...")
 
             def connect():
                 global ws
