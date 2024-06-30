@@ -190,7 +190,8 @@ class Init:
                     "Guild Leave" : {"status" : False, "name" : "Guild Leave", "webhooks" : []},
                     "Bans"        : {"status" : False, "name" : "Bans", "webhooks" : []},
                     "Giveaways"   : {"status" : False, "name" : "Giveaways", "webhooks" : []},
-                    "Nitros"      : {"status" : False, "name" : "Nitros", "webhooks" : []}
+                    "Nitros"      : {"status" : False, "name" : "Nitros", "webhooks" : []},
+                    "Friends"     : {"status" : False, "name" : "Friends", "webhooks" : []},
                 }
                 json.dump(jsondata, f, indent=4)
 

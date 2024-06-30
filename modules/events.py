@@ -14,6 +14,7 @@ class Events:
         self.token     = token
         self.httptoken = httptoken
         self.config    = {}
+        self.events    = {}
         self.headers   = {}
         self.spoof     = Spoof()
         self.logging   = Logging()
@@ -31,16 +32,16 @@ class Events:
 
     def load(self):
         with open("Assets/Events.json", "r") as f:
-            self.config = json.load(f)
+            self.events = json.load(f)
 
     def style(self):
         with open("Assets/Settings/webhook.json", "r") as f:
             self.hookstyle = json.load(f)
 
     def dumphooks(self, hooks, event):
-        self.config[event]["webhooks"].append(hooks) 
+        self.events[event]["webhooks"].append(hooks) 
         with open("Assets/Events.json", "w") as f:
-            json.dump(self.config, f, indent=4)
+            json.dump(self.events, f, indent=4)
 
     def setup(self, guildid):
         def category():
@@ -74,8 +75,8 @@ class Events:
             return r.json().get("url")
 
         parent = category()
-        for event in self.config:
-            if self.config[event]["status"]:
+        for event in self.events:
+            if self.events[event]["status"]:
                 id = create(guildid, event, parent)
                 hooks = webhook(id, event)
                 self.dumphooks(hooks, event)
@@ -112,22 +113,21 @@ class Events:
                 ws.send(self.wspayload())
             elif data["op"] == 11:
                 self.lastack = True
-            if "t" not in data:
-                return
             elif data['t'] == "GUILD_CREATE":
                 self.servers[data.get('d').get('id')] = {"name": data.get('d').get('name')}
-                if self.config.get("Guild Join").get("status"):
+                if self.events.get("Guild Join").get("status"):
+                    type    = data.get('t')
                     name    = data.get('d').get('name')
                     owner   = data.get('d').get('owner_id')
                     memberc = data.get('d').get('member_count')
                     vanyrle = data.get('d').get('vanity_url_code')
                     premium = "None" if not data.get('d').get('premium_tier') else data.get('d').get('premium_tier')
                     joinat  = data.get('d').get('joined_at')
-                    data = {"Name": name, "Owner": owner, "Members": memberc, "Vanity": vanyrle, "Premium": premium, "Joined": joinat}
+                    data = {"Type": type, "Name": name, "Owner": owner, "Members": memberc, "Vanity": vanyrle, "Premium": premium, "Joined": joinat}
                     self.output.terminal("Guild Joined", data, True)
                     self.hooklog(data, "Guild Join")
             elif data['t'] == "GUILD_DELETE":
-                if self.config.get("Guild Leave").get("status"):
+                if self.events.get("Guild Leave").get("status"):
                     type = data.get('t')
                     opcode = data.get("op")
                     server = data.get('d').get('id')
@@ -136,7 +136,7 @@ class Events:
                     self.output.terminal("Guild Left", data, True)
                     self.hooklog(data, "Guild Leave")
             elif data['t'] == "GUILD_BAN_ADD":
-                if self.config.get("Bans").get("status"):
+                if self.events.get("Bans").get("status"):
                     type   = data.get('t')
                     opcode = data.get("op")
                     server = data.get('d').get('guild_id')
@@ -144,6 +144,18 @@ class Events:
                     data = {"Type": type, "Opcode": opcode, "Server": sname, "Server ID": server}
                     self.output.terminal("Ban", data, True)
                     self.hooklog(data, "Bans")
+            elif data['t'] == "RELATIONSHIP_ADD":
+                if self.events.get("Friends").get("status"):
+                    type2    = data.get("d").get("type")
+                    if str(type2) == "3":
+                        type     = data.get('t')
+                        opcode   = data.get("op")
+                        username = data.get("d").get("user").get("username")
+                        userid   = data.get("d").get("user").get("id")
+                        globname = data.get("d").get("user").get("global_name")
+                        data = {"Type": type, "Opcode": opcode, "Code": type2, "Username": username, "User ID": userid, "Global Name": globname}
+                        self.output.terminal("New Friend", data, True)
+                        self.hooklog(data, "Friends")
             elif data['t'] == "MESSAGE_CREATE":
                 if self.nitro:
                     content, guildid, guild, chanlid, author, msgid = self.getdata(data)
@@ -157,6 +169,7 @@ class Events:
                     data   = result[1]
                     if status:
                         self.hooklog(data, "Giveaways", status)
+            
 
     def getdata(self, data):
         content = data.get('d').get('content', "None") #
@@ -217,15 +230,15 @@ class Events:
             }]
         }
 
-        for webhook in self.config[event]["webhooks"]:
+        for webhook in self.events[event]["webhooks"]:
             r = requests.post(webhook, json=data)
             if r.status_code == 401:
-                self.config[event]["webhooks"].remove(webhook)
+                self.events[event]["webhooks"].remove(webhook)
                 self.redump()
 
     def redump(self):
         with open("Assets/Events.json", "w") as f:
-            json.dump(self.config, f, indent=4)
+            json.dump(self.events, f, indent=4)
 
     def get_servers(self):
         api = "https://discord.com/api/v9/users/@me/guilds"
@@ -242,10 +255,10 @@ class Events:
     
     def checkhooks(self):
         self.load()
-        for event in self.config:
-            webhooks = self.config[event]["webhooks"]
+        for event in self.events:
+            webhooks = self.events[event]["webhooks"]
             if not webhooks:
-                self.config[event]["webhooks"] = []
+                self.events[event]["webhooks"] = []
                 continue
             for webhook in webhooks:
                 r = requests.get(webhook)
@@ -253,8 +266,9 @@ class Events:
                     self.logging.Error("Request throttled waiting {}".format(str(r.json()["retry_after"])))
                     time.sleep(r.json()["retry_after"] + 5)
                     r = requests.get(webhook)
-                if r.status_code == 404:
-                    self.config[event]["webhooks"].remove(webhook)
+                if r.status_code == 404 or r.status_code != 200:
+                    self.logging.Error("Webhook {} not found".format(webhook))
+                    self.events[event]["webhooks"].remove(webhook)
                 time.sleep(1)
         self.redump()
 
