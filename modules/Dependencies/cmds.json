@@ -474,5 +474,28 @@
         "example": "pornhubmodel creamy spot",
         "section" : "nsfw",
         "page" : 1
+    },
+    "rot" : {
+        "name" : "rot",
+        "description" : "Uses ceasars cipher",
+        "params": [
+            ["MESSAGE", "(Message)"],
+            ["MODE", "(encode/decode)"],
+            ["SHIFT", "(Shift amount)"]
+        ],
+        "example": "rot test encode 13",
+        "section" : "crypto",
+        "page" : 1
+    },
+    "b64" : {
+        "name" : "b64",
+        "description" : "Converts text to base64",
+        "params": [
+            ["TEXT", "(Text)"],
+            ["MODE", "(encode/decode)"]
+        ],
+        "example": "base64 test encode",
+        "section" : "crypto",
+        "page" : 1
     }
 }

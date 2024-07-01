@@ -1,4 +1,4 @@
-import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client, os, socket
+import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client, os, socket, base64
 from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
@@ -135,6 +135,12 @@ class Bot:
             await ctx.message.delete()
             cmds = self.search.cmd(page, "nsfw")
             await ctx.send(self.output("NSFW - {} - ({}/{})".format(str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0])))
+
+        @self.bot.command()
+        async def crypto(ctx, page=1):
+            await ctx.message.delete()
+            cmds = self.search.cmd(page, "crypto")
+            await ctx.send(self.output("Crypto - {} - ({}/{})".format(str(cmds[1]), str(1), str(cmds[2])), self.general.help_format(cmds[0])))
 
         # Raid commands
         @self.bot.command()
@@ -831,7 +837,6 @@ class Bot:
         async def isfemboy(ctx, userid):
             api = "https://discord.com/api/v9/users/{}/profile".format(userid)
             score = 0
-
             flags = [">.<", "^-^", "^_^", ">w<", ":c", "c:", ":p", ":3", "only-my.space", "femboy", ":flag_cz:", ":flag_pl:", "they/them"]
             possible = len(flags)
 
@@ -855,7 +860,6 @@ class Bot:
                             break
 
             await ctx.send("Score: {}/{}".format(score, str(possible)))
-
 
         # NSFW
         @self.bot.command()
@@ -989,6 +993,29 @@ class Bot:
         async def status(ctx, status):
             await ctx.message.delete()
             await self.bot.change_presence(activity=discord.Game(name=status))
+
+
+        # Crypto
+
+        @self.bot.command()
+        async def rot(ctx, string, mode="encode", shift=13):
+            await ctx.message.delete()
+            alph = 'abcdefghijklmnopqrstuvwxyz'
+            if mode == "encode":
+                result = ''.join(alph[(alph.index(char) + shift) % 26] if char in alph else char for char in string)
+            elif mode == "decode":
+                result = ''.join(alph[(alph.index(char) - shift) % 26] if char in alph else char for char in string)
+            await ctx.send(self.output("Rot{}".format(str(shift)), "Result: {}".format(result)))
+
+        @self.bot.command()
+        async def b64(ctx, string, mode="encode"):
+            await ctx.message.delete()
+            if mode == "encode":
+                result = base64.b64encode(string.encode()).decode()
+            elif mode == "decode":
+                result = base64.b64decode(string.encode()).decode()
+            await ctx.send(self.output("Base64", "Result: {}".format(result)))
+
 
 
         # Other
