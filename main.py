@@ -16,6 +16,7 @@ from modules.antitokenlog import AntiTokenLog
 from modules.mreact import MassReact
 from modules.presence import Presence
 from modules.events import Events
+from modules.cryptography import Crypto
 
 class Bot:
     def __init__(self):
@@ -27,6 +28,7 @@ class Bot:
         self.database = Database()
         self.search   = Search()
         self.spoof    = Spoof()
+        self.crypto   = Crypto()
         self.events   = None
         self.presence = None
         self.massr    = None
@@ -101,6 +103,7 @@ class Bot:
                 {"name": "fun", "description": "Commands for fun", "params": [], "section": "fun", "page": 1},
                 {"name": "utilities", "description": "Commands for utility", "params": [], "section": "utilities", "page": 1},
                 {"name": "nsfw", "description": "Commands for NSFW", "params": [], "section": "nsfw", "page": 1},
+                {"name": "crypto", "description": "Commands for cryptography", "params": [], "section": "crypto", "page": 1},
             ]
 
             message = self.general.help_format(options)
@@ -110,37 +113,37 @@ class Bot:
         async def raid(ctx, page=1):
             await ctx.message.delete()
             cmds = self.search.cmd(page, "raid")
-            await ctx.send(self.output("Raid - {} - ({}/{})".format(str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0])))
+            await ctx.send(self._help("Raid", cmds, page))
 
         @self.bot.command()
         async def troll(ctx, page=1):
             await ctx.message.delete()
             cmds = self.search.cmd(page, "troll")
-            await ctx.send(self.output("Troll - {} - ({}/{})".format(str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0])))
+            await ctx.send(self._help("Troll", cmds, page))
 
         @self.bot.command()
         async def fun(ctx, page=1):
             await ctx.message.delete()
             cmds = self.search.cmd(page, "fun")
-            await ctx.send(self.output("Fun - {} - ({}/{})".format(str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0])))
+            await ctx.send(self._help("Fun", cmds, page))
 
         @self.bot.command()
         async def utilities(ctx, page=1):
             await ctx.message.delete()
             cmds = self.search.cmd(page, "utility")
-            await ctx.send(self.output("Utilities - {} - ({}/{})".format(str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0])))
+            await ctx.send(self._help("Utilities", cmds, page))
 
         @self.bot.command()
         async def nsfw(ctx, page=1):
             await ctx.message.delete()
             cmds = self.search.cmd(page, "nsfw")
-            await ctx.send(self.output("NSFW - {} - ({}/{})".format(str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0])))
+            await ctx.send(self._help("NSFW", cmds, page))
 
         @self.bot.command()
         async def crypto(ctx, page=1):
             await ctx.message.delete()
             cmds = self.search.cmd(page, "crypto")
-            await ctx.send(self.output("Crypto - {} - ({}/{})".format(str(cmds[1]), str(1), str(cmds[2])), self.general.help_format(cmds[0])))
+            await ctx.send(self._help("Crypto", cmds, page))
 
         # Raid commands
         @self.bot.command()
@@ -1000,20 +1003,13 @@ class Bot:
         @self.bot.command()
         async def rot(ctx, string, mode="encode", shift=13):
             await ctx.message.delete()
-            alph = 'abcdefghijklmnopqrstuvwxyz'
-            if mode == "encode":
-                result = ''.join(alph[(alph.index(char) + shift) % 26] if char in alph else char for char in string)
-            elif mode == "decode":
-                result = ''.join(alph[(alph.index(char) - shift) % 26] if char in alph else char for char in string)
+            result = self.crypto.rot(string, mode, shift)
             await ctx.send(self.output("Rot{}".format(str(shift)), "Result: {}".format(result)))
 
         @self.bot.command()
         async def b64(ctx, string, mode="encode"):
             await ctx.message.delete()
-            if mode == "encode":
-                result = base64.b64encode(string.encode()).decode()
-            elif mode == "decode":
-                result = base64.b64decode(string.encode()).decode()
+            result = self.crypto.b64(string, mode)
             await ctx.send(self.output("Base64", "Result: {}".format(result)))
 
 
@@ -1030,7 +1026,8 @@ I made this to test my skill as a developer when tasked with a large project.
             await ctx.send(self.output("Credits", message))
 
     
-
+    def _help(self, section, cmds, page=1):
+        return self.output("{} / Cmds: ({}) / Page: ({}/{})".format(section, str(cmds[1]), str(page), str(cmds[2])), self.general.help_format(cmds[0]))
 
 
     def run(self):

@@ -78,29 +78,36 @@ class General:
 
 
         message = ""
-        options      = []
-        arguments    = []
-        descriptions = []
+        options      = ["Command"]
+        arguments    = ["Arguments"]
+        descriptions = ["Description"]
 
         for option, argument, description in array:
             options.append(option)
             arguments.append(argument if argument else "[None]")
             descriptions.append(description)
 
-
         options_padding   = max(len(option) for option in options) + 2
+        options.pop(0)
         arguments_padding = max(len(argument) for argument in arguments) + 2
+        arguments.pop(0)
+        description_padding = max(len(description) for description in descriptions)
+        descriptions.pop(0)
         
         cache1 = []
 
-        message += f"{'Command'.ljust(options_padding)} | {'Arguments'.ljust(arguments_padding)} | Description\n"
+        message += "+ " + "-" * options_padding + " + " + "-" * arguments_padding + " + " + "-" * description_padding + " +\n"
+        message += f"| {'Command'.ljust(options_padding)} | {'Arguments'.ljust(arguments_padding)} | {'Description'.ljust(description_padding)} |\n"
+        message += f"+ {'-' * options_padding} + {'-' * arguments_padding} + {'-' * max(len(description) for description in descriptions)} +\n"
         for i in range(len(options)):
-            cache1.append(f"{options[i].ljust(options_padding)} | {arguments[i].ljust(arguments_padding)} | {descriptions[i]}\n")
+            cache1.append(f"| {options[i].ljust(options_padding)} | {arguments[i].ljust(arguments_padding)} | {descriptions[i].ljust(description_padding)} |\n")
         
         while cache1:
             max_length = max(cache1, key=len)
             message += max_length
             cache1.remove(max_length)
+
+        message += "+ " + "-" * options_padding + " + " + "-" * arguments_padding + " + " + "-" * description_padding + " +\n"
         
         
 

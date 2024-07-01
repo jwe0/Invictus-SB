@@ -359,7 +359,7 @@
         "params": [],
         "example": "listscripts",
         "section" : "utility",
-        "page" : 2
+        "page" : 3
     },
     "isfemboy" : {
         "name" : "isfemboy",
@@ -369,7 +369,7 @@
         ],
         "example": "isfemboy 123456789",
         "section" : "utility",
-        "page" : 2
+        "page" : 3
     },
     "vcspam" : {
         "name" : "vcspam",

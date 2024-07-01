@@ -17,3 +17,4 @@ Discord selfbot project.
 
 ## Todo
 - Add proxy support
+- Add full cryptography
