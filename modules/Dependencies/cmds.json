@@ -371,6 +371,16 @@
         "section" : "utility",
         "page" : 3
     },
+    "upload" : {
+        "name" : "upload",
+        "description": "Uploads a file",
+        "params": [
+            ["PATH", "(Path to file)"]
+        ],
+        "example": "upload ./test.txt",
+        "section" : "utility",
+        "page" : 3
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",

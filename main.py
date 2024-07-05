@@ -80,6 +80,10 @@ class Bot:
 
         @self.bot.event
         async def on_command_error(ctx, error):
+            try:
+                await ctx.message.delete()
+            except:
+                pass
             self.logging.Error(str(error))
 
         @self.bot.event
@@ -645,8 +649,9 @@ class Bot:
             description, params, example = self.search.get(cmd)
             message = ""
             maxparam = max([len(param[0]) for param in params]) if params else 0
-            for param in params:
-                message += "{} : {}\n".format(param[0].ljust(maxparam), param[1])
+            if params:
+                for param in params:
+                    message += "{} : {}\n".format(param[0].ljust(maxparam), param[1])
             await ctx.send(self.output("Command Info", f"Description: {description}\n\n{message}\nExample: {example}\n"))
 
         @self.bot.command()
@@ -683,7 +688,7 @@ class Bot:
         @self.bot.command()
         async def cmdcount(ctx):
             await ctx.message.delete()
-            await ctx.send(self.output("Command Count", str(len(self.bot.commands)) + "\n"))
+            await ctx.send(self.output("Command Count", str(len(self.cmds.keys())) + "\n"))
 
         @self.bot.command()
         async def scrape(ctx, channelid=""):
@@ -866,13 +871,14 @@ class Bot:
             await ctx.send("Score: {}/{}".format(score, str(possible)))
 
         @self.bot.command()
-        async def translate(ctx, text, src="auto", lang="en"):
+        async def upload(ctx, url):
             await ctx.message.delete()
-            translator = Translator()
-            result     = translator.translate(text, dest=lang, src=src) 
-            print(result)
+            if os.path.exists(url):
+                await ctx.send(file=discord.File(url))
+            else:
+                await ctx.send(url)
 
-            await ctx.send(result.text)
+        
 
         # NSFW
         @self.bot.command()
@@ -1024,6 +1030,7 @@ class Bot:
 
         @self.bot.command()
         async def aes(ctx, string, mode="encode", method="cbc", key=""):
+            await ctx.message.delete()
             if len(key) != 16:
                 self.logging.Error("Key must be 16 characters")
                 return

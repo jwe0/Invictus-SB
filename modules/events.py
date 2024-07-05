@@ -96,13 +96,17 @@ class Events:
         })
 
     def heartbeat(self):
-        while True:
-            if self.hbint:
-                time.sleep(self.hbint / 1000)
-                if not self.lastack:
+        try:
+            while True:
+                if self.hbint:
+                    time.sleep(self.hbint / 1000)
+                    if not self.lastack:
+                        self.ws.send(json.dumps({"op": 1, "d": None}))
+                    self.lastack = False
                     self.ws.send(json.dumps({"op": 1, "d": None}))
-                self.lastack = False
-                self.ws.send(json.dumps({"op": 1, "d": None}))
+        except Exception as e:
+            self.logging.Error(e)
+            threading.Thread(target=self.run).start()
 
     def on_message(self, ws, message):
         if message:
@@ -286,9 +290,12 @@ class Events:
                 self.givesn = GiveSniper(self.token, self.httptoken)
                 self.givesn.init()  
 
+    def connect(self):
+        threading.Thread(target=self.run).start()
+
     def init(self):
         self.load()
         self.get_servers()
         self.loadmodules()
         self.headers = self.spoof.headers(self.token)
-        threading.Thread(target=self.run).start()
+        self.connect()
