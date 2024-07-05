@@ -497,5 +497,18 @@
         "example": "base64 test encode",
         "section" : "crypto",
         "page" : 1
+    },
+    "aes" : {
+        "name" : "aes",
+        "description" : "Encrypts text with AES",
+        "params": [
+            ["TEXT", "(Text)"],
+            ["MODE", "(encode/decode)"],
+            ["METHOD", "(CBC/CTR/CFB/OFB)"],
+            ["KEY", "(Key)"]
+        ],
+        "example": "aes test encode CBC 1234567890123456",
+        "section" : "crypto",
+        "page" : 1
     }
 }

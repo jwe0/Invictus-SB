@@ -3,6 +3,7 @@ from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
 from bs4 import BeautifulSoup
+from googletrans import Translator
 from discord.ext import commands
 from modules.colors import Colors
 from modules.general import General
@@ -864,6 +865,15 @@ class Bot:
 
             await ctx.send("Score: {}/{}".format(score, str(possible)))
 
+        @self.bot.command()
+        async def translate(ctx, text, src="auto", lang="en"):
+            await ctx.message.delete()
+            translator = Translator()
+            result     = translator.translate(text, dest=lang, src=src) 
+            print(result)
+
+            await ctx.send(result.text)
+
         # NSFW
         @self.bot.command()
         async def r34(ctx, search):
@@ -1011,6 +1021,24 @@ class Bot:
             await ctx.message.delete()
             result = self.crypto.b64(string, mode)
             await ctx.send(self.output("Base64", "Result: {}".format(result)))
+
+        @self.bot.command()
+        async def aes(ctx, string, mode="encode", method="cbc", key=""):
+            if len(key) != 16:
+                self.logging.Error("Key must be 16 characters")
+                return
+            
+            if method == "cbc":
+                result = self.crypto.aes_cbc(string, key, mode)
+            elif method == "ctr":
+                result = self.crypto.aes_ctr(string, key, mode)
+            elif method == "cfb":
+                result = self.crypto.aes_cfb(string, key, mode)
+            elif method == "ofb":
+                result = self.crypto.aes_ofb(string, key, mode)
+
+
+            await ctx.send(self.output("AES", "Result: {}".format(result)))
 
 
 
