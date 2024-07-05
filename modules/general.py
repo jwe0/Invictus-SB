@@ -69,13 +69,10 @@ class General:
 
         for command in dic:
             param2 = ""
-            name = command.get("name")
-            description = command.get("description")
             params = command.get("params")
             for param in params:
                 param2 += "[{}] ".format(param[0])
-            array.append((name, param2, description))
-
+            array.append((command.get("name"), param2, command.get("description")))
 
         message = ""
         options      = ["Command"]
@@ -109,8 +106,6 @@ class General:
 
         message += "+ " + "-" * options_padding + " + " + "-" * arguments_padding + " + " + "-" * description_padding + " +\n"
         
-        
-
         return message
     
     def removespecial(self, message):

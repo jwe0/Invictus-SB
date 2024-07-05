@@ -1027,7 +1027,6 @@ class Bot:
             if len(key) != 16:
                 self.logging.Error("Key must be 16 characters")
                 return
-            
             if method == "cbc":
                 result = self.crypto.aes_cbc(string, key, mode)
             elif method == "ctr":
@@ -1036,7 +1035,6 @@ class Bot:
                 result = self.crypto.aes_cfb(string, key, mode)
             elif method == "ofb":
                 result = self.crypto.aes_ofb(string, key, mode)
-
 
             await ctx.send(self.output("AES", "Result: {}".format(result)))
 
