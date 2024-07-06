@@ -546,11 +546,16 @@ class Bot:
         async def iplookup(ctx, ip):
             await ctx.message.delete()
             url = "http://ip-api.com/json/{}".format(ip)
+            # [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value4"])]
             r = requests.get(url)
-            message = ""
-            for key, value in r.json().items():
-                message += "{}: {}\n".format(key.title(), value)
-            await ctx.send(self.output("IP Lookup", self.output2.funny_line(message)))
+            data = r.json()
+
+            table = [("Key", [str(key).title() for key in data.keys()]), ("Value", [str(value) for value in data.values()])]
+
+            result = self.output2.mysqltable(table)
+            print(result)
+
+            await ctx.send(self.output("IP Lookup", result))
 
         @self.bot.command()
         async def portscan(ctx, ip):
@@ -1075,6 +1080,13 @@ Aided by my goo friend neebooo - https://github.com/neebooo
 I made this to test my skill as a developer when tasked with a large project.
 """ 
             await ctx.send(self.output("Credits", message))
+
+        @self.bot.command()
+        async def mysqltest(ctx):
+            await ctx.message.delete()
+            args = [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value"])]
+            result = self.output2.mysqltable(args)
+            await ctx.send("```" + result + "```")
 
     
     def _help(self, section, cmds, page=1):
