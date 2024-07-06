@@ -1,4 +1,4 @@
-import requests, json, threading
+import requests, json, threading, whois
 from bs4 import BeautifulSoup
 from modules.spoof import Spoof
 
@@ -53,6 +53,19 @@ class OSINT:
 
     def makeheaders(self):
         self.heads["User-Agent"] = self.spoof.useragent()
+
+    def domainwhois(self, domain):
+        info = whois.whois(domain)
+        message = ""
+        for key, value in info.items():
+            if isinstance(value, list):
+                message += f"\t{key.title()}:\n"
+                for item in value:
+                    message += f"\t\t{item}\n"
+            else:
+                message += f"{key.title()}: {value}\n"
+        return message
+
 
     def init(self):
         with open("Assets/Sites.json", "r") as f:

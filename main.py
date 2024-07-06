@@ -890,6 +890,13 @@ class Bot:
             ping = self.general.ping(url)
             await ctx.send(self.output("Web Ping", "Response Time: {}ms".format(ping)))
 
+        @self.bot.command()
+        async def domainwhois(ctx, domain):
+            await ctx.message.delete()
+            result = self.osint.domainwhois(domain)
+            await ctx.send(self.output("Domain Whois", result))
+            
+
     
         # NSFW
         @self.bot.command()

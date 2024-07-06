@@ -401,6 +401,16 @@
         "section" : "utility",
         "page" : 3
     },
+    "domainwhois" : {
+        "name" : "domainwhois",
+        "description": "Gets whois info for a domain",
+        "params": [
+            ["DOMAIN", "(Domain)"]
+        ],
+        "example": "domainwhois google.com",
+        "section" : "utility",
+        "page" : 3
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
