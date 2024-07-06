@@ -18,6 +18,7 @@ from modules.mreact import MassReact
 from modules.presence import Presence
 from modules.events import Events
 from modules.cryptography import Crypto
+from modules.osint import OSINT
 
 class Bot:
     def __init__(self):
@@ -30,6 +31,7 @@ class Bot:
         self.search   = Search()
         self.spoof    = Spoof()
         self.crypto   = Crypto()
+        self.osint    = OSINT()
         self.events   = None
         self.presence = None
         self.massr    = None
@@ -678,9 +680,7 @@ class Bot:
                     msg += "\nConnected Accounts:\n\n"
                     msg += connected
 
-                await ctx.send(self.output("Whois", self.output2.funny_line(msg)))
-
-
+                await ctx.send(self.output("Whois", msg))
             else:
                 return
         
@@ -877,6 +877,12 @@ class Bot:
                 await ctx.send(file=discord.File(url))
             else:
                 await ctx.send(url)
+
+        @self.bot.command()
+        async def username(ctx, username):
+            await ctx.message.delete()
+            results = self.osint.usernameosint(username)
+            await ctx.send(self.output("Username Search", "\n".join(results)))
 
         
 
@@ -1109,6 +1115,9 @@ I made this to test my skill as a developer when tasked with a large project.
             self.logging.Info("Setting up pypresence...")
             self.presence = Presence(self.token)
             threading.Thread(target=self.presence.pres).start()
+        # Setup osint
+        self.logging.Info("Setting up osint...")
+        self.osint.init()
         # Run
         self.logging.Info("Running bot...")
         self.bot.run(self.token, bot=False)

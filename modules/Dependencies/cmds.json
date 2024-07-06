@@ -381,6 +381,16 @@
         "section" : "utility",
         "page" : 3
     },
+    "username" : {
+        "name" : "username",
+        "description" : "Search the internet for a username",
+        "params": [
+            ["USERNAME", "(Username)"]
+        ],
+        "example": "username n",
+        "section" : "utility",
+        "page" : 3
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
