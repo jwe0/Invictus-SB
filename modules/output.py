@@ -76,7 +76,6 @@ class Output:
     def mysqltable(self, args):
         # Implement dynamic creation of mysql table format output like in help format
         # [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value4"])]
-        prog = 0
         message = []
         for arg in args:
             submsg = ""
@@ -90,5 +89,4 @@ class Output:
                 submsg += "| " + value.ljust(padding) + " | \n"
             submsg += "+ " + "-" * padding    + " + \n"
             message.append(submsg)
-            prog += 1
         return self.join_side_by_side(*message)

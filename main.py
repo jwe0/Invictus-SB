@@ -560,8 +560,9 @@ class Bot:
         async def portscan(ctx, ip):
             await ctx.message.delete()
             ports = [(21, "ftp"), (22, "ssh"), (23, "telnet"), (25, "smtp"), (53, "dns"), (80, "http"), (110, "pop3"), (443, "https")]
-            message = ""
             padding = self.general.basic_padding(ports)
+            openx = []
+            namex = []
             for port, name in ports:
                 s = socket.socket()
                 s.settimeout(0.5)
@@ -569,8 +570,10 @@ class Bot:
                 if result == 0:
                     while len(name) < padding:
                         name += " "
-                    message += "{}: {}\n".format(name, port)
-            await ctx.send(self.output("Port Scan", self.output2.funny_line(message)))
+                    openx.append(str(port))
+                    namex.append(name)
+            result = self.output2.mysqltable([("Port", openx), ("Name", namex)])
+            await ctx.send(self.output("Port Scan", result))
 
         @self.bot.command()
         async def phonenumber(ctx, number):
@@ -1083,7 +1086,7 @@ I made this to test my skill as a developer when tasked with a large project.
         @self.bot.command()
         async def mysqltest(ctx):
             await ctx.message.delete()
-            args = [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value"])]
+            args = [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value"]), ("Column3", ["Value4", "Value5"])]
             result = self.output2.mysqltable(args)
             await ctx.send("```" + result + "```")
 
