@@ -553,7 +553,6 @@ class Bot:
             table = [("Key", [str(key).title() for key in data.keys()]), ("Value", [str(value) for value in data.values()])]
 
             result = self.output2.mysqltable(table)
-            print(result)
 
             await ctx.send(self.output("IP Lookup", result))
 
