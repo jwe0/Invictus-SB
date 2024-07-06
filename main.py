@@ -653,7 +653,7 @@ class Bot:
             maxparam = max([len(param[0]) for param in params]) if params else 0
             if params:
                 for param in params:
-                    message += "{} : {}\n".format(param[0].ljust(maxparam), param[1])
+                    message += "{} » {}\n".format(param[0].ljust(maxparam), param[1])
             await ctx.send(self.output("Command Info", f"Description: {description}\n\n{message}\nExample: {example}\n"))
 
         @self.bot.command()
