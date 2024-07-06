@@ -157,9 +157,9 @@ class General:
         response = requests.get(api, headers=headers)
 
         if response.status_code == 200:
-            return True
+            return (True, response.status_code, response.json())
         else:
-            return False
+            return (False, response.status_code, response.json())
         
     def load_givesniper_settings(self):
         with open("Assets/Settings/givesniper.json", "r") as f:

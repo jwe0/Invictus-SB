@@ -1068,8 +1068,11 @@ I made this to test my skill as a developer when tasked with a large project.
         # Load config
         self.logging.Info("Loading config...")
         self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt, self.gelkey, self.userid, self.give, press = self.general.load_config()
-        if self.general.checktoken(self.token) == False:
+        token_check = self.general.checktoken(self.token)
+        if token_check[0] == False:
             self.logging.Error("Invalid token!")
+            self.logging.Error("Status code: {}".format(token_check[1]))
+            self.logging.Error("Json response: {}".format(token_check[2]))
             input("[>] Press enter to exit.")
             exit()
         # Initalize discord.py

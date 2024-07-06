@@ -1,6 +1,7 @@
 import base64, json
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
+from Crypto.Random import get_random_bytes
 
 class Crypto:
     def __init__(self):
@@ -122,3 +123,6 @@ class Crypto:
             data = cipher.decrypt(ct)
 
             return data.decode()
+        
+    def random_key(self, length):
+        return get_random_bytes(length)
