@@ -59,7 +59,7 @@ class OSINT:
         message = ""
         for key, value in info.items():
             if isinstance(value, list):
-                message += f"\t{key.title()}:\n"
+                message += f"{key.title()}:\n"
                 for item in value:
                     message += f"\t\t{item}\n"
             else:
