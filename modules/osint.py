@@ -17,18 +17,21 @@ class OSINT:
         results = []
         def check(url, type, code):
             r = requests.get(url, headers=self.heads)
-            if type == "status-code":
-                if r.status_code == int(code):
-                    results.append(url)
-            elif type == "site-content":
-                soup = BeautifulSoup(r.text, "html.parser")
-                if code in soup.text:
-                    results.append(url)
-            elif type == "title-content":
-                soup = BeautifulSoup(r.text, "html.parser")
-                title = soup.find("title").text
-                if code in title:
-                    results.append(url)
+            try:
+                if type == "status-code":
+                    if r.status_code == int(code):
+                        results.append(url)
+                elif type == "site-content":
+                    soup = BeautifulSoup(r.text, "html.parser")
+                    if code in soup.text:
+                        results.append(url)
+                elif type == "title-content":
+                    soup = BeautifulSoup(r.text, "html.parser")
+                    title = soup.find("title").text
+                    if code in title:
+                        results.append(url)
+            except:
+                pass
             self.currt += 1
             
         self.total = len(self.links) - 1

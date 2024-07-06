@@ -391,6 +391,16 @@
         "section" : "utility",
         "page" : 3
     },
+    "webping" : {
+        "name" : "webping",
+        "description": "Pings a website",
+        "params": [
+            ["URL", "(URL)"]
+        ],
+        "example": "webping https://google.com",
+        "section" : "utility",
+        "page" : 3
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",

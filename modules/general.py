@@ -176,3 +176,11 @@ class General:
     def randomnstring(self, length):
         return "".join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
     
+    def ping(self, page):
+        start = time.time()
+        if "https://" not in page:
+            page = "https://" + page
+        requests.get(page)
+        end = time.time()
+        timems = int((end - start) * 1000)
+        return timems

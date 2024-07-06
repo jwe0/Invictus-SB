@@ -884,8 +884,13 @@ class Bot:
             results = self.osint.usernameosint(username)
             await ctx.send(self.output("Username Search", "\n".join(results)))
 
-        
+        @self.bot.command()
+        async def webping(ctx, url):
+            await ctx.message.delete()
+            ping = self.general.ping(url)
+            await ctx.send(self.output("Web Ping", "Response Time: {}ms".format(ping)))
 
+    
         # NSFW
         @self.bot.command()
         async def r34(ctx, search):
