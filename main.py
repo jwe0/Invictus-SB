@@ -19,6 +19,7 @@ from modules.presence import Presence
 from modules.events import Events
 from modules.cryptography import Crypto
 from modules.osint import OSINT
+from modules.dos import Dos
 
 class Bot:
     def __init__(self):
@@ -32,6 +33,7 @@ class Bot:
         self.spoof    = Spoof()
         self.crypto   = Crypto()
         self.osint    = OSINT()
+        self.dos      = Dos()
         self.events   = None
         self.presence = None
         self.massr    = None
@@ -1153,6 +1155,8 @@ I made this to test my skill as a developer when tasked with a large project.
         # Setup osint
         self.logging.Info("Setting up osint...")
         self.osint.init()
+        self.logging.Info("Setting up dos...")
+        self.dos.init()
         # Run
         self.logging.Info("Running bot...")
         self.bot.run(self.token, bot=False)

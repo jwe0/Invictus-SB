@@ -24,3 +24,4 @@ Discord selfbot project.
 
 ## Todo
 - Add proxy support
+- Add dos tools
