@@ -1070,6 +1070,15 @@ class Bot:
 
             await ctx.send(self.output("AES", "Result: {}".format(result)))
 
+        @self.bot.command()
+        async def fernet(ctx, string, mode="encode", key=""):
+            await ctx.message.delete()
+            if len(key) != 32:
+                self.logging.Error("Key must be 32 characters")
+                return
+            result = self.crypto.fernet(string, key, mode)
+            await ctx.send(self.output("Fernet", "Result: {}".format(result)))
+
 
 
         # Other

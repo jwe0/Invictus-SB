@@ -1,4 +1,5 @@
 import base64, json
+from cryptography.fernet import Fernet
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
@@ -123,6 +124,15 @@ class Crypto:
             data = cipher.decrypt(ct)
 
             return data.decode()
+        
+    def fernet(self, string, key, mode="encode"):
+        f = Fernet(key)
+        if mode == "encode":
+            token = f.encrypt(string.encode())
+            return base64.b64encode(token).decode()
+        elif mode == "decode":
+            token = base64.b64decode(string)
+            return f.decrypt(token).decode()
         
     def random_key(self, length):
         return get_random_bytes(length)

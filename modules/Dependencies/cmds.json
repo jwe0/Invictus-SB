@@ -550,5 +550,17 @@
         "example": "aes test encode CBC 1234567890123456",
         "section" : "crypto",
         "page" : 1
+    },
+    "fernet" : {
+        "name" : "fernet",
+        "description" : "Encrypts text with Fernet",
+        "params": [
+            ["TEXT", "(Text)"],
+            ["MODE", "(encode/decode)"],
+            ["KEY", "(Key)"]
+        ],
+        "example": "fernet test encode 1234567890123456",
+        "section" : "crypto",
+        "page" : 1
     }
 }
