@@ -12,3 +12,6 @@ class Logging:
 
     def Info(self, message):
         print("[{red}>{reset}] {message}".format(red=Colors.blue, reset=Colors.white, message=message))
+
+    def BasicInput(self, message):
+        input("[{red}>{reset}] {message}".format(red=Colors.blue, reset=Colors.white, message=message))

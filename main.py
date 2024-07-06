@@ -1073,7 +1073,7 @@ I made this to test my skill as a developer when tasked with a large project.
             self.logging.Error("Invalid token!")
             self.logging.Error("Status code: {}".format(token_check[1]))
             self.logging.Error("Json response: {}".format(token_check[2]))
-            input("[>] Press enter to exit.")
+            self.logging.BasicInput("Press enter to exit...")
             exit()
         # Initalize discord.py
         self.logging.Info("Setting up the bot...")
