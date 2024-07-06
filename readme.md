@@ -20,6 +20,7 @@ Discord selfbot project.
 - Dynamic help command for easier help
 - Advanced giveaway joiner
 - Nitro sniper and auto redeemer
+- Events with a custom websocket thread
 
 ## Todo
 - Add proxy support
