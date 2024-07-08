@@ -329,10 +329,12 @@
         "section" : "utility",
         "page" : 2
     },
-    "spoofmobile" : {
-        "name" : "spoofmobile",
+    "spoof" : {
+        "name" : "spoof",
         "description": "Spoofs mobile",
-        "params": [],
+        "params": [
+            ["DEVICE", "(Device, mobile, desktop, web)"]
+        ],
         "example": "spoofmobile",
         "section" : "utility",
         "page" : 2

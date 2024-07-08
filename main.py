@@ -113,6 +113,7 @@ class Bot:
                 {"name": "utilities", "description": "Commands for utility", "params": [], "section": "utilities", "page": 1},
                 {"name": "nsfw", "description": "Commands for NSFW", "params": [], "section": "nsfw", "page": 1},
                 {"name": "crypto", "description": "Commands for cryptography", "params": [], "section": "crypto", "page": 1},
+                {"name": "dos", "description": "Commands for DoS", "params": [], "section": "dos", "page": 1},
             ]
 
             message = self.general.help_format(options)
@@ -153,6 +154,12 @@ class Bot:
             await ctx.message.delete()
             cmds = self.search.cmd(page, "crypto")
             await ctx.send(self._help("Crypto", cmds, page))
+        
+        @self.bot.command()
+        async def dos(ctx, page=1):
+            await ctx.message.delete()
+            cmds = self.search.cmd(page, "dos")
+            await ctx.send(self._help("DoS", cmds, page))
 
         # Raid commands
         @self.bot.command()
@@ -767,7 +774,7 @@ class Bot:
             await ctx.send(self.output("List Presence", "\n".join(profiles)))
 
         @self.bot.command()
-        async def spoofmobile(ctx):
+        async def spoof(ctx, device):
             await ctx.message.delete()
             global last_heartbeat_ack, heartbeat_interval, ws
             
@@ -782,9 +789,9 @@ class Bot:
                     "d": {
                         "token": self.token,
                         "properties": {
-                            "$os": "iOS",
-                            "$browser": "Discord iOS",
-                            "$device": "Discord iOS"
+                            "$os": "iOS" if device == "mobile" else ("Windows" if device == "pc" else "Linux"),
+                            "$browser": "Discord iOS" if device == "mobile" else ("Discord" if device == "pc" else "Discord Browser"),
+                            "$device": "iOS" if device == "mobile" else ("Windows" if device == "pc" else "Linux")
                         }
                     }
                 })
