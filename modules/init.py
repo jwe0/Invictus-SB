@@ -428,7 +428,9 @@ class Init:
                 }
                 json.dump(jsondata, f, indent=4)
 
-
+    def temp(self):
+        if not os.path.exists("Assets/Temp"):
+            os.mkdir("Assets/Temp")
 
 
     def init(self):
@@ -441,4 +443,5 @@ class Init:
         self.initalizesql()
         self.eventloggerinit()
         self.sites()
+        self.temp()
         self.config()

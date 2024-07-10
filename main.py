@@ -550,6 +550,7 @@ class Bot:
 
         @self.bot.command()
         async def phlogo(ctx, start, end):
+            await ctx.message.delete()
             api = "https://logohub.appspot.com/{}-{}".format(start, end)
             r = requests.get(api)
             svg = r.content
@@ -557,8 +558,8 @@ class Bot:
                 f.write(svg)
             cairosvg.svg2png(url="temp.svg", write_to="temp.png")
             await ctx.send(file=discord.File("temp.png"))
-            os.remove("temp.png")
-            os.remove("temp.svg")
+            os.remove("Assets/Temp/temp.png")
+            os.remove("Assets/Temp/temp.svg")
 
         
         # Utility commands
