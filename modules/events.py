@@ -102,12 +102,10 @@ class Events:
                     time.sleep(self.hbint / 1000)
                     if not self.lastack:
                         self.ws.send(json.dumps({"op": 1, "d": None}))
-                    self.logging.Info("Heartbeat not acknowledged reauthenticating...")
-                    self.ws.send(self.wspayload())
                     self.lastack = False
         except Exception as e:
             self.logging.Error(e)
-            threading.Thread(target=self.run).start()
+            # threading.Thread(target=self.run).start()
 
     def on_message(self, ws, message):
         if message:

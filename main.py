@@ -554,10 +554,10 @@ class Bot:
             api = "https://logohub.appspot.com/{}-{}".format(start, end)
             r = requests.get(api)
             svg = r.content
-            with open("temp.svg", "wb") as f:
+            with open("Assets/Temp/temp.svg", "wb") as f:
                 f.write(svg)
             cairosvg.svg2png(url="Assets/Temp/temp.svg", write_to="Assets/Temp/temp.png")
-            await ctx.send(file=discord.File("temp.png"))
+            await ctx.send(file=discord.File("Assets/Temp/temp.png"))
             os.remove("Assets/Temp/temp.png")
             os.remove("Assets/Temp/temp.svg")
 
@@ -937,12 +937,12 @@ class Bot:
                     pdesc.append(self.cmds[cmd]["description"])
                     pcsec.append(self.cmds[cmd]["section"])
                     pcexm.append(self.cmds[cmd]["example"])
-
-            possibles = [("Command", pcmds), ("Description", pdesc), ("Section", pcsec), ("Example", pcexm)]
+            if len(pcmds) != 0:
+                possibles = [("Command", pcmds), ("Description", pdesc), ("Section", pcsec), ("Example", pcexm)]
+            else:
+                possibles = [("Command", ["None found"])]
             table = self.output2.table(possibles)
-            
-            if len(possibles) != 0:
-                await ctx.send(self.output("Search", table))
+            await ctx.send(self.output("Search", table))
             
 
     
