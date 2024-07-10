@@ -556,7 +556,7 @@ class Bot:
             svg = r.content
             with open("temp.svg", "wb") as f:
                 f.write(svg)
-            cairosvg.svg2png(url="temp.svg", write_to="temp.png")
+            cairosvg.svg2png(url="Assets/Temp/temp.svg", write_to="Assets/Temp/temp.png")
             await ctx.send(file=discord.File("temp.png"))
             os.remove("Assets/Temp/temp.png")
             os.remove("Assets/Temp/temp.svg")
