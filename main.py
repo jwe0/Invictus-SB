@@ -813,11 +813,7 @@ class Bot:
                 while True:
                     if heartbeat_interval:
                         time.sleep(heartbeat_interval / 1000)
-                        if not last_heartbeat_ack:
-                            self.logging.Info("Heartbeat not acknowledged, reconnecting...")
-                            ws.send(payload())
-                        last_heartbeat_ack = False
-                        ws.send(json.dumps({"op": 1, "d": None}))
+                        ws.send(json.dumps({"op": 1, "d": "null"}))
 
             def on_message(ws, message):
                 global last_heartbeat_ack, heartbeat_interval

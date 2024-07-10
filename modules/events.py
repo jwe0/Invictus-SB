@@ -87,6 +87,7 @@ class Events:
             "op": 2,
             "d": {
                 "token": self.token,
+                "intents": 513,
                 "properties": {
                     "$os": "windows",
                     "$browser": "Discord",
