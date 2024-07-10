@@ -10,7 +10,7 @@ class Output:
     def output(self, title, message):
         with open("Assets/Config.json", "r") as f:
             config = json.load(f)
-            mode = config.get("Output", "Text")
+            mode = config.get("Output", "none")
             if mode == "codeblock":
                 return self.code_block(title, message)
             elif mode == "none":
