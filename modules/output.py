@@ -56,37 +56,39 @@ class Output:
 
         print("".join(message))
 
-    def join_side_by_side(self, *args):
-        split_args = [arg.splitlines() for arg in args]
-        max_lines = max(len(lines) for lines in split_args)
-        padded_args = [lines + [''] * (max_lines - len(lines)) for lines in split_args]
-
-        combined_lines = []
-        for lines in zip(*padded_args):
-            combined_line = ""
-            for i, line in enumerate(lines):
-                if i == 0:
-                    combined_line += line[:-1]
-                else:
-                    combined_line += line[1:]
-            combined_lines.append(combined_line)
-
-        return '\n'.join(combined_lines)
-
-    def mysqltable(self, args):
+    def mysqltable(self, array):
         # Implement dynamic creation of mysql table format output like in help format
         # [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value4"])]
-        message = []
-        for arg in args:
-            submsg = ""
-            column = arg[0]
-            values = arg[1]
-            padding = max(len(value) for value in values) + 2
-            submsg += "+ " + "-" * padding    + " + \n"
-            submsg += "| " + column.ljust(padding) + " | \n"
-            submsg += "+ " + "-" * padding    + " + \n"
-            for value in values:
-                submsg += "| " + value.ljust(padding) + " | \n"
-            submsg += "+ " + "-" * padding    + " + \n"
-            message.append(submsg)
-        return self.join_side_by_side(*message)
+        global message
+        message = ""
+        
+        columns = [col[0] for col in array]
+        values = [val[1] for val in array]
+        
+        paddings = []
+        for i in range(len(array)):
+            padding1 = max(len(value) for value in values[i]) 
+            padding2 = len(columns[i]) 
+            paddings.append(max(padding1, padding2) + 2)
+        
+        def make_line():
+            global message
+            for i in range(len(paddings)):
+                message += " + " + "-" * paddings[i] + "" if i != 0 else "+ " + "-" * paddings[i]
+            message += " +\n"
+        
+        make_line()
+        
+        for i in range(len(columns)):
+            message += "| " + columns[i].ljust(paddings[i] + 1)
+        message += "|\n"
+        
+        make_line()
+        for row in range(len(values[0])):
+            for col in range(len(columns)):
+                message += "| " + values[col][row].ljust(paddings[col] + 1)
+            message += "|\n"
+        
+        make_line()
+
+        return message
