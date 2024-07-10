@@ -56,6 +56,44 @@ class Output:
 
         print("".join(message))
 
+    def gettype(self):
+        with open("Assets/Config.json", "r") as f:
+            return json.load(f)["Type"]
+
+    def table(self, array):
+        if self.gettype() == 1:
+            msg = self.mysqltable(array)
+        elif self.gettype() == 2:
+            msg = self.basicarrow(array)
+        else:
+            msg = self.basicarrow(array)
+        return msg
+    
+    def basicarrow(self, array):
+        global message
+        paddings = []
+
+        columns = [col[0] for col in array]
+        values = [val[1] for val in array]
+        
+        message = ""
+
+        for i in range(len(array)):
+            padding1 = max(len(value) for value in values[i]) 
+            padding2 = len(columns[i]) 
+            paddings.append(max(padding1, padding2) + 5)
+        
+        for i in range(len(columns)):
+            message += columns[i].ljust(paddings[i] + 2)
+
+        message += "\n"
+
+        for row in range(len(values[0])):
+            for col in range(len(columns)):
+                message += values[col][row].ljust(paddings[col] + 1) + " » " if col != len(columns) - 1 else values[col][row].ljust(paddings[col] + 1)
+            message += "\n"
+        return message
+
     def mysqltable(self, array):
         # Implement dynamic creation of mysql table format output like in help format
         # [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value4"])]

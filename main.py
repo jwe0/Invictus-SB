@@ -572,9 +572,8 @@ class Bot:
             data = r.json()
 
             table = [("Key", [str(key).title() for key in data.keys()]), ("Value", [str(value) for value in data.values()])]
-
-            result = self.output2.mysqltable(table)
-
+            
+            result = self.output2.table(table)
             await ctx.send(self.output("IP Lookup", result))
 
         @self.bot.command()
@@ -593,7 +592,7 @@ class Bot:
                         name += " "
                     openx.append(str(port))
                     namex.append(name)
-            result = self.output2.mysqltable([("Port", openx), ("Name", namex)])
+            result = self.output2.table([("Port", openx), ("Name", namex)])
             await ctx.send(self.output("Port Scan", result))
 
         @self.bot.command()
@@ -1117,7 +1116,7 @@ I made this to test my skill as a developer when tasked with a large project.
         async def mysqltest(ctx):
             await ctx.message.delete()
             args = [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value"]), ("Column3", ["Value4", "Value5"])]
-            result = self.output2.mysqltable(args)
+            result = self.output2.table(args)
             await ctx.send("```" + result + "```")
 
     

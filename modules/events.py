@@ -101,10 +101,10 @@ class Events:
                 if self.hbint:
                     time.sleep(self.hbint / 1000)
                     if not self.lastack:
-                        self.logging.Info("Heartbeat not acknowledged reauthenticating...")
-                        self.ws.send(self.wspayload())
+                        self.ws.send(json.dumps({"op": 1, "d": None}))
+                    self.logging.Info("Heartbeat not acknowledged reauthenticating...")
+                    self.ws.send(self.wspayload())
                     self.lastack = False
-                    self.ws.send(json.dumps({"op": 1, "d": None}))
         except Exception as e:
             self.logging.Error(e)
             threading.Thread(target=self.run).start()

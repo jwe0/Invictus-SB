@@ -109,6 +109,7 @@ class Init:
                 json.dump({"Token": token, 
                            "Prefix": prefix, 
                            "Output": output, 
+                           "Type" : 1,
                            "Modules": {"nitro": True if nitro.lower() == "y" else False, 
                                        "msglog": True if msglog.lower() == "y" else False, 
                                        "antitokenlog": True if antitl.lower() == "y" else False, 

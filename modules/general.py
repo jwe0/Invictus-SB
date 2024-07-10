@@ -9,6 +9,7 @@ class General:
     def __init__(self):
         self.logging = Logging()
         self.output  = Output()
+        self.type    = 0
 
     def load_config(self):
         with open("Assets/Config.json", "r") as f:
@@ -63,6 +64,10 @@ class General:
     def clear(self):
         os.system("clear") if os.name != "nt" else os.system("cls")
 
+    def loadtype(self):
+        with open("Assets/Config.json", "r") as f:
+            self.type = json.load(f)["Type"]
+
     def basic_padding(self, array):
         return max(len(name) for _, name in array)
     
@@ -82,7 +87,7 @@ class General:
             arguments.append(argument if argument else "[None]")
             descriptions.append(description if description else "[None]") 
         table = [("Commands", options), ("Arguments", arguments), ("Description", descriptions)]
-        return self.output.mysqltable(table)
+        return self.output.table(table)
     
     def removespecial(self, message):
         return message.replace("'", "").replace('"', "").replace("ansii", "").replace("`", "")
