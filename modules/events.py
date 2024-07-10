@@ -82,7 +82,7 @@ class Events:
                 self.dumphooks(hooks, event)
                 time.sleep(1)
 
-    def wspayload(self):
+    def identify_payload(self):
         return json.dumps({
             "op": 2,
             "d": {
@@ -90,22 +90,24 @@ class Events:
                 "properties": {
                     "$os": "windows",
                     "$browser": "Discord",
-                    "$device": "desktop"
+                    "$device": "pc"
                 }
             }
+        })
+
+    def wspayload(self):
+        return json.dumps({
+            "op": 1,
+            "d": "null"
         })
 
     def heartbeat(self):
         try:
             while True:
-                if self.hbint:
-                    time.sleep(self.hbint / 1000)
-                    if not self.lastack:
-                        self.ws.send(json.dumps({"op": 1, "d": None}))
-                    self.lastack = False
+                self.ws.send(self.wspayload())
+                time.sleep(self.hbint / 1000)
         except Exception as e:
             self.logging.Error(e)
-            # threading.Thread(target=self.run).start()
 
     def on_message(self, ws, message):
         if message:
@@ -113,7 +115,7 @@ class Events:
             if data["op"] == 10:
                 self.hbint = data["d"]["heartbeat_interval"]
                 threading.Thread(target=self.heartbeat).start()
-                ws.send(self.wspayload())
+                ws.send(self.identify_payload())
             elif data["op"] == 11:
                 self.lastack = True
             elif data['t'] == "GUILD_CREATE":
