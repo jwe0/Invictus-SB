@@ -922,6 +922,26 @@ class Bot:
             await ctx.message.delete()
             result = self.osint.domainwhois(domain)
             await ctx.send(self.output("Domain Whois", result))
+
+        @self.bot.command()
+        async def search(ctx, command):
+            await ctx.message.delete()
+            pcmds = []
+            pdesc = []
+            pcsec = []
+            pcexm = []
+            for cmd in self.cmds:
+                if command in cmd:
+                    pcmds.append(cmd)
+                    pdesc.append(self.cmds[cmd]["description"])
+                    pcsec.append(self.cmds[cmd]["section"])
+                    pcexm.append(self.cmds[cmd]["example"])
+
+            possibles = [("Command", pcmds), ("Description", pdesc), ("Section", pcsec), ("Example", pcexm)]
+            table = self.output2.table(possibles)
+            
+            if len(possibles) != 0:
+                await ctx.send(self.output("Search", table))
             
 
     

@@ -413,6 +413,16 @@
         "section" : "utility",
         "page" : 3
     },
+    "search" : {
+        "name" : "search",
+        "description" : "Search for a command",
+        "params": [
+            ["SEARCH", "(Search term)"]
+        ],
+        "example": "search n",
+        "section" : "utility",
+        "page" : 3
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
