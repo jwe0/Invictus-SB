@@ -469,6 +469,17 @@
         "section" : "fun",
         "page" : 1
     },
+    "phlogo" : {
+        "name" : "phlogo",
+        "description" : "Generate custom pornhub logo",
+        "params" : [
+            ["START", "(The start text)"],
+            ["END", "(The end text)"]
+        ],
+        "example" : "phlogo Hello World",
+        "section" : "fun",
+        "page" : 1
+    },
     "credits" : {
         "name" : "credits",
         "description": "Shows credits",

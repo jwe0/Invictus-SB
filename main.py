@@ -1,4 +1,4 @@
-import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client, os, socket, base64
+import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client, os, socket, cairosvg
 from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
@@ -548,6 +548,18 @@ class Bot:
             await ctx.message.delete()
             self.massr.react(messageid, channelid, delay)
 
+        @self.bot.command()
+        async def phlogo(ctx, start, end):
+            api = "https://logohub.appspot.com/{}-{}".format(start, end)
+            r = requests.get(api)
+            svg = r.content
+            with open("temp.svg", "wb") as f:
+                f.write(svg)
+            cairosvg.svg2png(url="temp.svg", write_to="temp.png")
+            await ctx.send(file=discord.File("temp.png"))
+            os.remove("temp.png")
+            os.remove("temp.svg")
+
         
         # Utility commands
 
@@ -1095,7 +1107,7 @@ class Bot:
         async def credits(ctx):
             await ctx.message.delete()
             message = """Developed primarily by /jwe0   - https://github.com/jwe0
-Aided by my goo friend neebooo - https://github.com/neebooo
+Aided by my good friend neebooo - https://github.com/neebooo
 
 I made this to test my skill as a developer when tasked with a large project.
 """ 
