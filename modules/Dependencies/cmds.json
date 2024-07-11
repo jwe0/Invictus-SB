@@ -423,6 +423,14 @@
         "section" : "utility",
         "page" : 3
     },
+    "serverbots" : {
+        "name" : "serverbots",
+        "description": "Shows bots in a server",
+        "params": [],
+        "example": "serverbots",
+        "section" : "utility",
+        "page" : 3
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",

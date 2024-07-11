@@ -939,7 +939,26 @@ class Bot:
                 possibles = [("Command", ["None found"])]
             table = self.output2.table(possibles)
             await ctx.send(self.output("Search", table))
-            
+
+        @self.bot.command()
+        async def serverbots(ctx):
+            await ctx.message.delete()
+            #https://discord.com/api/v9/applications/public?application_ids=235148962103951360
+            api = "https://discord.com/api/v9/guilds/{}/application-command-index".format(ctx.guild.id)
+            r = requests.get(api, headers=self.sessionheaders)
+            bots = []
+            botids = []
+            if r.status_code == 200:
+                apps = r.json().get("applications")
+                for app in apps:
+                    bots.append(app.get("name"))
+                    botids.append(app.get("id"))
+            if len(bots) != 0:
+                table = [("Bots", bots), ("IDs", botids)]
+            else:
+                table = [("Bots", ["None found"])]
+            table = self.output2.table(table)
+            await ctx.send(self.output("Server Bots", table))
 
     
         # NSFW
