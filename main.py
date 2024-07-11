@@ -467,13 +467,10 @@ class Bot:
                 ws.send(json.dumps({"op": 2, "d": {"token": self.token, "properties": {"$os": "windows", "$browser": "Discord", "$device": "desktop"}}}))
                 ws.send(json.dumps({"op": 4, "d": {"guild_id": None, "channel_id": ctx.channel.id, "self_mute": False, "self_deaf": False}}))
                 ws.close()
-
             for i in range(int(count)):
                 apiinit()
                 wsinit()
                 time.sleep(int(delay))
-
-
 
         # Troll commands
 
@@ -985,9 +982,10 @@ class Bot:
                     time.sleep(message_r.json()["retry_after"])
                     message_r = requests.get(messageapi.format(channel), headers=self.sessionheaders)
                 for message in message_r.json():
-                    id = message.get("author", {}).get("id")
-                    if id not in members:
-                        members.append(message.get("author", {}).get("id"))
+                    if "author" in message:
+                        id = message.get("author", {}).get("id")
+                        if id not in members:
+                            members.append(message.get("author", {}).get("id"))
                 prog += 1
             self.logging.Info("Dumping members...")
             channel_r = requests.get(channelapi, headers=self.sessionheaders)
@@ -996,10 +994,8 @@ class Bot:
                     channels.append(channel.get("id"))
             for channel in channels:
                 get_messages(channel) if thread != "y" else threading.Thread(target=get_messages, args=(channel,)).start()
-
             while prog != len(channels) -1:
                 pass
-
             dump("\n".join(members))
             self.logging.Info("Dumped {} members".format(str(len(members))))
 

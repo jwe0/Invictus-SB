@@ -20,6 +20,13 @@ class Init:
     def scripts(self):
         if not os.path.exists("Scripts"):
             os.mkdir("Scripts")
+        if not os.path.exists("Scripts/example.py"):
+            with open("Scripts/example.py", "w") as f:
+                content = """import random
+@self.bot.command()
+async def example(ctx):
+    await ctx.send(str(random.randint(1, 200)))"""
+                f.write(content)
 
     def scrapes(self):
         if not os.path.exists("Scrapes"):
@@ -423,12 +430,12 @@ class Init:
         if not os.path.exists("Assets/Events.json"):
             with open("Assets/Events.json", "w") as f:
                 jsondata = {
-                    "Guild Join"  : {"status" : False, "name" : "Guild Join", "webhooks" : []},
+                    "Guild Join"  : {"status" : False, "name" : "Guild Join",  "webhooks" : []},
                     "Guild Leave" : {"status" : False, "name" : "Guild Leave", "webhooks" : []},
-                    "Bans"        : {"status" : False, "name" : "Bans", "webhooks" : []},
-                    "Giveaways"   : {"status" : False, "name" : "Giveaways", "webhooks" : []},
-                    "Nitros"      : {"status" : False, "name" : "Nitros", "webhooks" : []},
-                    "Friends"     : {"status" : False, "name" : "Friends", "webhooks" : []},
+                    "Bans"        : {"status" : False, "name" : "Bans",        "webhooks" : []},
+                    "Giveaways"   : {"status" : False, "name" : "Giveaways",   "webhooks" : []},
+                    "Nitros"      : {"status" : False, "name" : "Nitros",      "webhooks" : []},
+                    "Friends"     : {"status" : False, "name" : "Friends",     "webhooks" : []},
                 }
                 json.dump(jsondata, f, indent=4)
 
