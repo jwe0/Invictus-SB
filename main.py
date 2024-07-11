@@ -691,23 +691,28 @@ class Bot:
             headers = {"authorization": self.token}
 
             response = requests.get(api, headers=headers)
-
+            keys = []
+            vals = []
+            cons = []
+            type = []
+            name = []
             if response.status_code == 200:
-                msg = "Basic Information:\n\n"
-                basic = ""
                 for key, value in response.json().get("user").items():
                     if key != "bio":
-                        basic += "{}: {}\n".format(key.title(), value) 
-
-                msg += basic
-
-                connected = ""
+                        keys.append(str(key).title())
+                        vals.append(str(value))
                 for account in response.json().get("connected_accounts"):
-                    connected += "{}: {}\n".format(account["type"].title(), account["name"])
-                if connected:
-                    msg += "\nConnected Accounts:\n\n"
-                    msg += connected
-
+                    type.append(account["type"].title())
+                    name.append(account["name"])
+                for i in range(len(type)):
+                    cons.append("{} : {}".format(type[i].ljust(max([len(t) for t in type])), name[i]))
+                while len(cons) != len(keys):
+                    cons.append("[None]")
+                if len(keys) > 0:
+                    table = [("Key", keys), ("Value", vals), ("Connected Accounts", cons)]
+                else:
+                    table = [("Error", "No user found with that ID")]
+                msg = self.output2.table(table)
                 await ctx.send(self.output("Whois", msg))
             else:
                 return
