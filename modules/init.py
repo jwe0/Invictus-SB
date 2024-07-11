@@ -24,6 +24,10 @@ class Init:
     def scrapes(self):
         if not os.path.exists("Scrapes"):
             os.mkdir("Scrapes")
+        if not os.path.exists("Scrapes/Messages"):
+            os.mkdir("Scrapes/Messages")
+        if not os.path.exists("Scrapes/Members"):
+            os.mkdir("Scrapes/Members")
 
     def settings(self):
         if not os.path.exists("Assets/Settings"):

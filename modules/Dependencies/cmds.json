@@ -431,6 +431,17 @@
         "section" : "utility",
         "page" : 3
     },
+    "scrapemembers" : {
+        "name" : "scrapemembers",
+        "description": "Scrapes members from a server",
+        "params": [
+            ["GUILDID", "(Guild ID default is current)"],
+            ["THREAD", "(Thread requests y/n)"]
+        ],
+        "example": "scrapemembers",
+        "section" : "utility",
+        "page" : 3
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",

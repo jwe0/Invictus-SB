@@ -101,7 +101,7 @@ class Output:
         message = ""
         
         columns = [col[0] for col in array]
-        values = [val[1] for val in array]
+        values  = [val[1] for val in array]
         
         paddings = []
         for i in range(len(array)):

@@ -737,7 +737,7 @@ class Bot:
 
             while True:
                 def dump(data):
-                    file_path = "Scrapes/{}.txt".format(channelid)
+                    file_path = "Scrapes/Messages/{}.txt".format(channelid)
                     with open(file_path, "a", encoding="utf-8") as f:
                         for message in data:
                             msg = "[{}]\t[{}]: {}\n".format(message["timestamp"], message["author"]["username"], message["content"])
@@ -964,6 +964,46 @@ class Bot:
                 table = [("Bots", ["None found"])]
             table = self.output2.table(table)
             await ctx.send(self.output("Server Bots", table))
+
+        @self.bot.command()
+        async def scrapemembers(ctx, guildid="", thread="n"):
+            await ctx.message.delete()
+            guildid  = ctx.guild.id if guildid == "" else guildid
+            channels = []
+            members  = []
+            prog = 0
+            channelapi = "https://discord.com/api/v9/guilds/{}/channels".format(guildid)
+            messageapi = "https://discord.com/api/v9/channels/{}/messages?limit=100"
+            def dump(message):
+                with open("Scrapes/Members/{}.txt".format(str(guildid)), "w") as f:
+                    f.write(message + "\n")
+            def get_messages(id):
+                nonlocal prog
+                message_r = requests.get(messageapi.format(channel), headers=self.sessionheaders)
+                while message_r.status_code == 429:
+                    self.logging.Error("Request throttled waiting {}".format(str(message_r.json()["retry_after"])))
+                    time.sleep(message_r.json()["retry_after"])
+                    message_r = requests.get(messageapi.format(channel), headers=self.sessionheaders)
+                for message in message_r.json():
+                    id = message.get("author", {}).get("id")
+                    if id not in members:
+                        members.append(message.get("author", {}).get("id"))
+                prog += 1
+            self.logging.Info("Dumping members...")
+            channel_r = requests.get(channelapi, headers=self.sessionheaders)
+            for channel in channel_r.json():
+                if channel.get("type") == 0:
+                    channels.append(channel.get("id"))
+            for channel in channels:
+                get_messages(channel) if thread != "y" else threading.Thread(target=get_messages, args=(channel,)).start()
+
+            while prog != len(channels) -1:
+                pass
+
+            dump("\n".join(members))
+            self.logging.Info("Dumped {} members".format(str(len(members))))
+
+            
 
     
         # NSFW
