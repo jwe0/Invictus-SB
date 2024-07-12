@@ -678,7 +678,7 @@ class Bot:
             maxparam = max([len(param[0]) for param in params]) if params else 0
             if params:
                 for param in params:
-                    message += "{} » {}\n".format(param[0].ljust(maxparam), param[1])
+                    message += "{} - {}\n".format(param[0].ljust(maxparam), param[1])
             await ctx.send(self.output("Command Info", f"Description: {description}\n\n{message}\nExample: {example}\n"))
 
         @self.bot.command()
@@ -999,7 +999,12 @@ class Bot:
             dump("\n".join(members))
             self.logging.Info("Dumped {} members".format(str(len(members))))
 
-            
+        @self.bot.command()
+        async def stats(ctx):
+            uptime = self.output2.uptime()
+            logons = self.output2.logons()
+
+            await ctx.send(self.output("Stats", self.output2.table("Uptime: {}\nLogons: {}".format(uptime, logons))))
 
     
         # NSFW
@@ -1263,6 +1268,8 @@ I made this to test my skill as a developer when tasked with a large project.
         self.logging.Info("Setting up dos...")
         self.dos.init()
         # Run
+        self.general.update_logons()
+        threading.Thread(target=self.general.update_uptime).start()
         self.logging.Info("Running bot...")
         self.bot.run(self.token, bot=False)
 

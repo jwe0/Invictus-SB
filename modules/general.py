@@ -1,4 +1,4 @@
-import json, os, base64, requests, random, string, time
+import json, os, base64, requests, random, string, time, datetime
 from pystyle import Colors, Colorate, Center
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
@@ -165,3 +165,30 @@ class General:
         end = time.time()
         timems = int((end - start) * 1000)
         return timems
+    
+    def update_logons(self):
+        with open("Assets/Settings/Cache.json", 'r') as f:
+            config = json.load(f)
+
+            logons = config["Logons"]
+            logons = int(logons) + 1
+            config["Logons"] = logons
+
+            with open("Assets/Settings/Cache.json", 'w') as f:
+                json.dump(config, f, indent=4)
+
+    def update_uptime(self):
+        while True:
+            with open("Assets/Settings/Cache.json", 'r') as f:
+                config = json.load(f)
+
+                uptime = config["Uptime"]
+                uptime = int(uptime) + 1
+                config["Uptime"] = uptime
+
+                with open("Assets/Settings/Cache.json", 'w') as f:
+                    json.dump(config, f, indent=4)
+
+
+            time.sleep(1)
+            

@@ -1,4 +1,4 @@
-import json, datetime, urllib.parse
+import json, datetime, urllib.parse, time
 from modules.logging import Logging
 from modules.colors import Colors
 
@@ -14,10 +14,24 @@ class Output:
             if mode == "codeblock":
                 return self.code_block(title, message)
             elif mode == "codeblock2":
-                return message
+                if not self.istable(message):
+                    if self.gettype() == 1 or self.gettype() == 2: 
+                        return self.code_block(title, message)
+                    elif self.gettype() == 3:
+                        return self.code_block_2(message)
+                else:
+                    return message
             elif mode == "none":
                 return Logging().Info(message)
             return mode
+        
+    def istable(self, message):
+        if "»" in message:
+            return True
+        elif "> ```Invictus``````" in message:
+            return True
+        elif "+ - " in message:
+            return True
         
     def remove_empty_lines(self, message):
         lines = message.splitlines()
@@ -61,6 +75,17 @@ class Output:
     def gettype(self):
         with open("Assets/Config.json", "r") as f:
             return json.load(f)["Type"]
+        
+    def uptime(self):
+        with open("Assets/Settings/Cache.json", "r") as f:
+            uptime = json.load(f).get("Uptime", 0)
+            uptime = time.strftime('%H:%M:%S', time.gmtime(uptime))
+            return uptime
+        
+    def logons(self):
+        with open("Assets/Settings/Cache.json", "r") as f:
+            logons = json.load(f).get("Logons", 0)
+            return logons
 
     def table(self, array):
         if self.gettype() == 1:
@@ -93,13 +118,19 @@ class Output:
             return len(json.load(f))
     
     def code_block_2(self, array):
-        val_array = [val[1] for val in array if "[None]" not in val[1]]
-        pad = max(len(val) for val in val_array) + 2
-        msg = "> ```Invictus``````\n"
-        for i in range(len(val_array[0])): 
-            for j in range(len(val_array) - 1):
-                msg += f"> {val_array[j][i].ljust(pad)} » {val_array[j + 1][i]}\n"
-        msg += "> ``````{} commands loaded```".format(str(self.cmdcount()))
+        if isinstance(array, list):
+            val_array = [val[1] for val in array if "[None]" not in val[1]]
+            pad = max(len(val) for val in val_array) + 2
+            msg = "> ```Invictus``````\n"
+            for i in range(len(val_array[0])): 
+                for j in range(len(val_array) - 1):
+                    msg += f"> {val_array[j][i].ljust(pad)} » {val_array[j + 1][i]}\n"
+            msg += "> ``````Uptime: {}```".format(self.uptime())
+        else:
+            msg = "> ```Invictus``````\n"
+            for line in array.splitlines():
+                msg += "> {}\n".format(line)
+            msg += "> ``````Uptime: {}```".format(self.uptime())
         return msg
     
     def basicarrow(self, array):

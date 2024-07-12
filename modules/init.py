@@ -80,6 +80,15 @@ async def example(ctx):
             with open("Assets/Settings/webhook.json", "w") as f:
                 json.dump(config, f, indent=4)
 
+        if not os.path.exists("Assets/Settings/Cache.json"):
+            config = {
+                "Logons" : 1,
+                "Uptime" : 0
+            }
+
+            with open("Assets/Settings/Cache.json", "w") as f:
+                json.dump(config, f, indent=4)
+
     def config(self):
         if not os.path.exists("Assets/Config.json"):
             self.general.clear()
