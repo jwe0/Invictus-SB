@@ -85,13 +85,14 @@ async def example(ctx):
             self.general.clear()
             self.general.art()
             with open("Assets/Config.json", "w") as f:
-                output_modes = ["codeblock"]
+                output_modes = ["table", "arrow", "block"]
                 print("[+] General Settings\n")
 
                 token  = input("[>] User token     : ")
                 prefix = input("[>] Command prefix : ")
                 output = input("[>] Output mode    : ")
                 while output not in output_modes:
+                    print("[*] {}".format(", ".join(output_modes)))
                     output = input("[!] Invalid output mode. Try again: ")
 
                 print("\n[+] Modules\n")
@@ -117,10 +118,13 @@ async def example(ctx):
                 if gelkey:
                     userid = input("[>] Enter gelbooru user ID: ")
 
+                type = 1 if output.lower() == "table" else 2 if output.lower() == "arrow" else 3
+                output = "codeblock" if output.lower() != "block" else "codeblock2"
+
                 json.dump({"Token": token, 
                            "Prefix": prefix, 
                            "Output": output, 
-                           "Type" : 1,
+                           "Type" : type,
                            "Modules": {"nitro": True if nitro.lower() == "y" else False, 
                                        "msglog": True if msglog.lower() == "y" else False, 
                                        "antitokenlog": True if antitl.lower() == "y" else False, 

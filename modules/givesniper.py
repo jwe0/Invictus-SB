@@ -3,7 +3,6 @@ from modules.spoof import Spoof
 from modules.logging import Logging
 from modules.general import General
 from modules.output import Output
-# from modules.events import Events
 
 class GiveSniper:
     def __init__(self, token, httptoken) -> None:
@@ -14,7 +13,6 @@ class GiveSniper:
         self.logging = Logging()
         self.general = General()
         self.output  = Output()
-        # self.events  = Events(token)
         self.setting = {}
         self.botjs   = {}
         self.headers = {}

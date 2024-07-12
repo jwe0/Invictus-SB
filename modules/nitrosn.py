@@ -3,7 +3,6 @@ from modules.spoof import Spoof
 from modules.logging import Logging
 from modules.general import General
 from modules.output import Output
-# from modules.events import Events
 
 class NitroSniper:
     def __init__(self, token) -> None:
@@ -12,7 +11,6 @@ class NitroSniper:
         self.spoof   = Spoof()
         self.general = General()
         self.output  = Output()
-        # self.events  = Events(token)
         self.session = tls_client.Session()
         self.setting = {}
         self.headers = {}

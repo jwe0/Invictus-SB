@@ -1,4 +1,4 @@
-import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client, os, socket, cairosvg
+import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client, os, socket, cairosvg, string
 from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
@@ -1195,6 +1195,16 @@ I made this to test my skill as a developer when tasked with a large project.
             args = [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value"]), ("Column3", ["Value4", "Value5"])]
             result = self.output2.table(args)
             await ctx.send("```" + result + "```")
+
+        @self.bot.command()
+        async def embedtest(ctx):
+            title = "".join([random.choice(string.ascii_letters) for _ in range(10)])
+            desc = "".join([random.choice(string.ascii_letters) for _ in range(10)])
+            author = "".join([random.choice(string.ascii_letters) for _ in range(10)])
+            color = "Color"
+            thumbnail = "https://i.imgur.com/TuL8lDN.jpeg"
+            result = self.output2.embed(title, desc, author, "", thumbnail)
+            await ctx.send(result)
 
     
     def _help(self, section, cmds, page=1):

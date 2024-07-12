@@ -1,4 +1,4 @@
-import json, datetime
+import json, datetime, urllib.parse
 from modules.logging import Logging
 from modules.colors import Colors
 
@@ -13,6 +13,8 @@ class Output:
             mode = config.get("Output", "none")
             if mode == "codeblock":
                 return self.code_block(title, message)
+            elif mode == "codeblock2":
+                return message
             elif mode == "none":
                 return Logging().Info(message)
             return mode
@@ -65,8 +67,39 @@ class Output:
             msg = self.mysqltable(array)
         elif self.gettype() == 2:
             msg = self.basicarrow(array)
+        elif self.gettype() == 3:
+            msg = self.code_block_2(array)
         else:
             msg = self.basicarrow(array)
+        return msg
+
+    def embed(self, title="", desc="", author="", color="", thumbnail=""):
+        #https://invictus-sb.netlify.app/embed?title=ad&description=d&author=d&color=39bae6&thumbnail=https://i.imgur.com/TuL8lDN.jpeg
+        base = "{}https://invictus-sb.netlify.app/embed".format(self.pipes)
+        if title:
+            base += "?title=" + urllib.parse.quote(title)
+        if desc:
+            base += "&description=" + urllib.parse.quote(desc)
+        if author:
+            base += "&author=" + urllib.parse.quote(author)
+        if color:
+            base += "&color=" + color
+        if thumbnail:
+            base += "&thumbnail=" + thumbnail
+        return base
+    
+    def cmdcount(self):
+        with open("modules/Dependencies/cmds.json", "r") as f:
+            return len(json.load(f))
+    
+    def code_block_2(self, array):
+        val_array = [val[1] for val in array if "[None]" not in val[1]]
+        pad = max(len(val) for val in val_array) + 2
+        msg = "> ```Invictus``````\n"
+        for i in range(len(val_array[0])): 
+            for j in range(len(val_array) - 1):
+                msg += f"> {val_array[j][i].ljust(pad)} » {val_array[j + 1][i]}\n"
+        msg += "> ``````{} commands loaded```".format(str(self.cmdcount()))
         return msg
     
     def basicarrow(self, array):
