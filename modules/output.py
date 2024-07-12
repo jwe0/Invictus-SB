@@ -174,12 +174,10 @@ class Output:
         padings = []
         columns = [col[0] for col in array]
         values  = [val[1] for val in array]
-    
-        padding = max(len(value) for value in values[0])
-
+        for i in range(len(columns)):
+            padings.append(max(len(value) for value in values[i]))
         for row in range(len(values[0])):
             for col in range(len(columns)):
-                message += values[col][row].ljust(int(padding) + 5) + " » " if col != len(columns) - 1 else values[col][row].ljust(int(padding) + 5)
+                message += values[col][row].ljust(padings[col]) + " » " if col != len(columns) - 1 else values[col][row].ljust(padings[col])
             message += "\n"
-        
         return message
