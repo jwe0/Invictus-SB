@@ -12,15 +12,13 @@ class Output:
             config = json.load(f)
             mode = config.get("Output", "none")
             if mode == "codeblock":
+                if isinstance(message, list):
+                    message = self.array_to_message(message)
                 return self.code_block(title, message)
-            elif mode == "codeblock2":
-                if not self.istable(message):
-                    if self.gettype() == 1 or self.gettype() == 2: 
-                        return self.code_block(title, message)
-                    elif self.gettype() == 3:
-                        return self.code_block_2(message)
-                else:
-                    return message
+            elif mode == "table":
+                return self.mysqltable(title, message)
+            elif mode == "block":
+                return self.code_block_2(title, message)
             elif mode == "none":
                 return Logging().Info(message)
             return mode
@@ -41,7 +39,6 @@ class Output:
 
     
     def code_block(self, title, message):
-        message = self.remove_empty_lines(message)
         msg = """
 ```ansi
 [[2;31m>[0m]  {title}   [[2;31m<[0m]
@@ -49,8 +46,7 @@ class Output:
 {message}
 
 [[2;45m[0m[2;34m~[0m] Invictus [[2;34m~[0m]
-```
-""".format(title=title, message=message)
+```""".format(title=title, message=message)
         return msg
     
     def funny_line(self, message):
@@ -71,10 +67,6 @@ class Output:
             message[-1] = message[-1].rstrip("\n")
 
         print("".join(message))
-
-    def gettype(self):
-        with open("Assets/Config.json", "r") as f:
-            return json.load(f)["Type"]
         
     def uptime(self):
         with open("Assets/Settings/Cache.json", "r") as f:
@@ -86,17 +78,6 @@ class Output:
         with open("Assets/Settings/Cache.json", "r") as f:
             logons = json.load(f).get("Logons", 0)
             return logons
-
-    def table(self, array):
-        if self.gettype() == 1:
-            msg = self.mysqltable(array)
-        elif self.gettype() == 2:
-            msg = self.basicarrow(array)
-        elif self.gettype() == 3:
-            msg = self.code_block_2(array)
-        else:
-            msg = self.basicarrow(array)
-        return msg
 
     def embed(self, title="", desc="", author="", color="", thumbnail=""):
         #https://invictus-sb.netlify.app/embed?title=ad&description=d&author=d&color=39bae6&thumbnail=https://i.imgur.com/TuL8lDN.jpeg
@@ -117,20 +98,13 @@ class Output:
         with open("modules/Dependencies/cmds.json", "r") as f:
             return len(json.load(f))
     
-    def code_block_2(self, array):
-        if isinstance(array, list):
-            val_array = [val[1] for val in array if "[None]" not in val[1]]
-            pad = max(len(val) for val in val_array) + 2
-            msg = "> ```Invictus``````\n"
-            for i in range(len(val_array[0])): 
-                for j in range(len(val_array) - 1):
-                    msg += f"> {val_array[j][i].ljust(pad)} » {val_array[j + 1][i]}\n"
-            msg += "> ``````Uptime: {}```".format(self.uptime())
-        else:
-            msg = "> ```Invictus``````\n"
-            for line in array.splitlines():
-                msg += "> {}\n".format(line)
-            msg += "> ``````Uptime: {}```".format(self.uptime())
+    def code_block_2(self, title, array):
+        msg = ""
+        msg = "> ```Invictus {}``````\n".format(title)
+        messgae = self.array_to_message(array)
+        for line in messgae.splitlines():
+            msg += "> {}\n".format(line)
+        msg += "> ``````Uptime: {}```".format(self.uptime())
         return msg
     
     def basicarrow(self, array):
@@ -158,7 +132,7 @@ class Output:
             message += "\n"
         return message
 
-    def mysqltable(self, array):
+    def mysqltable(self, title, array):
         # Implement dynamic creation of mysql table format output like in help format
         # [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value4"])]
         global message
@@ -193,4 +167,19 @@ class Output:
         
         make_line()
 
+        return self.code_block(title, message)
+
+    def array_to_message(self, array):
+        message = ""
+        padings = []
+        columns = [col[0] for col in array]
+        values  = [val[1] for val in array]
+    
+        padding = max(len(value) for value in values[0])
+
+        for row in range(len(values[0])):
+            for col in range(len(columns)):
+                message += values[col][row].ljust(int(padding) + 5) + " » " if col != len(columns) - 1 else values[col][row].ljust(int(padding) + 5)
+            message += "\n"
+        
         return message

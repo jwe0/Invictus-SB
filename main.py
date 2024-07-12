@@ -526,8 +526,7 @@ class Bot:
         async def gayrate(ctx, user: discord.User = None):
             await ctx.message.delete()
             percent = random.randint(0, 100)
-            message = self.output("Gayrate", f"{user.name} is {str(percent)}% gay\n")
-
+            message = self.output("Gayrate", [("User", [user.mention]), ("Rate", [str(percent) + "%"])])
             await ctx.send(message)
 
         @self.bot.command()
@@ -570,9 +569,7 @@ class Bot:
             data = r.json()
 
             table = [("Key", [str(key).title() for key in data.keys()]), ("Value", [str(value) for value in data.values()])]
-            
-            result = self.output2.table(table)
-            await ctx.send(self.output("IP Lookup", result))
+            await ctx.send(self.output("IP Lookup", table))
 
         @self.bot.command()
         async def portscan(ctx, ip):
@@ -590,7 +587,7 @@ class Bot:
                         name += " "
                     openx.append(str(port))
                     namex.append(name)
-            result = self.output2.table([("Port", openx), ("Name", namex)])
+            result = [("Port", openx), ("Name", namex)]
             await ctx.send(self.output("Port Scan", result))
 
         @self.bot.command()
@@ -600,12 +597,12 @@ class Bot:
             carier = carrier.name_for_number(number, "en")
             region = geocoder.description_for_number(number, "en")
             message = "Carrier: {}\nRegion : {}".format(carier, region)
-            await ctx.send(self.output("Phone Number", message))
+            await ctx.send(self.output("Phone Number", [("Carrier", [carier]), ("Region", [region])]))
 
         @self.bot.command()
         async def lastcommand(ctx):
             await ctx.message.delete()
-            await ctx.send(self.output("Last Command", self.lastcommand))
+            await ctx.send(self.output("Last Command", [("Command", [self.lastcommand])]))
 
         @self.bot.command()
         async def selfdestruct(ctx, msgcount=100, delay=2):
@@ -622,7 +619,7 @@ class Bot:
             self.logging.Success("Pong!")
             self.logging.Error("Pong!")
             self.logging.Info("Pong!")
-            await ctx.send(self.output("Test", "Mode"))
+            await ctx.send(self.output("Test", [("Ping", ["Pong"])]))
 
         @self.bot.command()
         async def restart(ctx):
@@ -674,12 +671,10 @@ class Bot:
         async def cmdinfo(ctx, cmd):
             await ctx.message.delete()
             description, params, example = self.search.get(cmd)
-            message = ""
-            maxparam = max([len(param[0]) for param in params]) if params else 0
-            if params:
-                for param in params:
-                    message += "{} - {}\n".format(param[0].ljust(maxparam), param[1])
-            await ctx.send(self.output("Command Info", f"Description: {description}\n\n{message}\nExample: {example}\n"))
+            nparams = []
+            for param in params:
+                nparams.append(param[0] + " : " + param[1])
+            await ctx.send(self.output("Command Info", [("Description", [description]), ("Parameters", nparams), ("Example", [example])]))
 
         @self.bot.command()
         async def whois(ctx, id):
@@ -709,8 +704,7 @@ class Bot:
                     table = [("Key", keys), ("Value", vals), ("Connected Accounts", cons)]
                 else:
                     table = [("Error", "No user found with that ID")]
-                msg = self.output2.table(table)
-                await ctx.send(self.output("Whois", msg))
+                await ctx.send(self.output("Whois", table))
             else:
                 return
         
@@ -718,7 +712,7 @@ class Bot:
         @self.bot.command()
         async def cmdcount(ctx):
             await ctx.message.delete()
-            await ctx.send(self.output("Command Count", str(len(self.cmds.keys())) + "\n"))
+            await ctx.send(self.output("Command Count", [("Count", [str(len(self.bot.commands))])]))
 
         @self.bot.command()
         async def scrape(ctx, channelid=""):
@@ -758,7 +752,7 @@ class Bot:
             await ctx.message.delete()
             s = socket.gethostbyaddr(ip)
 
-            await ctx.send(self.output("Reversedns", s[0]))
+            await ctx.send(self.output("Reversedns", [("IP", [ip]), ("Host", [s[0]])]))
 
         @self.bot.command()
         async def addpresence(ctx, name, id, state="", largeimagekey="", largeimagetext="", smallimagekey="", smallimagetext=""):
@@ -785,7 +779,7 @@ class Bot:
             await ctx.message.delete()
             profiles = self.presence.listpres()
 
-            await ctx.send(self.output("List Presence", "\n".join(profiles)))
+            await ctx.send(self.output("List Presence", [("Profiles", profiles)]))
 
         @self.bot.command()
         async def spoof(ctx, device):
@@ -863,10 +857,10 @@ class Bot:
         @self.bot.command()
         async def listscripts(ctx):
             await ctx.message.delete()
-            message = ""
-            for script in self.scripts:
-                message += "[{}] {}".format(str(self.scripts.index(script) + 1), script) + "\n"
-            await ctx.send(self.output("Scripts", self.output2.funny_line(message)))
+            message = []
+            for command in self.scripts:
+                message.append(command)
+            await ctx.send(self.output("Scripts", [("Scripts", message)]))
 
         @self.bot.command()
         async def isfemboy(ctx, userid):
@@ -908,19 +902,19 @@ class Bot:
         async def username(ctx, username):
             await ctx.message.delete()
             results = self.osint.usernameosint(username)
-            await ctx.send(self.output("Username Search", "\n".join(results)))
+            await ctx.send(self.output("Username Search", [("Results", results)]))
 
         @self.bot.command()
         async def webping(ctx, url):
             await ctx.message.delete()
             ping = self.general.ping(url)
-            await ctx.send(self.output("Web Ping", "Response Time: {}ms".format(ping)))
+            await ctx.send(self.output("Web Ping", [("Ping", [ping])]))
 
         @self.bot.command()
         async def domainwhois(ctx, domain):
             await ctx.message.delete()
             result = self.osint.domainwhois(domain)
-            await ctx.send(self.output("Domain Whois", result))
+            await ctx.send(self.output("Domain Whois", [("Results", [result])]))
 
         @self.bot.command()
         async def search(ctx, command):
@@ -939,8 +933,7 @@ class Bot:
                 possibles = [("Command", pcmds), ("Description", pdesc), ("Section", pcsec), ("Example", pcexm)]
             else:
                 possibles = [("Command", ["None found"])]
-            table = self.output2.table(possibles)
-            await ctx.send(self.output("Search", table))
+            await ctx.send(self.output("Search", possibles))
 
         @self.bot.command()
         async def serverbots(ctx):
@@ -959,7 +952,6 @@ class Bot:
                 table = [("Bots", bots), ("IDs", botids)]
             else:
                 table = [("Bots", ["None found"])]
-            table = self.output2.table(table)
             await ctx.send(self.output("Server Bots", table))
 
         @self.bot.command()
@@ -1001,10 +993,10 @@ class Bot:
 
         @self.bot.command()
         async def stats(ctx):
+            await ctx.message.delete()
             uptime = self.output2.uptime()
             logons = self.output2.logons()
-
-            await ctx.send(self.output("Stats", self.output2.table("Uptime: {}\nLogons: {}".format(uptime, logons))))
+            await ctx.send(self.output("Stats", [("Uptime", ["Logins: {}".format(str(logons)), "Uptime: {}".format(str(uptime))])]))
 
     
         # NSFW
@@ -1210,6 +1202,13 @@ I made this to test my skill as a developer when tasked with a large project.
             thumbnail = "https://i.imgur.com/TuL8lDN.jpeg"
             result = self.output2.embed(title, desc, author, "", thumbnail)
             await ctx.send(result)
+
+        @self.bot.command()
+        async def outputest(ctx):
+            args = [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value"]), ("Column3", ["Value4", "Value5"])]
+            print(self.output2.array_to_message(args))
+            msg = self.output("Debug", args)
+            await ctx.send(msg)
 
     
     def _help(self, section, cmds, page=1):

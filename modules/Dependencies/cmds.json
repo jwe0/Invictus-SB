@@ -442,6 +442,14 @@
         "section" : "utility",
         "page" : 3
     },
+    "stats" : {
+        "name" : "stats",
+        "description": "Shows stats",
+        "params": [],
+        "example": "stats",
+        "section" : "utility",
+        "page" : 3
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",

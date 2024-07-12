@@ -87,7 +87,7 @@ class General:
             arguments.append(argument if argument else "[None]")
             descriptions.append(description if description else "[None]") 
         table = [("Commands", options), ("Arguments", arguments), ("Description", descriptions)]
-        return self.output.table(table)
+        return table
     
     def removespecial(self, message):
         return message.replace("'", "").replace('"', "").replace("ansii", "").replace("`", "")

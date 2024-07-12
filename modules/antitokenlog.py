@@ -20,7 +20,9 @@ class AntiTokenLog:
         api = "https://discord.com/api/v9/auth/sessions"
 
         r = self.session.get(api, headers=self.headers)
-
+        if r.status_code != 200:
+            self.logging.Error("[-] Error getting sessions!")
+            return hashes
         for session in r.json().get("user_sessions"):
             hashes.append(session)
 
