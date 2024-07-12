@@ -177,9 +177,12 @@ class Output:
         message = ""
         padings = []
         columns = [col[0] for col in array]
-        values  = [val[1] for val in array]
+        values = [val[1] for val in array]
+        for col, val in zip(columns, values):
+            padings.append(max(len(col), *(len(v) for v in val)))
         for i in range(len(columns)):
-            padings.append(max(len(value) for value in values[i]))
+            message += columns[i].ljust(padings[i]) + " » " if i != len(columns) - 1 else columns[i].ljust(padings[i])
+        message += "\n"
         for row in range(len(values[0])):
             for col in range(len(columns)):
                 message += values[col][row].ljust(padings[col]) + " » " if col != len(columns) - 1 else values[col][row].ljust(padings[col])
