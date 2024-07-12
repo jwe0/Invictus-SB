@@ -674,7 +674,8 @@ class Bot:
             nparams = []
             for param in params:
                 nparams.append(param[0] + " : " + param[1])
-            await ctx.send(self.output("Command Info", [("Description", [description]), ("Parameters", nparams), ("Example", [example])]))
+            param = "\n".join(nparams)
+            await ctx.send(self.output("Command Info", [("Description", ["Description: {}\n\n{}\n\nExample: {}".format(description, param, example)])]))
 
         @self.bot.command()
         async def whois(ctx, id):
