@@ -19,6 +19,9 @@ class Output:
                 return self.mysqltable(title, message)
             elif mode == "block":
                 return self.code_block_2(title, message)
+            #def embed(self, title="", desc="", author="", color="", thumbnail=""):
+            elif mode == "embed":
+                return self.embed(title, message, "Invictus", "", "")
             elif mode == "none":
                 return Logging().Info(message)
             return mode
@@ -82,10 +85,11 @@ class Output:
     def embed(self, title="", desc="", author="", color="", thumbnail=""):
         #https://invictus-sb.netlify.app/embed?title=ad&description=d&author=d&color=39bae6&thumbnail=https://i.imgur.com/TuL8lDN.jpeg
         base = "{}https://invictus-sb.netlify.app/embed".format(self.pipes)
+        message = self.array_to_message(desc)
         if title:
             base += "?title=" + urllib.parse.quote(title)
         if desc:
-            base += "&description=" + urllib.parse.quote(desc)
+            base += "&description=" + urllib.parse.quote(message)
         if author:
             base += "&author=" + urllib.parse.quote(author)
         if color:
