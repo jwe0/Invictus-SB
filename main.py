@@ -1140,13 +1140,13 @@ class Bot:
         async def rot(ctx, string, mode="encode", shift=13):
             await ctx.message.delete()
             result = self.crypto.rot(string, mode, shift)
-            await ctx.send(self.output("Rot{}".format(str(shift)), "Result: {}".format(result)))
+            await ctx.send(self.output("Rot{}".format(str(shift)), [("Rot{}".format(str(shift)), ["Result: {}".format(result)])]))
 
         @self.bot.command()
         async def b64(ctx, string, mode="encode"):
             await ctx.message.delete()
             result = self.crypto.b64(string, mode)
-            await ctx.send(self.output("Base64", "Result: {}".format(result)))
+            await ctx.send(self.output("Base64", [("Base64", ["Result: {}".format(result)])]))
 
         @self.bot.command()
         async def aes(ctx, string, mode="encode", method="cbc", key=""):
@@ -1163,7 +1163,7 @@ class Bot:
             elif method == "ofb":
                 result = self.crypto.aes_ofb(string, key, mode)
 
-            await ctx.send(self.output("AES", "Result: {}".format(result)))
+            await ctx.send(self.output("AES", [("AES", ["Result: {}".format(result)])]))
 
         @self.bot.command()
         async def fernet(ctx, string, mode="encode", key=""):
