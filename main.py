@@ -525,8 +525,8 @@ class Bot:
         @self.bot.command()
         async def gayrate(ctx, user: discord.User = None):
             await ctx.message.delete()
-            percent = random.randint(0, 100)
-            message = self.output("Gayrate", [("User", [user.mention]), ("Rate", [str(percent) + "%"])])
+            percent = random.randint(0, 100) # [("User", [user.mention]), ("Rate", [str(percent) + "%"])]
+            message = self.output("Gayrate", "User: " + user.mention + "\nRate: " + str(percent) + "%")
             await ctx.send(message)
 
         @self.bot.command()
@@ -675,7 +675,7 @@ class Bot:
             for param in params:
                 nparams.append(param[0] + " : " + param[1])
             param = "\n".join(nparams)
-            await ctx.send(self.output("Command Info", [("Description", ["Description: {}\n\n{}\n\nExample: {}".format(description, param, example)])]))
+            await ctx.send(self.output("Command Info", "Description: {}\n\n{}\n\nExample: {}".format(description, param, example)))
 
         @self.bot.command()
         async def whois(ctx, id):
@@ -1199,9 +1199,9 @@ I made this to test my skill as a developer when tasked with a large project.
             title = "".join([random.choice(string.ascii_letters) for _ in range(10)])
             desc = "".join([random.choice(string.ascii_letters) for _ in range(10)])
             author = "".join([random.choice(string.ascii_letters) for _ in range(10)])
-            color = "Color"
+            color = "000000"
             thumbnail = "https://i.imgur.com/TuL8lDN.jpeg"
-            result = self.output2.embed(title, desc, author, "", thumbnail)
+            result = self.output2.embed(title, [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value"])], author, color, thumbnail)
             await ctx.send(result)
 
         @self.bot.command()

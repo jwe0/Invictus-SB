@@ -12,8 +12,7 @@ class Output:
             config = json.load(f)
             mode = config.get("Output", "none")
             if mode == "codeblock":
-                if isinstance(message, list):
-                    message = self.array_to_message(message)
+                message = self.array_to_message(message)
                 return self.code_block(title, message)
             elif mode == "table":
                 return self.mysqltable(title, message)
@@ -39,15 +38,12 @@ class Output:
         lines[len(lines) - 1] = lines[len(lines) - 1].strip()
         return "\n".join(lines)
 
-
-    
     def code_block(self, title, message):
         msg = """
 ```ansi
 [[2;31m>[0m]  {title}   [[2;31m<[0m]
 
 {message}
-
 [[2;45m[0m[2;34m~[0m] Invictus [[2;34m~[0m]
 ```""".format(title=title, message=message)
         return msg
@@ -92,10 +88,12 @@ class Output:
             base += "&description=" + urllib.parse.quote(message)
         if author:
             base += "&author=" + urllib.parse.quote(author)
-        if color:
-            base += "&color=" + color
         if thumbnail:
             base += "&thumbnail=" + thumbnail
+        if color:
+            base += "&colour=" + urllib.parse.quote(color)
+        base += "&url=https://invictus-sb.netlify.app"
+        print(base)
         return base
     
     def cmdcount(self):
@@ -140,6 +138,7 @@ class Output:
         # Implement dynamic creation of mysql table format output like in help format
         # [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value4"])]
         global message
+        array = self.message_to_array(array, title)
         message = ""
         
         columns = [col[0] for col in array]
@@ -172,19 +171,32 @@ class Output:
         make_line()
 
         return self.code_block(title, message)
+    
+    # Add a mode for custom formatting with json and shit
 
-    def array_to_message(self, array):
+    def message_to_array(self, message, title):
+        if isinstance(message, list):
+            return message
+        return [(title, [line.strip() for line in message.splitlines()])]
+
+    def array_to_message(self, array, msgstart="", msgsplit="»"):
         message = ""
-        padings = []
-        columns = [col[0] for col in array]
-        values = [val[1] for val in array]
-        for col, val in zip(columns, values):
-            padings.append(max(len(col), *(len(v) for v in val)))
-        for i in range(len(columns)):
-            message += columns[i].ljust(padings[i]) + " » " if i != len(columns) - 1 else columns[i].ljust(padings[i])
-        message += "\n"
-        for row in range(len(values[0])):
-            for col in range(len(columns)):
-                message += values[col][row].ljust(padings[col]) + " » " if col != len(columns) - 1 else values[col][row].ljust(padings[col])
+        # Add an instance check for arrays and if not then splitlines 
+        if isinstance(array, list):
+            padings = []
+            columns = [col[0] for col in array]
+            values = [val[1] for val in array]
+            for col, val in zip(columns, values):
+                padings.append(max(len(col), *(len(v) for v in val)))
+            for i in range(len(columns)):
+                if columns[i]:
+                    message += msgstart + columns[i].ljust(padings[i]) + " {} ".format(msgsplit) if i != len(columns) - 1 else columns[i].ljust(padings[i])
             message += "\n"
+            for row in range(len(values[0])):
+                for col in range(len(columns)):
+                    message += msgstart + values[col][row].ljust(padings[col]) + " {} ".format(msgsplit) if col != len(columns) - 1 else values[col][row].ljust(padings[col])
+                message += "\n"
+        else:
+            lines = [line.strip() for line in array.splitlines()]
+            message = "\n".join(lines)
         return message

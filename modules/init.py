@@ -128,8 +128,8 @@ async def example(ctx):
                     userid = input("[>] Enter gelbooru user ID: ")
 
                 json.dump({"Token": token, 
-                           "Prefix": prefix, 
-                           "Output": output.lower(), 
+                           "Prefix": prefix if prefix else ".", 
+                           "Output": output.lower() if output else "block", 
                            "Modules": {"nitro": True if nitro.lower() == "y" else False, 
                                        "msglog": True if msglog.lower() == "y" else False, 
                                        "antitokenlog": True if antitl.lower() == "y" else False, 
