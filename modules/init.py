@@ -88,6 +88,21 @@ async def example(ctx):
 
             with open("Assets/Settings/Cache.json", "w") as f:
                 json.dump(config, f, indent=4)
+        # Credits to nighty for the idea of custom themes
+        if not os.path.exists("Assets/Settings/Style.json"):
+            # Thx to ryz for this theme
+            config = {
+                "Demo" : {
+                    "CMDStart": "> -# `",
+                    "CMDEnd": "`",
+                    "Split": "|",
+                    "Footer": "```test```",
+                    "Header": "```{}```"
+                }
+            }
+
+            with open("Assets/Settings/Style.json", "w") as f:
+                json.dump(config, f, indent=4)
 
     def config(self):
         if not os.path.exists("Assets/Config.json"):

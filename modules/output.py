@@ -23,6 +23,8 @@ class Output:
                 return self.embed(title, message, "Invictus", "", "")
             elif mode == "none":
                 return Logging().Info(message)
+            else:
+                return self.custom(title, message, mode)
             return mode
         
     def istable(self, message):
@@ -174,29 +176,53 @@ class Output:
     
     # Add a mode for custom formatting with json and shit
 
+    def custom(self, title, array, mode):
+        with open("Assets/Settings/Style.json", 'r') as f:
+            style = json.load(f)
+            style = style.get(mode, "")
+            if not style:
+                return self.array_to_message(array, title)
+            msg = self.array_to_message(array, style.get("Header").format(title), style.get("CMDStart"), style.get("CMDEnd"), style.get("Split"), style.get("Footer"))
+            
+            return msg
+
     def message_to_array(self, message, title):
         if isinstance(message, list):
             return message
         return [(title, [line.strip() for line in message.splitlines()])]
 
-    def array_to_message(self, array, msgstart="", msgsplit="»"):
+    def array_to_message(self, array, title="", msgstart="", msgend="", msgsplit="»", footer=""):
         message = ""
-        # Add an instance check for arrays and if not then splitlines 
+        # Add an instance check for arrays and if not then splitlines
+        if title:
+            message += title + "\n" 
         if isinstance(array, list):
             padings = []
             columns = [col[0] for col in array]
             values = [val[1] for val in array]
             for col, val in zip(columns, values):
                 padings.append(max(len(col), *(len(v) for v in val)))
+            message += msgstart
             for i in range(len(columns)):
                 if columns[i]:
-                    message += msgstart + columns[i].ljust(padings[i]) + " {} ".format(msgsplit) if i != len(columns) - 1 else columns[i].ljust(padings[i])
+                    message += columns[i].ljust(padings[i]) + " {} ".format(msgsplit) if i != len(columns) - 1 else columns[i].ljust(padings[i])
+            message += msgend
             message += "\n"
             for row in range(len(values[0])):
+                message += msgstart
                 for col in range(len(columns)):
-                    message += msgstart + values[col][row].ljust(padings[col]) + " {} ".format(msgsplit) if col != len(columns) - 1 else values[col][row].ljust(padings[col])
+                    if col == 0:
+                        message += values[col][row].ljust(padings[col]) + msgend
+                    elif col != len(columns):
+                        message += " {} ".format(msgsplit) + values[col][row].ljust(padings[col])
+                    else:
+                        message += values[col][row].ljust(padings[col])                
                 message += "\n"
         else:
             lines = [line.strip() for line in array.splitlines()]
-            message = "\n".join(lines)
+            for line in lines:
+                if line:
+                    message += msgstart + line + msgend + "\n"
+        if footer:
+            message += "\n" + footer
         return message
