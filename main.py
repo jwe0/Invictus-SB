@@ -419,7 +419,7 @@ class Bot:
                 api = "https://discord.com/api/v10/users/@me/channels"
                 data = {"recipients":[f"{self.bot.user.id}", f"{id}"]}
                 r = requests.post(api, headers={"authorization": self.token}, json=data)
-                print("[CREATE] " + str(r.status_code))
+                self.logging.Info("Created channel: " + str(id))
                 while r.status_code != 200:
                     r = requests.post(api, headers={"authorization": self.token}, json=data)
                     if r.status_code == 429:
@@ -432,7 +432,7 @@ class Bot:
                 api = "https://discord.com/api/v9/channels/{}".format(id)
                 data = {"name": name}
                 r = requests.patch(api, headers={"authorization": self.token}, json=data)
-                print("[RENAME] " + str(r.status_code))
+                self.logging.Info("Renamed channel: " + str(id))
                 while r.status_code != 200:
                     r = requests.patch(api, headers={"authorization": self.token}, json=data)
                     if r.status_code == 429:
@@ -443,7 +443,7 @@ class Bot:
             def leave(id):
                 api = "https://discord.com/api/v9/channels/{}?silent=true".format(id)
                 r = requests.delete(api, headers={"authorization": self.token})
-                print("[LEAVE] " + str(r.status_code))
+                self.logging.Info("Left channel: " + str(id))
                 while r.status_code != 200:
                     r = requests.delete(api, headers={"authorization": self.token})
                     if r.status_code == 429:
