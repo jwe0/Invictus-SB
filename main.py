@@ -997,7 +997,7 @@ class Bot:
             await ctx.message.delete()
             uptime = self.output2.uptime()
             logons = self.output2.logons()
-            await ctx.send(self.output("Stats", [("Uptime", ["Logins: {}".format(str(logons)), "Uptime: {}".format(str(uptime))])]))
+            await ctx.send(self.output("Stats", "Uptime: {}\nLogons: {}".format(uptime, logons)))
 
     
         # NSFW
