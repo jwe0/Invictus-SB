@@ -1184,6 +1184,8 @@ class Bot:
 Aided by my good friend neebooo - https://github.com/neebooo
 
 I made this to test my skill as a developer when tasked with a large project.
+
+Homepage - https://invictus-sb.netlify.app/
 """ 
             await ctx.send(self.output("Credits", message))
 

@@ -183,7 +183,7 @@
         "section" : "utility",
         "page" : 1
     },
-    "reset" : {
+    "restart" : {
         "name" : "restart",
         "description": "Restarts the bot",
         "params": [],
