@@ -77,15 +77,15 @@ class General:
             param2 = ""
             params = command.get("params")
             for param in params:
-                param2 += "[{}] ".format(param[0])
+                param2 += "({}) ".format(param[0])
             array.append((command.get("name"), param2, command.get("description")))
         options      = []
         arguments    = []
         descriptions = []
         for option, argument, description in array:
-            options.append(option if option else "[None]")
-            arguments.append(argument if argument else "[None]")
-            descriptions.append(description if description else "[None]") 
+            options.append(option if option else "(None)")
+            arguments.append(argument if argument else "(None)")
+            descriptions.append(description if description else "(None)") 
         table = [("Commands", options), ("Arguments", arguments), ("Description", descriptions)]
         return table
     
