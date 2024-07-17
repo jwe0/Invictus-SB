@@ -211,7 +211,7 @@ class Output:
             for row in range(len(values[0])):
                 for col in range(len(columns)):
                     if col == 0:
-                        message += f"{msgstart}{values[col][row].ljust(padings[col])}{msgend}" if align else f"{values[col][row]}{msgend}"
+                        message += f"{msgstart}{values[col][row].ljust(padings[col])}{msgend}" if align else f"{msgstart}{values[col][row]}{msgend}"
                     elif col != len(columns):
                         message += f" {msgsplit} {values[col][row].ljust(padings[col])}" if align else f" {msgsplit} {values[col][row]}"
                     else:
