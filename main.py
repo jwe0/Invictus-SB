@@ -683,7 +683,7 @@ class Bot:
             nparams = []
             for param in params:
                 nparams.append(param[0] + " : " + param[1])
-            param = "\n".join(nparams)
+            param = " ".join(nparams)
             await ctx.send(self.output("Command Info", "Description: {}\n\n{}\n\nExample: {}".format(description, param, example)))
 
         @self.bot.command()

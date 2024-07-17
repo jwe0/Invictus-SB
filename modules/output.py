@@ -182,7 +182,7 @@ class Output:
             style = style.get(mode, "")
             if not style:
                 return self.array_to_message(array, title)
-            msg = self.array_to_message(array, style.get("Header").format(title), style.get("CMDStart"), style.get("CMDEnd"), style.get("Split"), style.get("Footer"), True)
+            msg = self.array_to_message(array, style.get("Header").format(title), style.get("CMDStart"), style.get("CMDEnd"), style.get("Split"), style.get("Footer"), style.get("Align"))
             
             return msg
 
@@ -191,7 +191,7 @@ class Output:
             return message
         return [(title, [line.strip() for line in message.splitlines()])]
 
-    def array_to_message(self, array, title="", msgstart="", msgend="", msgsplit="»", footer="", iscustom=False):
+    def array_to_message(self, array, title="", msgstart="", msgend="", msgsplit="»", footer="", align=True):
         message = ""
         # Add an instance check for arrays and if not then splitlines
         if title:
@@ -209,15 +209,13 @@ class Output:
             message += msgend
             message += "\n"
             for row in range(len(values[0])):
-                message += msgstart
                 for col in range(len(columns)):
                     if col == 0:
-                        message += f"{values[col][row].ljust(padings[col])}{msgend}" if not iscustom else f"{values[col][row]}{msgend}"
+                        message += f"{msgstart}{values[col][row].ljust(padings[col])}{msgend}" if align else f"{values[col][row]}{msgend}"
                     elif col != len(columns):
-                        message += f" {msgsplit} {values[col][row].ljust(padings[col])}" if not iscustom else f" {msgsplit} {values[col][row]}"
+                        message += f" {msgsplit} {values[col][row].ljust(padings[col])}" if align else f" {msgsplit} {values[col][row]}"
                     else:
-                        message += f"{values[col][row].ljust(padings[col])}" if not iscustom else f"{values[col][row]}"
-                        # message += values[col][row].ljust(padings[col])                
+                        message += f"{values[col][row].ljust(padings[col])}" if align else f"{values[col][row]}"
                 message += "\n"
         else:
             lines = [line.strip() for line in array.splitlines()]
@@ -228,11 +226,3 @@ class Output:
             message += "\n" + footer
         return message
     
-                # for col in range(len(columns)):
-                #     if col == 0:
-                #         message += f"{values[col][row]}{msgend.ljust(padings[col])}" if not iscustom else f"{values[col][row]}{msgend}"
-                #     elif col != len(columns):
-                #         message += f" {msgsplit} {values[col][row].ljust(padings[col])}" if not iscustom else f" {msgsplit} {values[col][row]}"
-                #     else:
-                #         message += f"{values[col][row].ljust(padings[col])}" if not iscustom else f"{values[col][row].ljust(padings[col])}"
-                # message += "\n"
