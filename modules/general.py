@@ -164,7 +164,7 @@ class General:
         requests.get(page)
         end = time.time()
         timems = int((end - start) * 1000)
-        return timems
+        return str(timems)
     
     def update_logons(self):
         with open("Assets/Settings/Cache.json", 'r') as f:

@@ -918,7 +918,7 @@ class Bot:
         async def webping(ctx, url):
             await ctx.message.delete()
             ping = self.general.ping(url)
-            await ctx.send(self.output("Web Ping", [("Ping", [ping])]))
+            await ctx.send(self.output("Web Ping", [("Ping", [ping + "ms"])]))
 
         @self.bot.command()
         async def domainwhois(ctx, domain):
