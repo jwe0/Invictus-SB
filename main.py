@@ -557,6 +557,15 @@ class Bot:
             os.remove("Assets/Temp/temp.png")
             os.remove("Assets/Temp/temp.svg")
 
+        @self.bot.command()
+        async def pethttpcat(ctx, code):
+            await ctx.message.delete()
+            r = requests.get("https://http.cat/{}".format(code))
+            with open("Assets/Temp/temp.png", "wb") as f:
+                f.write(r.content)
+            await ctx.send(file=discord.File("Assets/Temp/temp.png"))
+            os.remove("Assets/Temp/temp.png")
+
         
         # Utility commands
 
