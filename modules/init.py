@@ -97,7 +97,8 @@ async def example(ctx):
                     "CMDEnd": "`",
                     "Split": "|",
                     "Footer": "```test```",
-                    "Header": "```{}```"
+                    "Header": "```{}```",
+                    "Align" : False
                 }
             }
 
