@@ -9,12 +9,14 @@ class General:
     def __init__(self):
         self.logging = Logging()
         self.output  = Output()
+        self.config  = {}
         self.type    = 0
+
 
     def load_config(self):
         with open("Assets/Config.json", "r") as f:
             config = json.load(f)
-
+            self.config = config
             token  = config.get("Token", "")
             prefix = config.get("Prefix", "")
 
@@ -72,6 +74,7 @@ class General:
         return max(len(name) for _, name in array)
     
     def help_format(self, dic):
+        prefix = self.config.get("Prefix", "")
         array = []
         for command in dic:
             param2 = ""
@@ -79,13 +82,9 @@ class General:
             for param in params:
                 param2 += "({}) ".format(param[0])
             array.append((command.get("name"), param2, command.get("description")))
-        options      = []
-        arguments    = []
-        descriptions = []
-        for option, argument, description in array:
-            options.append(option if option else "(None)")
-            arguments.append(argument if argument else "(None)")
-            descriptions.append(description if description else "(None)") 
+        options      = [prefix + option if option      else "(None)" for option, _, _      in array]
+        arguments    = [argument        if argument    else "(None)" for _, argument, _    in array]
+        descriptions = [description     if description else "(None)" for _, _, description in array]
         table = [("Commands", options), ("Arguments", arguments), ("Description", descriptions)]
         return table
     

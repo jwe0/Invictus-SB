@@ -182,7 +182,18 @@ class Output:
             style = style.get(mode, "")
             if not style:
                 return self.array_to_message(array, title)
-            msg = self.array_to_message(array, style.get("Header").format(title), style.get("CMDStart"), style.get("CMDEnd"), style.get("Split"), style.get("Footer"), style.get("Align"))
+            msg = self.array_to_message(
+                array, 
+                style.get("Header").format(title), 
+                style.get("CMDStart"), 
+                style.get("CMDEnd"), 
+                style.get("CMDSplit"), 
+                style.get("Footer"), 
+                style.get("Align"), 
+                style.get("ColumnStart"), 
+                style.get("ColumnEnd"),
+                style.get("ColumnSplit")
+                )
             
             return msg
 
@@ -191,7 +202,7 @@ class Output:
             return message
         return [(title, [line.strip() for line in message.splitlines()])]
 
-    def array_to_message(self, array, title="", msgstart="", msgend="", msgsplit="»", footer="", align=True):
+    def array_to_message(self, array, title="", msgstart="", msgend="", msgsplit="»", footer="", align=True, columnstart="", columnend="", columnsplit="»"):
         message = ""
         # Add an instance check for arrays and if not then splitlines
         if title:
@@ -202,11 +213,11 @@ class Output:
             values = [val[1] for val in array]
             for col, val in zip(columns, values):
                 padings.append(max(len(col), *(len(v) for v in val)))
-            message += msgstart
+            message += columnstart
             for i in range(len(columns)):
                 if columns[i]:
-                    message += columns[i].ljust(padings[i]) + " {} ".format(msgsplit) if i != len(columns) - 1 else columns[i].ljust(padings[i])
-            message += msgend
+                    message += columns[i].ljust(padings[i]) + " {} ".format(columnsplit) if i != len(columns) - 1 else columns[i].ljust(padings[i])
+            message += columnend
             message += "\n"
             for row in range(len(values[0])):
                 for col in range(len(columns)):

@@ -96,9 +96,12 @@ async def example(ctx):
             config = {
                 "Demo" : {
                     "CMDStart": "> -# `",
-                    "CMDEnd": "`",
-                    "Split": "|",
-                    "Footer": "```test```",
+                    "CMDEnd": "` ",
+                    "CMDSplit": "»",
+                    "ColumnStart" : "- ",
+                    "ColumnEnd": " -",
+                    "ColumnSplit": "|",
+                    "Footer": "```Invictus SB```",
                     "Header": "```{}```",
                     "Align" : False
                 }
