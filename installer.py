@@ -9,10 +9,10 @@ class Install:
             subprocess.run(["python3", "-m", "venv", "env"])
 
     def source_env(self):
-        if os.name() == "nt":
+        if os.name == "nt":
             subprocess.run([".\\env\\bin\\Activate.ps1"], shell=True)
         else:
-            subprocess.run(["source", "env/bin/activate"])
+            subprocess.run(["source", "env/bin/activate"], shell=True)
 
     def install_requirements(self):
         self.source_env()

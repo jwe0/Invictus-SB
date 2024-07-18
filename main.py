@@ -1008,6 +1008,41 @@ class Bot:
             logons = self.output2.logons()
             await ctx.send(self.output("Stats", "Uptime: {}\nLogons: {}".format(uptime, logons)))
 
+        @self.bot.command()
+        async def scrapestickers(ctx, guildid="", thread="n"):
+            await ctx.message.delete()
+            guildid = guildid if guildid else ctx.guild.id
+            self.logging.Info("Dumping stickers...")
+
+            def check_folder():
+                if not os.path.exists("Scrapes/Stickers/{}".format(guildid)):
+                    os.makedirs("Scrapes/Stickers/{}".format(guildid))
+
+            def get_stickers(id):
+                stickers = []
+                api = "https://discord.com/api/v9/guilds/{}/stickers".format(id)
+                r = self.session.get(api, headers=self.sessionheaders)
+                if r.status_code == 200:
+                    for sticker in r.json():
+                        stickers.append(("test", sticker.get("id")))
+                return stickers
+            
+            def download(stickerid, name):
+                api = "https://cdn.discordapp.com/stickers/{}.png".format(stickerid)
+                r = self.session.get(api, headers=self.sessionheaders)
+                with open("Scrapes/Stickers/{}/{}.png".format(guildid, name), "wb") as f:
+                    f.write(r.content)
+
+            stickers = get_stickers(guildid)
+            check_folder()
+            for sticker in stickers:
+                print(sticker)
+                download(sticker[1], sticker[0]) if thread != "y" else threading.Thread(target=download, args=(sticker[1], sticker[0])).start()
+
+            self.logging.Info("Dumped {} stickers".format(str(len(stickers))))
+
+                
+
     
         # NSFW
         @self.bot.command()
