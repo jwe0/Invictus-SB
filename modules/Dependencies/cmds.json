@@ -517,6 +517,16 @@
         "section" : "fun",
         "page" : 1
     },
+    "sethype" : {
+        "name" : "sethype",
+        "description" : "Sets the users hypesquad house",
+        "params" : [
+            ["HOUSE", "(The hypesquad house - bravery, brilliance, balance)"]
+        ],
+        "example" : "sethype balance",
+        "section" : "fun",
+        "page" : 1
+    },
     "credits" : {
         "name" : "credits",
         "description": "Shows credits",

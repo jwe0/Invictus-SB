@@ -566,6 +566,18 @@ class Bot:
             await ctx.send(file=discord.File("Assets/Temp/temp.png"))
             os.remove("Assets/Temp/temp.png")
 
+        @self.bot.command()
+        async def sethype(ctx, house="bravery"):
+            await ctx.message.delete()
+            houses  = {
+                "bravery" : 1,
+                "brilliance" : 2,
+                "balance" : 3
+            }
+            data = {"house_id" : houses[house]}
+            api = "https://discord.com/api/v9/hypesquad/online"
+            r = self.session.post(api, headers=self.sessionheaders, json=data)
+
         
         # Utility commands
 
