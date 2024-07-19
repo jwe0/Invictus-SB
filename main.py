@@ -51,6 +51,7 @@ class Bot:
         self.nitro    = False
         self.messagel = False
         self.give     = False
+        self.foot     = False
         self.session  = tls_client.Session()
 
 
@@ -60,6 +61,7 @@ class Bot:
         self.sessionheaders = ""
         self.nitrosettings  = {}
         self.givesettings   = {}
+        self.footer         = {}
         self.scripts        = []
 
         # Api keys
@@ -95,7 +97,14 @@ class Bot:
             await self.bot.process_commands(message)
             if self.messagel:
                 self.database.messageloggeradd(message.author.id, message.author.name, self.general.removespecial(message.content), message.created_at.strftime("%Y-%m-%d - %H:%M:%S"))
+            if self.foot:
+                if message.author == self.bot.user:
+                    footer_title = self.footer.get("Footer", "")
+                    footer_link  = self.footer.get("Link", "")
+                    footer_text  = self.footer.get("Linktext", "")
+                    content = f"{message.content}\n-# {footer_title} - [{footer_text}](<{footer_link}>)"
 
+                    await message.edit(content=content)
         @self.bot.event
         async def on_message_delete(message):
             if self.messagel:
@@ -1294,7 +1303,7 @@ Homepage - https://invictus-sb.netlify.app/
         Colors.white
         # Load config
         self.logging.Info("Loading config...")
-        self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt, self.gelkey, self.userid, self.give, press = self.general.load_config()
+        self.token, self.prefix, self.nitro, self.messagel, antitokenlog, autologout, userpass, tcrypt, self.gelkey, self.userid, self.give, press, self.foot = self.general.load_config()
         token_check = self.general.checktoken(self.token)
         if token_check[0] == False:
             self.logging.Error("Invalid token!")
@@ -1341,6 +1350,10 @@ Homepage - https://invictus-sb.netlify.app/
         self.osint.init()
         self.logging.Info("Setting up dos...")
         self.dos.init()
+        # Setup footer
+        if self.foot:
+            self.logging.Info("Setting up footer...")
+            self.footer = self.general.get_footer()
         # Run
         self.general.update_logons()
         threading.Thread(target=self.general.update_uptime).start()

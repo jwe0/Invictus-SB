@@ -30,6 +30,7 @@ class General:
             userid = config.get("Keys", {}).get("gelbooruuser", "")
             givesn = config.get("Modules", {}).get("givesniper", False)
             preses = config.get("Modules", {}).get("custompresence", False)
+            footer = config.get("Modules", {}).get("customfooter", False)
 
             if tcrypt:
                 self.clear()
@@ -43,7 +44,7 @@ class General:
                     self.logging.Error("Invalid encryption password.")
                     input("[>] Press enter to exit.")
                     exit()
-        return token, prefix, nitro, msgl, antitl, autolo, userps, tcrypt, gelkey, userid, givesn, preses
+        return token, prefix, nitro, msgl, antitl, autolo, userps, tcrypt, gelkey, userid, givesn, preses, footer
     
     def art(self):
         ascii_art = """
@@ -172,6 +173,10 @@ class General:
             return r.json()["name"]
         else:
             return "Not found"
+        
+    def get_footer(self):
+        with open("Assets/Settings/footer.json", "r") as f:
+            return json.load(f)
     
     def update_logons(self):
         with open("Assets/Settings/Cache.json", 'r') as f:

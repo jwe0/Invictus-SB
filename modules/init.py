@@ -3,7 +3,10 @@ from modules.general import General
 
 class Init:
     def __init__(self):
-        self.general = General()
+        self.general      = General()
+        self.footer       = ""
+        self.footlink     = ""
+        self.footlinktext = ""
 
     def assets(self):
         if not os.path.exists("Assets"):
@@ -92,6 +95,15 @@ async def example(ctx):
 
             with open("Assets/Settings/Cache.json", "w") as f:
                 json.dump(config, f, indent=4)
+        if not os.path.exists("Assets/Settings/footer.json"):
+            config = {
+                "Footer" : self.footer,
+                "Linktext" : self.footlinktext,
+                "Link" : self.footlink
+            }
+
+            with open("Assets/Settings/Footer.json", "w") as f:
+                json.dump(config, f, indent=4)
         # Credits to nighty for the idea of custom themes
         if not os.path.exists("Assets/Settings/Style.json"):
             # Thx to ryz for this theme
@@ -129,6 +141,12 @@ async def example(ctx):
 
                 print("\n[+] Modules\n")
 
+                customfooter = input("[>] Custom footer? : ")
+                if customfooter.lower() == "y":
+                    self.footer = input("[>] Enter footer: ")
+                    self.footlink = input("[>] Enter footer link: ")
+                    self.footlinktext = input("[>] Enter footer link text: ")
+
                 nitro  = input("[>] Nitro sniper?  : ")
                 msglog = input("[>] Log messages?  : ")
                 tcrypt = input("[>] Encrypt token? : ")
@@ -158,7 +176,8 @@ async def example(ctx):
                                        "antitokenlog": True if antitl.lower() == "y" else False, 
                                        "autologout": True if autolo.lower() == "y" else False, 
                                        "givesniper": True if givesniper.lower() == "y" else False, 
-                                       "custompresence": True if custompres.lower() == "y" else False}, 
+                                       "custompresence": True if custompres.lower() == "y" else False,
+                                       "customfooter": True if customfooter.lower() == "y" else False}, 
                             "Keys" : {"gelboorukey": gelkey if gelkey else None, 
                                       "gelbooruid": userid if gelkey else None}, 
                             "TCrypt": True if tcrypt.lower() == "y" else False, 
@@ -166,6 +185,8 @@ async def example(ctx):
                         }, f, indent=4)
                 if custompres.lower() == "y":
                     self.presinit()
+
+
                 
     def presinit(self):
         print("\n[+] Custom presence\n")
@@ -479,6 +500,7 @@ async def example(ctx):
 
 
     def init(self):
+        self.config()
         self.assets()
         self.ipcache()
         self.msglogs()
@@ -489,4 +511,3 @@ async def example(ctx):
         self.eventloggerinit()
         self.sites()
         self.temp()
-        self.config()
