@@ -695,7 +695,7 @@ class Bot:
             nparams = []
             for param in params:
                 nparams.append(param[0] + " : " + param[1])
-            param = " ".join(nparams)
+            param = "\n".join(nparams)
             await ctx.send(self.output("Command Info", "Description: {}\n\n{}\n\nExample: {}".format(description, param, example)))
 
         @self.bot.command()
@@ -742,7 +742,7 @@ class Bot:
             x = 0
             if not channelid:
                 channelid = ctx.channel.id
-                
+
             headers = {"authorization": self.token}
             api = "https://discord.com/api/v9/channels/{}/messages?limit=100".format(channelid)
             
