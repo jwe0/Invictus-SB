@@ -742,7 +742,7 @@ class Bot:
             x = 0
             if not channelid:
                 channelid = ctx.channel.id
-
+                
             headers = {"authorization": self.token}
             api = "https://discord.com/api/v9/channels/{}/messages?limit=100".format(channelid)
             
@@ -980,13 +980,14 @@ class Bot:
         async def scrapemembers(ctx, guildid="", thread="n"):
             await ctx.message.delete()
             guildid  = ctx.guild.id if guildid == "" else guildid
+            guildname = self.general.guildid_name(guildid)
             channels = []
             members  = []
             prog = 0
             channelapi = "https://discord.com/api/v9/guilds/{}/channels".format(guildid)
             messageapi = "https://discord.com/api/v9/channels/{}/messages?limit=100"
             def dump(message):
-                with open("Scrapes/Members/{}.txt".format(str(guildid)), "w") as f:
+                with open("Scrapes/Members/{}.txt".format(str(guildname)), "w") as f:
                     f.write(message + "\n")
             def get_messages(id):
                 nonlocal prog
@@ -1024,34 +1025,56 @@ class Bot:
         async def scrapestickers(ctx, guildid="", thread="n"):
             await ctx.message.delete()
             guildid = guildid if guildid else ctx.guild.id
+            guildname = self.general.guildid_name(guildid)
             self.logging.Info("Dumping stickers...")
-
             def check_folder():
-                if not os.path.exists("Scrapes/Stickers/{}".format(guildid)):
-                    os.makedirs("Scrapes/Stickers/{}".format(guildid))
-
+                if not os.path.exists("Scrapes/Stickers/{}".format(guildname)):
+                    os.makedirs("Scrapes/Stickers/{}".format(guildname))
             def get_stickers(id):
                 stickers = []
                 api = "https://discord.com/api/v9/guilds/{}/stickers".format(id)
                 r = self.session.get(api, headers=self.sessionheaders)
                 if r.status_code == 200:
                     for sticker in r.json():
-                        stickers.append(("test", sticker.get("id")))
+                        stickers.append((sticker.get("name"), sticker.get("id")))
                 return stickers
-            
             def download(stickerid, name):
-                api = "https://cdn.discordapp.com/stickers/{}.png".format(stickerid)
-                r = self.session.get(api, headers=self.sessionheaders)
-                with open("Scrapes/Stickers/{}/{}.png".format(guildid, name), "wb") as f:
-                    f.write(r.content)
-
+                result = requests.get(url=f"https://media.discordapp.net/stickers/{stickerid}.png")
+                with open("Scrapes/Stickers/{}/{}.png".format(guildname, name), "wb") as f:
+                    f.write(result.content)
             stickers = get_stickers(guildid)
             check_folder()
             for sticker in stickers:
-                print(sticker)
                 download(sticker[1], sticker[0]) if thread != "y" else threading.Thread(target=download, args=(sticker[1], sticker[0])).start()
-
             self.logging.Info("Dumped {} stickers".format(str(len(stickers))))
+
+        @self.bot.command()
+        async def scrapeemojis(ctx, guildid="", thread="n"):
+            await ctx.message.delete()
+            guildid = guildid if guildid else ctx.guild.id
+            guildname = self.general.guildid_name(guildid)
+            self.logging.Info("Dumping emojis...")
+            def check_folder():
+                if not os.path.exists("Scrapes/Emojis/{}".format(guildname)):
+                    os.makedirs("Scrapes/Emojis/{}".format(guildname))
+            def get_emojis(id):
+                emojis = []
+                api = "https://discordapp.com/api/v9/guilds/{}/emojis".format(id)
+                r = self.session.get(api, headers=self.sessionheaders)
+                if r.status_code == 200:
+                    for emoji in r.json():
+                        emojis.append((emoji.get("name"), emoji.get("id")))
+                return emojis
+            def download(emojiid, name):
+                result = requests.get(url=f"https://media.discordapp.net/emojis/{emojiid}.png")
+                with open("Scrapes/Emojis/{}/{}.png".format(guildname, name), "wb") as f:
+                    f.write(result.content)
+            emojis = get_emojis(guildid)
+            check_folder()
+            for emoji in emojis:
+                download(emoji[1], emoji[0]) if thread != "y" else threading.Thread(target=download, args=(emoji[1], emoji[0])).start()
+            self.logging.Info("Dumped {} emojis".format(str(len(emojis))))
+
 
                 
 

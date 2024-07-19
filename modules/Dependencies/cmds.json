@@ -450,6 +450,28 @@
         "section" : "utility",
         "page" : 3
     },
+    "scrapestickers" : {
+        "name" : "scrapestickers",
+        "description": "Scrapes stickers from a server",
+        "params": [
+            ["GUILDID", "(Guild ID default is current)"],
+            ["THREAD", "(Thread requests y/n)"]
+        ],
+        "example": "scrapestickers",
+        "section" : "utility",
+        "page" : 3
+    },
+    "scrapeemojis" : {
+        "name" : "scrapeemojis",
+        "description": "Scrapes emojis from a server",
+        "params": [
+            ["GUILDID", "(Guild ID default is current)"],
+            ["THREAD", "(Thread requests y/n)"]
+        ],
+        "example": "scrapeemojis",
+        "section" : "utility",
+        "page" : 3
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",

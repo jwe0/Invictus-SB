@@ -165,6 +165,14 @@ class General:
         timems = int((end - start) * 1000)
         return str(timems)
     
+    def guildid_name(self, id):
+        api = "https://discord.com/api/v9/guilds/{}".format(id)
+        r = requests.get(api, headers={"authorization": self.config.get("Token")})
+        if r.status_code == 200:
+            return r.json()["name"]
+        else:
+            return "Not found"
+    
     def update_logons(self):
         with open("Assets/Settings/Cache.json", 'r') as f:
             config = json.load(f)

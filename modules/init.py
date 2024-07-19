@@ -37,6 +37,8 @@ async def example(ctx):
             os.mkdir("Scrapes/Members")
         if not os.path.exists("Scrapes/Stickers"):
             os.mkdir("Scrapes/Stickers")
+        if not os.path.exists("Scrapes/Emojis"):
+            os.mkdir("Scrapes/Emojis")
 
     def settings(self):
         if not os.path.exists("Assets/Settings"):
