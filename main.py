@@ -1,4 +1,4 @@
-import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client, os, socket, cairosvg, string
+import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client, os, socket, cairosvg, string, base64
 from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
@@ -103,8 +103,10 @@ class Bot:
                     footer_link  = self.footer.get("Link", "")
                     footer_text  = self.footer.get("Linktext", "")
                     content = f"{message.content}\n-# {footer_title} - [{footer_text}](<{footer_link}>)"
-
-                    await message.edit(content=content)
+                    try:
+                        await message.edit(content=content)
+                    except:
+                        pass
         @self.bot.event
         async def on_message_delete(message):
             if self.messagel:
@@ -586,6 +588,17 @@ class Bot:
             data = {"house_id" : houses[house]}
             api = "https://discord.com/api/v9/hypesquad/online"
             r = self.session.post(api, headers=self.sessionheaders, json=data)
+
+        @self.bot.command()
+        async def tokengrab(ctx, id=""):
+            await ctx.message.delete()
+            if not id:
+                self.logging.error("No ID provided")
+                return
+            token = base64.b64encode(id.encode()).decode().rstrip("=")
+
+            await ctx.send(self.output("Token Grab", token))
+            
 
         
         # Utility commands
