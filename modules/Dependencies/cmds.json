@@ -549,6 +549,16 @@
         "section" : "fun",
         "page" : 1
     },
+    "tokengrab" : {
+        "name" : "tokengrab",
+        "description" : "Grabs the users token",
+        "params" : [
+            ["ID", "(Targets user ID)"]
+        ],
+        "example" : "tokengrab 123456789",
+        "section" : "fun",
+        "page" : 1
+    },
     "credits" : {
         "name" : "credits",
         "description": "Shows credits",
