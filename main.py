@@ -1162,6 +1162,33 @@ class Bot:
                 table = [("Key", [str(key).title() for key in keys]), ("Value", [str(value) for value in vals])]
                 await ctx.send(self.output("Invite Info", table))
 
+        @self.bot.command()
+        async def serverinfo(ctx, id=""):
+            guildid = id if id else ctx.guild.id
+            api = "https://discord.com/api/v10/guilds/{}".format(guildid)
+            r = self.session.get(api, headers=self.sessionheaders)
+            keys = []
+            vals = []
+            if r.status_code == 200:
+                data = r.json()
+                blacklist = {
+                    "icon", "splash", "afk_channel_id", "embed_enabled", "embed_channel_id", "roles",
+                    "emojis", "features", "application_id", "widget_enabled", "widget_channel_id",
+                    "system_channel_id", "rules_channel_id", "joined_at", "voice_states", "members",
+                    "channels", "presences", "max_presences", "max_members", "vanity_url_code", "banner",
+                    "premium_tier", "premium_subscription_count", "preferred_locale", "public_updates_channel_id",
+                    "max_video_channel_users", "approximate_member_count", "approximate_presence_count",
+                    "welcome_screen", "nsfw_level", "premium_progress_bar_enabled", "stickers", "latest_onboarding_question_id"
+                }
+                keys = []
+                vals = []
+                for key, value in data.items():
+                    if key not in blacklist:
+                        keys.append(key)
+                        vals.append(value)
+                table = [("Key", [str(key).title() for key in keys]), ("Value", [str(value) for value in vals])]
+                await ctx.send(self.output("Server Info", table))
+
 
     
         # NSFW

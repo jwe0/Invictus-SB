@@ -496,6 +496,16 @@
         "section" : "utility",
         "page" : 3
     },
+    "serverinfo" : {
+        "name" : "serverinfo",
+        "description": "Shows information about a server",
+        "params": [
+            ["SERVER", "(Server ID)"]
+        ],
+        "example": "serverinfo 123456789",
+        "section" : "utility",
+        "page" : 3
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
