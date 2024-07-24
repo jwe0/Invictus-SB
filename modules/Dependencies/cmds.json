@@ -486,6 +486,16 @@
         "section" : "utility",
         "page" : 3
     },
+    "inviteinfo" : {
+        "name" : "inviteinfo",
+        "description": "Shows information about an invite",
+        "params": [
+            ["INVITE", "(Invite code)"]
+        ],
+        "example": "inviteinfo 123456789",
+        "section" : "utility",
+        "page" : 3
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",

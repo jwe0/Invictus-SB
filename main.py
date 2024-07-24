@@ -640,7 +640,6 @@ class Bot:
         async def iplookup(ctx, ip):
             await ctx.message.delete()
             url = "http://ip-api.com/json/{}".format(ip)
-            # [("Column1", ["Value1", "Value2"]), ("Column2", ["Value3", "Value4"])]
             r = requests.get(url)
             data = r.json()
 
@@ -1126,7 +1125,43 @@ class Bot:
             self.logging.Info("Dumped {} emojis".format(str(len(emojis))))
 
 
-                
+        @self.bot.command()
+        async def inviteinfo(ctx, code=""):
+
+            if not code:
+                self.logging.Info("Please specify a code")
+                return
+            api = "https://discord.com/api/v10/invites/{}".format(code)
+            r = self.session.get(api)
+
+            keys = []
+            vals = []
+
+            if r.status_code == 200:
+                data = r.json()
+                if "guild" in data:
+                    keys.append("Guild")
+                    vals.append("-" * 20)
+                    for key, value in data.get("guild", {}).items():
+                        if key not in ("description", "features"):
+                            keys.append(key)
+                            vals.append(value)
+                if "inviter" in data:
+                    keys.append("Inviter")
+                    vals.append("-" * 20)
+                    for key, value in data.get("inviter", {}).items():
+                        keys.append(key)
+                        vals.append(value)
+                if "channel" in data:
+                    keys.append("Channel")
+                    vals.append("-" * 20)
+                    for key, value in data.get("channel", {}).items():
+                        keys.append(key)
+                        vals.append(value)
+
+                table = [("Key", [str(key).title() for key in keys]), ("Value", [str(value) for value in vals])]
+                await ctx.send(self.output("Invite Info", table))
+
 
     
         # NSFW
