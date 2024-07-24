@@ -137,6 +137,20 @@
         "section" : "raid",
         "page" : 1
     },
+    "pollspam" : {
+        "name" : "pollspam",
+        "description" : "Spams discord polls",
+        "params" : [
+            ["QUESTION", "(Poll question)"],
+            ["ANSWERS", "(Poll answers comma seperated)"],
+            ["COUNT", "(Number of polls to create)"],
+            ["DELAY", "(Delay between polls)"],
+            ["THREAD", "(y/n)"]
+        ],
+        "example" : "pollspam Question answer1,answer2,answer3 10 1 n",
+        "section" : "raid",
+        "page" : 1  
+    },
     "iplookup" : {
         "name" : "iplookup",
         "description": "Looks up an IP address",

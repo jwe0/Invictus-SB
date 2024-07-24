@@ -483,6 +483,39 @@ class Bot:
                 wsinit()
                 time.sleep(int(delay))
 
+        @self.bot.command()
+        async def pollspam(ctx, question="What is the best free selfbot?", uanswers="Invictus,Invictus,Invictus,Invictus,Invictus", count=10, delay=2, thread="n"):
+            await ctx.message.delete()
+            answers = []
+            user_answers = uanswers.split(",")
+            for answer in user_answers:
+                answers.append({
+                    "poll_media": {
+                        "text": answer,
+                        "emoji": {
+                            "name": "💀"
+                        }
+                    }
+                })
+            api = "https://discord.com/api/v9/channels/{}/messages".format(ctx.channel.id)
+            data = {
+                "content" : "",
+                "flags"   : 0,
+                "poll": {
+                    "question": {"text": question},
+                    "answers": answers,
+                    "allow_multiselect": True,
+                    "duration": 336,
+                    "layout_type": 1
+                    }
+                }
+            def create():
+                r = self.session.post(api, headers=self.sessionheaders, json=data)
+
+            for i in range(int(count)):
+                create() if thread.lower() == "n" else threading.Thread(target=create).start()
+                time.sleep(int(delay))
+
         # Troll commands
 
         @self.bot.command()
