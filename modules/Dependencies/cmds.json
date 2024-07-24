@@ -528,6 +528,16 @@
         "section" : "troll",
         "page" : 1
     },
+    "blockflood" : {
+        "name" : "blockflood",
+        "description": "Mass sends codeblocks",
+        "params": [
+            ["COUNT", "(Number of blocks to send)"]
+        ],
+        "example": "blockflood",
+        "section" : "troll",
+        "page" : 1
+    },
     "gayrate" : {
         "name" : "gayrate",
         "description": "Rates a user",

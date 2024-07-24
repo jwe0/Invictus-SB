@@ -564,6 +564,13 @@ class Bot:
 
                 await ctx.send("<@{}> ".format(id) + ip + " " + loc + " 😎")
 
+        @self.bot.command()
+        async def blockflood(ctx, loops=5):
+            await ctx.message.delete()
+            msg = "`" * 2000
+            for i in range(int(loops)):
+                await ctx.send(msg)
+
         # Fun commands  
 
         @self.bot.command()
