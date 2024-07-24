@@ -116,12 +116,12 @@ class Bot:
         async def help(ctx):
             await ctx.message.delete()
             options = [
-                {"name": "raid", "description": "Commands for raiding", "params": [], "section": "raid", "page": 1},
-                {"name": "troll", "description": "Commands for trolling", "params": [], "section": "troll", "page": 1},
-                {"name": "fun", "description": "Commands for fun", "params": [], "section": "fun", "page": 1},
-                {"name": "utilities", "description": "Commands for utility", "params": [], "section": "utilities", "page": 1},
-                {"name": "nsfw", "description": "Commands for NSFW", "params": [], "section": "nsfw", "page": 1},
-                {"name": "crypto", "description": "Commands for cryptography", "params": [], "section": "crypto", "page": 1},
+                {"name": "raid", "description": "Commands for raiding", "params": [["PAGE", "(Page number)"]], "section": "raid", "page": 1},
+                {"name": "troll", "description": "Commands for trolling", "params": [["PAGE", "(Page number)"]], "section": "troll", "page": 1},
+                {"name": "fun", "description": "Commands for fun", "params": [["PAGE", "(Page number)"]], "section": "fun", "page": 1},
+                {"name": "utilities", "description": "Commands for utility", "params": [["PAGE", "(Page number)"]], "section": "utilities", "page": 1},
+                {"name": "nsfw", "description": "Commands for NSFW", "params": [["PAGE", "(Page number)"]], "section": "nsfw", "page": 1},
+                {"name": "crypto", "description": "Commands for cryptography", "params": [["PAGE", "(Page number)"]], "section": "crypto", "page": 1},
             ]
 
             message = self.general.help_format(options)

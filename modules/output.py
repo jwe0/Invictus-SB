@@ -18,7 +18,6 @@ class Output:
                 return self.mysqltable(title, message)
             elif mode == "block":
                 return self.code_block_2(title, message)
-            #def embed(self, title="", desc="", author="", color="", thumbnail=""):
             elif mode == "embed":
                 return self.embed(title, message, "Invictus", "", "")
             elif mode == "none":
