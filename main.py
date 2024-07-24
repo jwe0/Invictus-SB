@@ -19,7 +19,6 @@ from modules.presence import Presence
 from modules.events import Events
 from modules.cryptography import Crypto
 from modules.osint import OSINT
-from modules.dos import Dos
 
 class Bot:
     def __init__(self):
@@ -33,7 +32,6 @@ class Bot:
         self.spoof    = Spoof()
         self.crypto   = Crypto()
         self.osint    = OSINT()
-        self.dos      = Dos()
         self.events   = None
         self.presence = None
         self.massr    = None
@@ -124,7 +122,6 @@ class Bot:
                 {"name": "utilities", "description": "Commands for utility", "params": [], "section": "utilities", "page": 1},
                 {"name": "nsfw", "description": "Commands for NSFW", "params": [], "section": "nsfw", "page": 1},
                 {"name": "crypto", "description": "Commands for cryptography", "params": [], "section": "crypto", "page": 1},
-                {"name": "dos", "description": "Commands for DoS", "params": [], "section": "dos", "page": 1},
             ]
 
             message = self.general.help_format(options)
@@ -166,11 +163,6 @@ class Bot:
             cmds = self.search.cmd(page, "crypto")
             await ctx.send(self._help("Crypto", cmds, page))
         
-        @self.bot.command()
-        async def dos(ctx, page=1):
-            await ctx.message.delete()
-            cmds = self.search.cmd(page, "dos")
-            await ctx.send(self._help("DoS", cmds, page))
 
         # Raid commands
         @self.bot.command()
@@ -1465,8 +1457,6 @@ Homepage - https://invictus-sb.netlify.app/
         # Setup osint
         self.logging.Info("Setting up osint...")
         self.osint.init()
-        self.logging.Info("Setting up dos...")
-        self.dos.init()
         # Setup footer
         if self.foot:
             self.logging.Info("Setting up footer...")
