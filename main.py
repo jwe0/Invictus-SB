@@ -993,14 +993,16 @@ class Bot:
             pdesc = []
             pcsec = []
             pcexm = []
+            pcpge = []
             for cmd in self.cmds:
                 if command in cmd:
                     pcmds.append(cmd)
                     pdesc.append(self.cmds[cmd]["description"])
                     pcsec.append(self.cmds[cmd]["section"])
                     pcexm.append(self.cmds[cmd]["example"])
+                    pcpge.append(str(self.cmds[cmd]["page"]))
             if len(pcmds) != 0:
-                possibles = [("Command", pcmds), ("Description", pdesc), ("Section", pcsec), ("Example", pcexm)]
+                possibles = [("Command", pcmds), ("Description", pdesc), ("Section", pcsec), ("Page", pcpge), ("Example", pcexm)]
             else:
                 possibles = [("Command", ["None found"])]
             await ctx.send(self.output("Search", possibles))
