@@ -102,7 +102,7 @@ class Bot:
                     footer_title = self.footer.get("Footer", "")
                     footer_link  = self.footer.get("Link", "")
                     footer_text  = self.footer.get("Linktext", "")
-                    content = f"{message.content}\n-# {footer_title} - [{footer_text}](<{footer_link}>)"
+                    content = f"{message.content}\n-# {footer_title} · [{footer_text}](<{footer_link}>)"
                     try:
                         await message.edit(content=content)
                     except:
