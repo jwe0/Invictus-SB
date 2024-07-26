@@ -760,23 +760,27 @@ class Bot:
             response = requests.get(api, headers=headers)
             keys = []
             vals = []
-            cons = []
-            type = []
-            name = []
             if response.status_code == 200:
+                keys.append("User info")
+                vals.append("-" * 20)
                 for key, value in response.json().get("user").items():
                     if key != "bio":
                         keys.append(str(key).title())
                         vals.append(str(value))
-                for account in response.json().get("connected_accounts"):
-                    type.append(account["type"].title())
-                    name.append(account["name"])
-                for i in range(len(type)):
-                    cons.append("{} : {}".format(type[i].ljust(max([len(t) for t in type])), name[i]))
-                while len(cons) != len(keys):
-                    cons.append("[None]")
+                if "connected_accounts" in response.json().get("user"):
+                    keys.append("Connected Accounts")
+                    vals.append("-" * 20)
+                    for account in response.json().get("connected_accounts"):
+                        keys.append(str(account.get("type").title()))
+                        vals.append(account.get("name"))
+                if "badges" in response.json():
+                    keys.append("Badges")
+                    vals.append("-" * 20)
+                    for badge in response.json().get("badges"):
+                        keys.append(badge.get("description"))
+                        vals.append("None")
                 if len(keys) > 0:
-                    table = [("Key", keys), ("Value", vals), ("Connected Accounts", cons)]
+                    table = [("Key", keys), ("Value", vals)]
                 else:
                     table = [("Error", "No user found with that ID")]
                 await ctx.send(self.output("Whois", table))
