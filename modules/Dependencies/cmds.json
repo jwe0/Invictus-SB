@@ -538,6 +538,17 @@
         "section" : "troll",
         "page" : 1
     },
+    "tweet" : {
+        "name" : "tweet",
+        "description": "Sends a fake tweet",
+        "params": [
+            ["@USER", "(Target account)"],
+            ["MESSAGE", "(Message)"]
+        ],
+        "example": "tweet hi",
+        "section" : "troll",
+        "page" : 1
+    },
     "gayrate" : {
         "name" : "gayrate",
         "description": "Rates a user",

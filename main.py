@@ -3,7 +3,7 @@ from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
 from bs4 import BeautifulSoup
-from googletrans import Translator
+from PIL import Image, ImageDraw, ImageFont
 from discord.ext import commands
 from modules.colors import Colors
 from modules.general import General
@@ -563,6 +563,51 @@ class Bot:
             for i in range(int(loops)):
                 await ctx.send(msg)
 
+        @self.bot.command()
+        async def tweet(ctx, user: discord.User = None, message=""):
+            await ctx.message.delete()
+            if user == None:
+                return
+            def create_fake_tweet(username, handle, content, profile_image_path, output_image_path):
+                tweet_template = Image.new('RGB', (800, 250), color = (255, 255, 255))
+                draw = ImageDraw.Draw(tweet_template)
+                username_font = ImageFont.truetype("modules/Dependencies/Arial.ttf", 30)
+                handle_font = ImageFont.truetype("modules/Dependencies/Arial.ttf", 20)
+                content_font = ImageFont.truetype("modules/Dependencies/Arial.ttf", 25)
+                profile_image = Image.open(profile_image_path).resize((80, 80))
+                tweet_template.paste(profile_image, (20, 20))
+                draw.text((120, 20), username, font=username_font, fill=(0, 0, 0))
+                draw.text((120, 60), handle, font=handle_font, fill=(100, 100, 100))
+                draw.text((20, 120), content, font=content_font, fill=(0, 0, 0))
+                tweet_template.save(output_image_path)
+
+            def down_av(id, av):
+                url = "https://cdn.discordapp.com/avatars/{}/{}?size=1024".format(id, av)
+                r = requests.get(url)
+                with open("Assets/Temp/av.png", "wb") as f:
+                    f.write(r.content)
+
+            def remove():
+                os.remove("Assets/Temp/av.png")
+                os.remove("Assets/Temp/tweet.png")
+            
+            def get_info(id):
+                api = "https://discord.com/api/v9/users/{}".format(id)
+                r = self.session.get(api, headers=self.sessionheaders)
+                if r.status_code == 200:
+                    data = r.json()
+                    usernam = data.get("username")
+                    globaln = data.get("global_name")
+                    avatar  = data.get("avatar")
+                    down_av(id, avatar)
+                    return usernam, globaln, avatar
+            info = get_info(user.id)
+            create_fake_tweet(username=info[0], handle=info[1], content=message, profile_image_path="Assets/Temp/av.png", output_image_path="Assets/Temp/tweet.png")
+            await ctx.send(file=discord.File("Assets/Temp/tweet.png"))
+            remove()
+
+            
+
         # Fun commands  
 
         @self.bot.command()
@@ -857,11 +902,29 @@ class Bot:
         async def spoof(ctx, device):
             await ctx.message.delete()
             global last_heartbeat_ack, heartbeat_interval, ws
+            vals = []
             
             last_heartbeat_ack = False
             heartbeat_interval = 0
             ws = None
             dcws = "wss://gateway.discord.gg/?v=9&encoding=json"
+            if device == "mobile":
+                vals.append("iOS")
+                vals.append("Discord iOS")
+                vals.append("iOS")
+            elif device == "pc":
+                vals.append("Windows")
+                vals.append("Discord")
+                vals.append("Windows")
+            elif device == "browser":
+                vals.append("Linux")
+                vals.append("Discord Browser")
+                vals.append("Linux")
+            elif device == "console":
+                vals.append("Xbox")
+                vals.append("Xbox")
+                vals.append("Console")
+
             
             def payload():
                 return json.dumps({
@@ -869,10 +932,16 @@ class Bot:
                     "d": {
                         "token": self.token,
                         "properties": {
-                            "$os": "iOS" if device == "mobile" else ("Windows" if device == "pc" else "Linux"),
-                            "$browser": "Discord iOS" if device == "mobile" else ("Discord" if device == "pc" else "Discord Browser"),
-                            "$device": "iOS" if device == "mobile" else ("Windows" if device == "pc" else "Linux")
-                        }
+                            "$os": vals[0],
+                            "$browser": vals[1],
+                            "$device": vals[2]
+                        },
+                        "presence": {
+                            "status": "online",
+                            "activities": [],
+                            "afk": False
+                        },
+                        "intents": 513
                     }
                 })
             
@@ -901,7 +970,7 @@ class Bot:
                 connect()
             
             def on_open(ws):
-                self.logging.Info("Spoofing mobile device...")
+                self.logging.Info("Spoofing {} device...".format(device))
 
             def connect():
                 global ws
@@ -913,7 +982,7 @@ class Bot:
                 
                 ws.run_forever()
 
-            connect()
+            threading.Thread(target=connect).start()
         
         @self.bot.command()
         async def setupnotifs(ctx):
