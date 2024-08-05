@@ -3,6 +3,8 @@ from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from PIL import Image, ImageDraw, ImageFont
 from discord.ext import commands
 from modules.colors import Colors
@@ -569,27 +571,42 @@ class Bot:
             if user == None:
                 return
             def create_fake_tweet(username, handle, content, profile_image_path, output_image_path):
-                tweet_template = Image.new('RGB', (800, 250), color = (255, 255, 255))
-                draw = ImageDraw.Draw(tweet_template)
-                username_font = ImageFont.truetype("modules/Dependencies/Arial.ttf", 30)
-                handle_font = ImageFont.truetype("modules/Dependencies/Arial.ttf", 20)
-                content_font = ImageFont.truetype("modules/Dependencies/Arial.ttf", 25)
-                profile_image = Image.open(profile_image_path).resize((80, 80))
-                tweet_template.paste(profile_image, (20, 20))
-                draw.text((120, 20), username, font=username_font, fill=(0, 0, 0))
-                draw.text((120, 60), handle, font=handle_font, fill=(100, 100, 100))
-                draw.text((20, 120), content, font=content_font, fill=(0, 0, 0))
-                tweet_template.save(output_image_path)
+                replies = random.randint(0, 100000)
+                retweets = random.randint(0, 100000)
+                likes = random.randint(0, 100000)
+                views = random.randint(0, 100000)
+                bookmarks = random.randint(0, 100000)
+                chrome_options = Options()
+                chrome_options.add_argument('--headless') 
+                chrome_options.add_argument('--no-sandbox')
+                chrome_options.add_argument('--disable-dev-shm-usage')
+
+                driver = webdriver.Chrome(options=chrome_options)
+
+                driver.set_window_size(1920, 1080) 
+
+                driver.get("https://invictus-sb.netlify.app/tweet?avatar={}&username={}&handle={}&content={}&replies={}&retweets={}&likes={}&timestamp=today&views={}&bookmarks={}".format(profile_image_path, username, handle, content, replies, retweets, likes, views, bookmarks))
+
+                screenshot_path = "Assets/Temp/screenshot.png"
+                driver.save_screenshot(screenshot_path)
+
+                driver.quit()
+
+                with Image.open(screenshot_path) as img:
+                    left = 690
+                    upper = 440
+                    right = 1230
+                    lower = 635
+                    cropped_img = img.crop((left, upper, right, lower))
+                    cropped_img.save(output_image_path)
 
             def down_av(id, av):
                 url = "https://cdn.discordapp.com/avatars/{}/{}?size=1024".format(id, av)
-                r = requests.get(url)
-                with open("Assets/Temp/av.png", "wb") as f:
-                    f.write(r.content)
+                return url
 
             def remove():
-                os.remove("Assets/Temp/av.png")
                 os.remove("Assets/Temp/tweet.png")
+                os.remove("Assets/Temp/screenshot.png")
             
             def get_info(id):
                 api = "https://discord.com/api/v9/users/{}".format(id)
@@ -599,10 +616,10 @@ class Bot:
                     usernam = data.get("username")
                     globaln = data.get("global_name")
                     avatar  = data.get("avatar")
-                    down_av(id, avatar)
+                    avatar = down_av(id, avatar)
                     return usernam, globaln, avatar
             info = get_info(user.id)
-            create_fake_tweet(username=info[0], handle=info[1], content=message, profile_image_path="Assets/Temp/av.png", output_image_path="Assets/Temp/tweet.png")
+            create_fake_tweet(username=info[0], handle=info[1], content=message, profile_image_path=info[2], output_image_path="Assets/Temp/tweet.png")
             await ctx.send(file=discord.File("Assets/Temp/tweet.png"))
             remove()
 
