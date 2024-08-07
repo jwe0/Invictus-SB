@@ -1,4 +1,5 @@
 import discord, requests, socket, threading, phonenumbers, time, subprocess, websocket, json, random, tls_client, os, socket, cairosvg, string, base64
+import modules.wsmemberscrape
 from phonenumbers import carrier
 from pystyle import Center
 from phonenumbers import geocoder
@@ -1335,6 +1336,14 @@ class Bot:
                 await ctx.send(self.output("Server Info", table))
 
 
+        @self.bot.command()
+        async def wsmembers(ctx, guild, channel):
+            await ctx.message.delete()
+            guild = guild if guild else ctx.guild.id
+            channel = channel if channel else ctx.channel.id
+            mems = modules.wsmemberscrape.DiscordSocket(self.token, guild, channel).run()
+            with open("Scrapes/Members/{}.txt".format(guild), "w") as f:
+                f.write("\n".join(mems))
     
         # NSFW
         @self.bot.command()

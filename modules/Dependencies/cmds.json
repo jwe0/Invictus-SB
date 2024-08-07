@@ -506,6 +506,17 @@
         "section" : "utility",
         "page" : 3
     },
+    "wsmembers" : {
+        "name" : "wsmembers",
+        "description": "Scrapes server members using websockets",
+        "params": [
+            ["SERVER", "(Server ID)"],
+            ["CHANNEL", "(Channel ID)"]
+        ],
+        "example": "wsmembers 123456789",
+        "section" : "utility",
+        "page" : 3
+    },
     "vcspam" : {
         "name" : "vcspam",
         "description": "Spams voice channels",
