@@ -623,6 +623,62 @@ class Bot:
             await ctx.send(file=discord.File("Assets/Temp/tweet.png"))
             remove()
 
+        @self.bot.command()
+        async def hubcomment(ctx, user: discord.User = None, message=""):
+            await ctx.message.delete()
+
+            if user == None:
+                return
+            def create_fake_tweet(username, handle, content, profile_image_path, output_image_path):
+                likes = random.randint(0, 1000)
+                chrome_options = Options()
+                chrome_options.add_argument('--headless') 
+                chrome_options.add_argument('--no-sandbox')
+                chrome_options.add_argument('--disable-dev-shm-usage')
+
+                driver = webdriver.Chrome(options=chrome_options)
+
+                driver.set_window_size(1920, 1080) 
+                url = "https://invictus-sb.netlify.app/pornhub?username={}&content={}&timestamp={}&likes={}".format(username, content, "today", likes)
+                driver.get(url)
+
+                screenshot_path = "Assets/Temp/screenshot.png"
+                driver.save_screenshot(screenshot_path)
+
+                driver.quit()
+
+                with Image.open(screenshot_path) as img:
+                    left = 460
+                    upper = 23
+                    right = 930
+                    lower = 150
+                    cropped_img = img.crop((left, upper, right, lower))
+                    cropped_img.save("Assets/Temp/pornhub.png")
+
+            def down_av(id, av):
+                url = "https://cdn.discordapp.com/avatars/{}/{}?size=1024".format(id, av)
+                return url
+            def remove():
+                os.remove("Assets/Temp/pornhub.png")
+                os.remove("Assets/Temp/screenshot.png")
+            
+            def get_info(id):
+                api = "https://discord.com/api/v9/users/{}".format(id)
+                r = self.session.get(api, headers=self.sessionheaders)
+                if r.status_code == 200:
+                    data = r.json()
+                    usernam = data.get("username")
+                    globaln = data.get("global_name")
+                    avatar  = data.get("avatar")
+                    avatar = down_av(id, avatar)
+                    return usernam, globaln, avatar
+            info = get_info(user.id)
+            create_fake_tweet(username=info[0], handle=info[1], content=message, profile_image_path=info[2], output_image_path="Assets/Temp/pornhub.png")
+            await ctx.send(file=discord.File("Assets/Temp/pornhub.png"))
+            remove()
+
+
+
             
 
         # Fun commands  

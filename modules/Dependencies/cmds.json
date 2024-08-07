@@ -549,6 +549,17 @@
         "section" : "troll",
         "page" : 1
     },
+    "hubcomment" : {
+        "name" : "hubcomment",
+        "description": "Sends a fake pornhub comment",
+        "params": [
+            ["@USER", "(Target account)"],
+            ["MESSAGE", "(Message)"]
+        ],
+        "example": "hubcomment hi",
+        "section" : "troll",
+        "page" : 1
+    },
     "gayrate" : {
         "name" : "gayrate",
         "description": "Rates a user",
